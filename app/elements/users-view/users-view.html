@@ -1,0 +1,208 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="users-view">
+<template>
+    <style include="shared-styles">
+        :host {
+            display: block;
+        }
+
+        .avatar {
+          display: inline-block;
+          box-sizing: border-box;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+
+        paper-icon-item{
+            background-color: #FFF;
+            border-bottom: 1px solid #EEE;
+        }
+
+        paper-icon-item ::content > div{
+            padding: 20px;
+        }
+
+        .username{
+            width: 100px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        iron-selector ::content > * {
+            padding: 8px;
+            min-width: 100px;
+        }
+
+        paper-toggle-button.green {
+            --paper-toggle-button-checked-bar-color: var(--paper-green-500);
+            --paper-toggle-button-checked-button-color: var(--paper-green-500);
+            --paper-toggle-button-checked-ink-color: var(--paper-green-500);
+            --paper-toggle-button-unchecked-bar-color: var(--paper-green-900);
+            --paper-toggle-button-unchecked-button-color: var(--paper-green-900);
+            --paper-toggle-button-unchecked-ink-color: var(--paper-green-900);
+        }
+    </style>
+    <h2 class="page-title">Users</h2>
+    <template is="dom-if" if="{{visible}}">
+        <paper-material>
+            <template is="dom-repeat" items="{{users}}">
+                <paper-icon-item id="[[item._id]]" class="userParent">
+                    <iron-icon icon="account-circle" item-icon class="avatar"></iron-icon>
+                    <div class="item-body username">
+                        <div class="flex">{{item._id}}</div>
+                    </div>
+                    <div class="flex">
+                        <paper-dropdown-menu>
+                            <iron-selector class="dropdown-content roleSelect" attr-for-selected="name"
+                                           >
+                              <div on-click="updateUser" name="manager">Manager</div>
+                              <div on-click="updateUser" name="driver">Driver</div>
+                              <div on-click="updateUser" name="adjuster">Adjuster</div>
+                                <div on-click="updateUser" name="inspector">Inspector</div>
+                            </iron-selector>
+                        </paper-dropdown-menu>
+                    </div>
+                    <div class="flex routesDiv regionSelect">
+                      <template is="dom-repeat" items="{{regions}}">
+                        <paper-checkbox on-click="updateUser" name$="[[item]]">[[item]]</paper-checkbox><br/>
+                      </template>
+                    </div>
+                    <div class="flex">
+                      <paper-toggle-button on-click="updateUser" class="green toggleButton">On Duty</paper-toggle-button>
+                    </div>
+                </paper-icon-item>
+            </template>
+        </paper-material>
+    </template>
+</template>
+<script>
+    (function () {
+        'use strict';
+        var poly;
+
+        Polymer({
+            is: 'users-view',
+
+            properties: {
+                visible: {
+                    type: Boolean,
+                    notify: true,
+                    observer: '_visibleChanged'
+                },
+                users: {
+                    type: Array,
+                    notify: true,
+                    value: []
+                },
+                regions: {
+                    type: Array,
+                    notify: true,
+                    value: []
+                }
+            },
+
+            ready: function () {
+                poly = this;
+            },
+
+            _visibleChanged: function () {
+                if (this.visible) {
+                    poly.regions = [];
+                    poly.loadRegions();
+                }
+            },
+
+            updateUser: function (e) {
+                setTimeout(function () {
+
+                    var username = e.srcElement.closest('.userParent').getAttribute('id');
+                    var regions = [];
+                    var regionEntries = poly.$$('#' + username).querySelector('.regionSelect').querySelectorAll('paper-checkbox');
+                    for (var i = 0; i < regionEntries.length; i++) {
+                        if(regionEntries[i].checked) {
+                          regions.push(regionEntries[i].getAttribute('name'));
+                        }
+                    }
+                    var mailbox = {
+                      info: {
+                        role: poly.$$('#' + username).querySelector('.roleSelect').querySelector('.iron-selected').getAttribute('name'),
+                        regions: regions
+                      },
+                      state: {
+                        onDuty: poly.$$('#' + username).querySelector('.toggleButton').getAttribute('checked') !== null
+                      }
+                    };
+
+                    bridgeit.io.mailbox.updateMailbox({id: username, mailbox: mailbox});
+                }, 10);
+            },
+
+            loadUsers: function () {
+                bridgeit.io.mailbox.findMailboxes().then(function (users) {
+                    poly.set('users',users);
+                    poly.updateToggles();
+                });
+            },
+
+            updateToggles: function () {
+              function doToggleUpdate(user) {
+                setTimeout(function () {
+                  if (user.state.onDuty) {
+                    poly.$$('#' + user._id).querySelector('.toggleButton').setAttribute('checked', 'checked');
+                  }
+                  user.info.regions.forEach(function (region) {
+                    var d = poly.$$('#' + user._id).querySelector('.regionSelect').querySelector('[name="' + region + '"]');
+                    if(d !== null) {
+                      d.setAttribute('checked', 'checked');
+                    }
+                  });
+
+                  poly.$$('#' + user._id).querySelector('.roleSelect').setAttribute('selected',user.info.role);
+                },10);
+              }
+
+              for (var i=0; i<poly.users.length; i++) {
+                doToggleUpdate(poly.users[i]);
+              }
+            },
+
+            loadRegions: function () {
+                bridgeit.io.location.getAllRegions({}).then(function (locations) {
+                    locations.forEach(function (location) {
+                        try {
+                            var id = location.label ? location.label : location._id;
+                            poly.push('regions', id);
+                        }
+                        catch (e) {
+                            console.error(e);
+                        }
+                    });
+                    if (poly.users.length === 0) {
+                      poly.loadUsers();
+                    }
+                    else {
+                      poly.updateToggles();
+                    }
+                });
+            },
+
+          driverTest: function(item){
+            return item.info.role === 'driver';
+          }
+        });
+    })();
+</script>
+</dom-module>

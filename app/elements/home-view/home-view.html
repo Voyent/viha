@@ -1,0 +1,61 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="home-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      :host paper-card ::content .header .title-text{
+        color: #FFF !important;
+      }
+      :host ::content .title-text.over-image.paper-card{
+        text-shadow: 3px 1px 4px #000;
+      }
+      :host ::content .header.paper-card{
+        max-height: 200px;
+        border-bottom: 10px solid #027244;
+      }
+      @media (max-height: 600px) {
+        :host ::content .header.paper-card{
+          max-height: 80px;
+        }
+      }
+    </style>
+
+    <paper-card heading="Introduction" image="images/highwayHome.jpg">
+      <div class="card-content">
+    <p class="paper-font-body2">To be written</p>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'home-view',
+
+        properties: {
+          foo: {
+            type: String,
+            value: 'home-view',
+            notify: true
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

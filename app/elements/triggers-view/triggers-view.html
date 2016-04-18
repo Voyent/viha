@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="triggers-view">
+  <template>
+    <style is="custom-style" include="shared-styles">
+      :host {
+        display: block;
+      }
+      bridgeit-recognizer-editor {
+        --recognizer-editor-container: {
+          background-color: transparent;
+          border: none;
+        };
+        --recognizer-editor-button-container: {
+          background-color: transparent;
+          padding:10px 0 10px 0;
+        };
+        --recognizer-editor-input: {
+          display: block;
+          width: 100%;
+          padding:2px 3px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          color: #555;
+          background: #FFF;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+          -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        };
+        --recognizer-editor-button: {
+          font: inherit;
+          background-color:#F9F9F9;
+          border-color: transparent;
+          color:black;
+          outline: none;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          cursor:pointer;
+        };
+      }
+      bridgeit-recognizer-list {
+        --recognizer-list-wrapper: {
+          padding:10px 0 10px 0;
+          background-color: transparent;
+        };
+        --recognizer-list-button: {
+          font: inherit;
+          background-color:#F9F9F9;
+          border-color: transparent;
+          color:black;
+          outline: none;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          cursor:pointer;
+        };
+      }
+    </style>
+    <h2 class="page-title">Triggers</h2>
+    <template is="dom-if" if="{{visible}}">
+      <bridgeit-recognizer-editor>
+        <bridgeit-recognizer-list></bridgeit-recognizer-list>
+      </bridgeit-recognizer-editor>
+    </template>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'triggers-view',
+
+        properties: {
+          visible: {
+            type: Boolean,
+            notify: true
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

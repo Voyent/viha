@@ -1,0 +1,150 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Polymer Starter Kit" />
+  <title>Viha Demo</title>
+  <!-- Place favicon.ico in the `app/` directory -->
+
+  <!-- Chrome for Android theme color -->
+  <meta name="theme-color" content="#027244">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tile color for Win8 -->
+  <meta name="msapplication-TileColor" content="#027244">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="PSK">
+  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#027244">
+  <meta name="apple-mobile-web-app-title" content="Polymer Starter Kit">
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+
+  <!-- Tile icon for Win8 (144x144) -->
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild-->
+
+  <!-- Polymer Component Dependencies - The build process isn't smart enough to grab external
+     dependencies from inside the components. Until this fixed *****DO NOT REMOVE THESE***** -->
+  <script src="bower_components/ace-builds/src-min-noconflict/ace.js"></script>
+  <script src="bower_components/ace-builds/src-min-noconflict/mode-javascript.js"></script>
+  <link type="text/css" rel="stylesheet" href="bower_components/jQuery-QueryBuilder/dist/css/query-builder.default.min.css">
+  <link type="text/css" rel="stylesheet" href="bower_components/bridgeit-web-components/bridgeit-query-editor/bridgeit-query-editor.min.css">
+  <link type="text/css" rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.min.css">
+  <link type="text/css" rel="stylesheet" href="bower_components/bridgeit-web-components/bridgeit-event-monitor/bridgeit-event-monitor.css">
+  <link type="text/css" rel="stylesheet" href="bower_components/bridgeit-web-components/bridgeit-event-monitor/bridgeit-event-monitor-repeat.css">
+
+  <!-- will be replaced with elements/elements.vulcanized.html -->
+  <link rel="import" href="elements/elements.html">
+  <!-- endreplace-->
+
+  <!-- For shared styles, shared-styles.html import in elements.html -->
+  <style is="custom-style" include="shared-styles">
+    bridgeit-login-paper-card{
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 40px;
+    }
+
+
+
+    @media (max-width: 600px) {
+      bridgeit-login-paper-card{
+        padding-top: 0;
+      }
+    }
+
+  </style>
+
+
+</head>
+
+<body unresolved class="fullbleed layout vertical">
+  <span id="browser-sync-binding"></span>
+  <template is="dom-bind" id="app">
+
+  <!-- Main Content -->
+  <div id="mainContainer">
+
+    <bridgeit-auth-provider id="authProvider" account="demos" realm="viha"
+      host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120" admin="true"
+      scope-to-path="/demos/viha/">
+    </bridgeit-auth-provider>
+    <bridgeit-login-paper-card heading="Viha Demo Admin Login" username="{{username}}" password="{{password}}" error="{{loginError}}"
+      auth-provider="authProvider" submit-label="Login" cancel-label="Cancel" hidden="{{isLoggedIn}}" login-as-admin="true"
+      header-image="images/highway.jpg" showrealminput realm="viha">
+      <paper-input id="host" required label="Host" placeholder="Enter the Host" value="{{host}}">
+        <paper-icon-button suffix icon="clear"
+          onclick="document.querySelector('#host').value = '';" tabindex="-1">
+        </paper-icon-button>
+      </paper-input>
+    </bridgeit-login-paper-card>
+    <demo-view id="demoView" visible="[[isLoggedIn]]" is-admin="true" username="[[username]]" host="[[host]]"
+      base-url="[[baseUrl]]" route="{{route}}"></demo-view>
+  </div>
+
+
+    <!-- Uncomment next block to enable Service Worker support (1/2) -->
+    <!--
+    <paper-toast id="caching-complete"
+                 duration="6000"
+                 text="Caching complete! This app will work offline.">
+    </paper-toast>
+
+    <platinum-sw-register auto-register
+                          clients-claim
+                          skip-waiting
+                          on-service-worker-installed="displayInstalledToast">
+      <platinum-sw-cache default-cache-strategy="fastest"
+                         cache-config-file="cache-config.json">
+      </platinum-sw-cache>
+    </platinum-sw-register>
+    -->
+
+  </template>
+
+  <script>
+    window.initializePushGroups = function(){
+      bridgeit.io.admin.getRealmUsers().then( function(users){
+        setTimeout(function(){
+          users.forEach(function(user){
+            bridgeit.xio.push.join(user.username);
+          });
+          demoView.$$('demo-data').users = users;
+        }, 5000);
+
+      }).catch( function(error){
+        console.log('error loading users for users-view: ' + error);
+        document.querySelector('#app').fire('bridgeit-error', {error: Error('Could not fetch users list: ' + error.responseText)});
+      });
+    };
+  </script>
+  <!-- build:js scripts/app.js -->
+  <script src="scripts/app.js"></script>
+  <!-- endbuild-->
+</body>
+
+</html>

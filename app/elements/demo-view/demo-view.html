@@ -1,0 +1,746 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="demo-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+      paper-scroll-header-panel {
+        height: 100%;
+        --paper-scroll-header-container: {
+          z-index:0;
+        };
+      }
+      paper-menu iron-icon {
+        margin-right: 33px;
+        opacity: 0.54;
+      }
+      .paper-menu > .iron-selected {
+        color: var(--default-primary-color);
+      }
+      paper-menu a {
+        text-decoration: none;
+        color: var(--menu-link-color);
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -ms-flex-direction: row;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 24px;
+        min-height: 48px;
+        padding: 0 16px;
+      }
+      .sidebar {
+          background: #444444;
+      }
+      paper-toolbar#mainToolbar{
+        background-color: #5C6F38;
+      }
+      #mainToolbar ::content #topBar{
+        color: #303A1D;
+      }
+      #mainToolbar ::content #middleBar, #mainToolbar ::content #bottomBar{
+        color: #FFF;
+      }
+      #mainToolbar ::content #middleBar{
+        text-shadow: 1px 1px 1px #000;
+      }
+      paper-drawer-panel ::content #drawer paper-toolbar ::content #topBar{
+        background-image: url(../../images/highwayCrop.jpg);
+        background-size: 107%;
+        text-shadow: 1px 1px 1px #000;
+      }
+      paper-toolbar.tall .app-name {
+        font-size: 40px;
+        font-weight: 300;
+        /* Required for main area's paper-scroll-header-panel custom condensing transformation */
+        -webkit-transform-origin: left center;
+        transform-origin: left center;
+      }
+      .app-name img{
+        width: 50px;
+        margin: -20px 15px -20px -20px;
+      }
+      #mainToolbar .middle-container  {
+        height: 100%;
+        margin-left: 15px;
+      }
+
+      #mainToolbar:not(.tall) .middle {
+        font-size: 18px;
+        padding-bottom: 0;
+      }
+
+      #mainToolbar .bottom {
+        margin-left: 30px;
+        /* Required for main area's paper-scroll-header-panel custom condensing transformation */
+        -webkit-transform-origin: left center;
+        transform-origin: left center;
+      }
+
+      /* Height of the scroll area */
+      /*
+      .content {
+        height: 900px;
+      }*/
+
+      .demo-step-badge{
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: #737373;
+        color: #FFF;
+        margin-right: 33px;
+        line-height: 27px;
+        vertical-align: middle;
+      }
+      #errorToast{
+        background-color: #C70000;
+      }
+      paper-toolbar::shadow #topBar a{
+        margin-left: 10px;
+      }
+
+      paper-button[toggles] {
+        transition: all 0.3s;
+      }
+
+      paper-button[toggles][active] {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+
+      .logout {
+        cursor:pointer;
+      }
+
+      paper-menu a[data-route]{
+        position: relative;
+        cursor: pointer;
+      }
+
+      paper-menu a > *, paper-menu paper-item > *, paper-menu paper-icon-item > * {
+        pointer-events: none;
+      }
+
+      paper-badge{
+        margin-top: 9px;
+        margin-left: -23px;
+      }
+
+      .green-badge {
+        --paper-badge-background: var(--paper-red-300);
+      }
+
+      /* Breakpoints */
+      @media (max-width: 500px) {
+        .hidden-phone {
+          display: none !important;
+        }
+      }
+      @media (min-width: 501px) and (max-width: 900px) {
+        .hidden-tablet {
+          display: none !important;
+        }
+      }
+
+      /* Small */
+      @media (max-width: 600px) {
+
+        .content{
+          padding: 20px;
+        }
+
+        paper-material {
+          --menu-container-display: none;
+          width: calc(97.33% - 32px);
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        paper-button{
+          min-width: 2em;
+        }
+
+        paper-badge{
+          margin-top: 9px;
+          margin-left: -10px;
+        }
+
+        #drawer .paper-toolbar {
+          margin-left: 16px;
+        }
+
+        #overlay {
+          min-width: 360px;
+        }
+
+        .bg {
+          background: white;
+        }
+
+        #bottomBar{
+          display: none;
+        }
+
+        paper-toolbar.tall.demo-view .app-name.demo-view{
+          font-size: 33px;
+          margin-left: 30px;
+        }
+
+        .app-name.demo-view img.demo-view {
+            width: 37px;
+            margin: 0px 0px -10px 0px;
+        }
+
+      }
+
+      /* Tablet */
+      @media (min-width: 601px) and (max-width: 1099px){
+
+        paper-material {
+          width: calc(98% - 46px);
+          margin-bottom: 32px;
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+
+        #drawer.paper-drawer-panel > [drawer] {
+          border-right: 1px solid rgba(0, 0, 0, 0.14);
+        }
+
+        iron-pages {
+          padding: 48px 62px;
+        }
+
+        .app-name{
+          font-size: 20px;
+        }
+
+      }
+
+      /* Phone & Tablet */
+      @media (max-width: 900px) {
+        :host paper-toolbar ::content .app-name{
+          font-size: 30px;
+          line-height: 30px;
+        }
+        :host paper-toolbar ::content .app-name small{
+          font-size: 20px;
+          line-height: 20px;
+        }
+        :host paper-toolbar ::content .bottom-title{
+          line-height: 14px;
+          font-size: 12px;
+        }
+      }
+
+       /* Desktop */
+      @media (min-width: 1100px) {
+
+        paper-material {
+          width: calc(98% - 46px);
+          margin-bottom: 32px;
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+
+        #drawer.paper-drawer-panel > [drawer] {
+          border-right: 1px solid rgba(0, 0, 0, 0.14);
+        }
+
+        iron-pages {
+          padding: 48px 62px;
+        }
+
+      }
+
+      /* Material Design Adaptive Breakpoints */
+      /*
+        Below you'll find CSS media queries based on the breakpoint guidance
+        published by the Material Design team. You can choose to use, customise
+        or remove these breakpoints based on your needs.
+
+        http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
+       */
+
+      /* mobile-small */
+      @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) { }
+      /* mobile-large */
+      @media all and (min-width: 361px) and (orientation: portrait) { }
+      /* mobile-small-landscape */
+      @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
+      /* mobile-large-landscape */
+      @media all and (min-width: 481px) and (orientation: landscape) { }
+      /* tablet-small-landscape */
+      @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) { }
+      /* tablet-large-landscape */
+      @media all and (min-width: 961px) and (orientation: landscape) { }
+      /* tablet-small */
+      @media all and (min-width: 600px) and (orientation: portrait) { }
+      /* tablet-large */
+      @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) { }
+      /* desktop-x-small-landscape */
+      @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
+      /* desktop-x-small */
+      @media all and (min-width: 0) and (max-width: 480px) and (max-aspect-ratio: 4/3) { }
+      /* desktop-small-landscape */
+      @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) { }
+      /* desktop-small */
+      @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) { }
+      /* desktop-medium-landscape */
+      @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) { }
+      /* desktop-medium */
+      @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) { }
+      /* desktop-large */
+      @media all and (min-width: 1281px) and (max-width: 1600px) { }
+      /* desktop-xlarge */
+      @media all and (min-width: 1601px) and (max-width: 1920px) { }
+
+
+    </style>
+    <template is="dom-if" if="{{visible}}">
+      <iron-media-query query="(min-width: 600px) and (max-width: 800px)" query-matches="{{vgaWidth}}"></iron-media-query>
+      <paper-drawer-panel id="paperDrawerPanel" drawer-width="200px">
+      <!-- Drawer Scroll Header Panel -->
+      <paper-scroll-header-panel drawer fixed>
+
+        <!-- Drawer Toolbar -->
+        <paper-toolbar id="drawerToolbar" class="sidebar">
+          <span style="color:#E4E4E4;" class="paper-font-title">Demo Steps</span>
+        </paper-toolbar>
+
+        <!-- Drawer Content -->
+        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+
+          <template is="dom-if" if="{{isAdmin}}">
+
+            <a data-route="home" href="{{baseUrl}}">
+              <iron-icon icon="home"></iron-icon>
+              <span>Home</span>
+            </a>
+
+            <a id="usersLink" data-route="users" href="{{baseUrl}}users">
+              <span class="demo-step-badge">1</span>
+              <span>Users</span>
+            </a>
+
+            <a data-route="cargo" href="{{baseUrl}}cargo">
+              <span class="demo-step-badge">2</span>
+              <span>Cargo</span>
+            </a>
+
+            <a data-route="regions" href="{{baseUrl}}regions">
+              <span class="demo-step-badge">3</span>
+                <span>Regions</span>
+            </a>
+
+            <a data-route="locations" href="{{baseUrl}}locations">
+              <span class="demo-step-badge">4</span>
+              <span>Locations</span>
+            </a>
+
+            <a data-route="triggers" href="{{baseUrl}}triggers">
+              <span class="demo-step-badge">5</span>
+              <span>Triggers</span>
+            </a>
+
+            <a data-route="actions" href="{{baseUrl}}actions">
+              <span class="demo-step-badge">6</span>
+              <span>Actions</span>
+            </a>
+
+            <a data-route="accel" href="{{baseUrl}}accel">
+              <span class="demo-step-badge">7</span>
+              <span>Accelerometer</span>
+            </a>
+
+            <a data-route="notifications" href="{{baseUrl}}notifications">
+              <span class="demo-step-badge">8</span>
+              <span>Notifications</span>
+            </a>
+
+            <a data-route="events" href="{{baseUrl}}events">
+              <span class="demo-step-badge">9</span>
+              <span>Events</span>
+            </a>
+
+            <a data-route="logs" href="{{baseUrl}}logs">
+              <span class="demo-step-badge">10</span>
+              <span>Logs</span>
+            </a>
+
+            <a data-route="backpack" href="{{baseUrl}}backpack">
+              <span class="demo-step-badge">11</span>
+              <span>Backpack</span>
+            </a>
+
+            <a data-route="queries" href="{{baseUrl}}queries">
+              <span class="demo-step-badge">12</span>
+              <span>Queries</span>
+            </a>
+
+          </template>
+
+          <template is="dom-if" if="{{isUser}}">
+
+            <a data-route="home" href="{{baseUrl}}">
+              <iron-icon icon="home"></iron-icon>
+              <span>Home</span>
+            </a>
+            <a data-route="solicit" href="{{baseUrl}}solicit">
+              <span class="demo-step-badge">1</span>
+              <span>Messages</span>
+            </a>
+            <a data-route="notifications" href="{{baseUrl}}notifications">
+              <span class="demo-step-badge">2</span>
+              <span>Notifications</span>
+            </a>
+
+          </template>
+
+        </paper-menu>
+      </paper-scroll-header-panel>
+
+      <!-- Main Area -->
+      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
+
+        <!-- Main Toolbar -->
+        <paper-toolbar id="mainToolbar" class="tall">
+          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+          <span class="flex"></span>
+
+          <!-- Toolbar icons -->
+          <template is="dom-if" if="{{cloudPushCompatible}}">
+            <paper-button tabindex="0" toggles active="{{cloudPushSelected}}">
+              <iron-icon icon="cloud-download"></iron-icon>
+              <span class="hidden-phone">Cloud Push</span>
+            </paper-button>
+          </template>
+          <paper-button tabindex="0" href="{{baseUrl}}notifications">
+            <iron-icon icon="mail"></iron-icon>
+            <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
+          </paper-button>
+          <a class="logout" on-click="handleLogout">
+            <iron-icon icon="lock-open"></iron-icon>
+            <span class="hidden-phone">Logout</span>
+          </a>
+
+
+          <!-- Application name -->
+          <div class="middle middle-container center horizontal layout">
+            <div class="app-name">
+              Viha Demo <small>(<span>[[username]]</span>)</small>
+            </div>
+          </div>
+
+          <!-- Application sub title -->
+          <div class="bottom bottom-container center horizontal layout hidden-phone">
+            <div class="bottom-title paper-font-subhead"><span class="quote">&ldquo;</span>Delivering Your Sensitive Cargo<span class="quote">&rdquo;</span></div>
+          </div>
+
+        </paper-toolbar>
+
+        <!-- Main Content -->
+        <div class="content">
+          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+
+            <section data-route="home">
+              <home-view></home-view>
+            </section>
+
+            <template is="dom-if" if="{{isAdmin}}">
+
+              <section data-route="users">
+                <users-view visible="{{isEqual('users', route)}}" ></users-view>
+              </section>
+
+              <section data-route="regions">
+                <regions-view visible="{{isEqual('regions', route)}}"></regions-view>
+              </section>
+
+              <section data-route="queries">
+                <queries-view visible="{{isEqual('queries', route)}}">></queries-view>
+              </section>
+
+              <section data-route="triggers">
+                <triggers-view visible="{{isEqual('triggers', route)}}">></triggers-view>
+              </section>
+
+              <section data-route="actions">
+                <actions-view visible="{{isEqual('actions', route)}}">></actions-view>
+              </section>
+
+              <section data-route="locations">
+                <locations-view visible="{{isEqual('locations', route)}}"></locations-view>
+              </section>
+
+              <section data-route="cargo">
+                <cargo-view visible="{{isEqual('cargo', route)}}">
+                </cargo-view>
+              </section>
+
+              <section data-route="accel">
+                <accel-view visible="{{isEqual('accel', route)}}"></accel-view>
+              </section>
+
+              <section data-route="events">
+                  <events-view visible="{{isEqual('events', route)}}"></events-view>
+              </section>
+
+              <section data-route="notifications">
+                <notifications-view notifications="[[notifications]]" users="[[users]]"
+                  last-notification-timestamp="[[lastNotificationTimestamp]]"
+                  notifications-by-user="[[notificationsByUser]]" notification-count="[[notificationCount]]">
+                </notifications-view>
+              </section>
+
+              <section data-route="logs">
+                <logs-view visible="{{isEqual('logs', route)}}"></logs-view>
+              </section>
+
+              <section data-route="backpack">
+                <backpack-view visible="{{isEqual('backpack', route)}}"></backpack-view>
+              </section>
+
+            </template>
+
+            <template is="dom-if" if="{{isUser}}">
+
+              <section data-route="notifications">
+                <notifications-view notifications="[[notifications]]"></notifications-view>
+              </section>
+
+              <section data-route="solicit">
+                <solicit-view notifications="[[notifications]]" visible="{{isEqual('solicit', route)}}"></solicit-view>
+              </section>
+
+            </template>
+
+          </iron-pages>
+        </div>
+      </paper-scroll-header-panel>
+      </paper-drawer-panel>
+
+      <paper-toast id="toast">
+        <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">{{message}}</span>
+      </paper-toast>
+
+       <paper-toast id="errorToast" duration="20000">
+        <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.errorToast.hide()">{{error}}</span>
+      </paper-toast>
+
+      <demo-data id="demoData"
+        notifications="{{notifications}}"
+        users="{{users}}"
+        scenarios="{{scenarios}}"
+        last-notification-timestamp="{{lastNotificationTimestamp}}"
+        notifications-by-user="{{notificationsByUser}}"
+        notification-count="{{notificationCount}}">
+      </demo-data>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'demo-view',
+
+      ready: function(){
+
+        var _this = this;
+
+        this.route = 'home';
+
+        //error handling
+        this.addEventListener('bridgeit-error',  function(e){
+          console.log('handling bridgeit-error: ' + e.detail.error);
+          var errorMessage;
+          if( e.detail.error ){
+            if( e.detail.error.message ){
+              errorMessage = e.detail.error.message;
+            }
+            if( e.detail.error.responseText ){
+              errorMessage = e.detail.error.responseText;
+            }
+          }
+
+          _this.error = 'Error: ' + errorMessage;
+          _this.querySelector('#errorToast').show();
+        });
+
+        //temperature event handling
+        this.addEventListener('temp-changed',  function(e){
+          console.log('handling temp-changed: ' + JSON.stringify(e.detail));
+          _this.message = 'Temperture changed. Current: ' + e.detail.currentTemp + 'deg, Threshold: ' + e.detail.thresholdTemp + 'deg.';
+          _this.querySelector('#toast').show();
+        });
+
+        //check cloud push status
+        this.cloudPushRegistered = this.cloudPushSelected = bridgeit.xio.push.cloudPushRegistered();
+
+        //mobile
+        this.cloudPushCompatible = bridgeit.isIOS() || bridgeit.isAndroid();
+      },
+
+      properties: {
+
+        baseUrl: {
+          type: String,
+          notify: true
+        },
+
+        route: {
+          type: String,
+          notify: true
+        },
+
+        isAdmin: {
+          notify: true,
+          type: Boolean
+        },
+
+        isUser: {
+          type: Boolean,
+          value: true,
+          computed: 'computeIsUser(isAdmin)'
+        },
+
+        visible: {
+          notify: true,
+          type: Boolean
+        },
+
+        message: {
+          notify: true,
+          type: String
+        },
+
+        error: {
+          notify: true,
+          type: String
+        },
+
+        cloudPushRegistered: {
+          notify: true,
+          type: Boolean,
+          reflectToAttribute: true
+        },
+
+        cloudPushCompatible: {
+          notify: true,
+          type: Boolean,
+          reflectToAttribute: true
+        },
+
+        cloudPushSelected: {
+          notify: true,
+          type: Boolean,
+          observer: '_cloudPushSelectedChanged'
+        },
+
+        username: {
+          notify: true,
+          type: String
+        },
+
+        host: {
+          type: String,
+          notify: true
+        },
+
+        drawerWidth: {
+          type: String,
+          notify: true,
+          computed: '_computeDrawerWidth(vgaWidth)'
+        }
+      },
+
+      handleLogout: function(){
+        bridgeit.xio.push.removeListener();
+        document.getElementById('authProvider').logout();
+        location.reload();
+      },
+
+      isEqual: function(arg1, arg2){
+        return arg1 === arg2;
+      },
+
+      handleRegisterCloudPush: function(){
+        if( !bridgeit.isIOS() && !bridgeit.isAndroid() ){
+          window.alert('could not register for cloud push as supported mobile platform not detected');
+          return;
+        }
+        var _this = this;
+        bridgeit.xio.push.registerCloudPush(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername()).then(function(){
+          console.log('registered for cloud push promise returned');
+          _this.cloudPushRegistered = true;
+          _this.message = 'Registered for Cloud Push notifications';
+          _this.$$('#toast').show();
+        });
+      },
+
+      computeShowCloudPushLink: function(cloudPushCompatible, cloudPushRegistered){
+        var showCloudPushLink = cloudPushCompatible && !cloudPushRegistered;
+        console.log('showCloudPushLink(' + cloudPushCompatible + ', ' + cloudPushRegistered + ') =' + showCloudPushLink);
+        return showCloudPushLink;
+      },
+
+      computeIsUser: function(isAdmin){
+        return !isAdmin;
+      },
+
+      _cloudPushSelectedChanged: function(){
+        if( this.cloudPushCompatible ){
+          if( this.cloudPushSelected ){
+            this.handleRegisterCloudPush();
+          }
+          else{
+            bridgeit.xio.push.unregisterCloudPush(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm());
+            this.cloudPushRegistered = false;
+            var _this = this;
+            setTimeout(function(){
+              _this.message = 'Unregistered from Cloud Push notifications';
+              _this.$$('#toast').show();
+            },200);
+
+          }
+        }
+      },
+
+      _computeDrawerWidth: function(vgaWidth){
+        if( vgaWidth ){
+          return '180px';
+        }
+        else{
+          return '256px';
+        }
+      }
+    });
+  })();
+  </script>
+
+</dom-module>

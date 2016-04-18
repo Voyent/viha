@@ -1,0 +1,320 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="solicit-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+      .notifications paper-item{
+        font-size: 12px;
+      }
+      .notifications paper-item cell{
+        display: inline-block;
+        padding: 2px;
+        white-space: normal;
+      }
+      .notification-ts{
+        width: 20%;
+      }
+      .notification-group{
+        width: 40%;
+      }
+      .notification-message{
+        width: 60%;
+      }
+      paper-card{
+        width: 100%;
+      }
+      paper-card .card-content.message-list {
+        padding: 0;
+      }
+      .user-card-header{
+        background-color: rgba(2, 114, 68, 0.95);
+        color: #FFF;
+      }
+      paper-toggle-button{
+        float: right;
+        margin-top: -40px;
+      }
+      @media (max-width: 400px){
+        paper-toggle-button{
+          margin-top: -51px;
+          margin-right: -10px;
+        }
+        paper-toggle-button toggle-label{
+          width: 50px;
+          line-height: 14px;
+        }
+      }
+      paper-material{
+        padding: 20px;
+        background-color: #FFF;
+      }
+      paper-item-body ::content > * {
+        white-space: normal;
+      }
+      paper-icon-item{
+        border-bottom: 1px solid #EEE;
+        padding: 10px 0;
+      }
+      paper-icon-item:first-child{
+        padding-top: 0;
+      }
+      paper-icon-item:last-of-type{
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .solicitDiv, .containerDiv{
+        width:100%;
+        height:120px;
+        padding: 0 0 20px;
+
+      }
+
+      #solicit {
+
+        --solicit-header-style: {
+          background-color: #5C6F38;
+          color: white;
+          transition: height 0.2s;
+          text-align: center;
+          text-size:small;
+        };
+
+        --solicit-body-style: {
+          background-color: white;
+          margin: 12px;
+          height: 100%;
+          width: 100%;
+        }
+
+      }
+
+      .topElement{
+        z-index: 5;
+      }
+    </style>
+    <h2 class="page-title">Current Message (<span>[[messagesRemaining]]</span>&nbsp;Pending):</h2>
+    <div class="containerDiv" style="position:relative; display:table;">
+      <div id="coverDiv" style="text-align:center; display: table-cell; vertical-align: middle; position:relative; left:0; top:0; width:100%; height:100%; background-color: #fafafa">
+        <h3>None</h3>
+      </div>
+      <div id="solicitDiv" class="solicitDiv topElement" style="position:absolute; left:0; top:0; height:100%; width:100%">
+        <bridgeit-solicit id="solicit" host="dev.bridgeit.io" usepush></bridgeit-solicit>
+      </div>
+    </div>
+    <br/>
+    <h2 class="page-title"><span>{{messageCount}}</span>&nbsp;Past Messages:</h2>
+    <div style="position:relative">
+      <template is="dom-if" if="{{!hasMessages}}">
+        <paper-material>No responses yet...</paper-material>
+      </template>
+      <template is="dom-if" if="{{hasMessages}}">
+        <paper-material>
+          <paper-menu class="notifications">
+            <template id="iterator" is="dom-repeat" items="[[messages]]" sort="sortNotifications">
+              <paper-icon-item class="notificationInfo">
+                <iron-icon icon="communication:message" item-icon></iron-icon>
+                <paper-item-body two-line>
+                  <div><span>{{item.message}}</span></div>
+                  <div secondary>
+                  <span>{{item.time}}</span>
+                  </div>
+                  <div secondary>
+                    <span>Response given:</span><span> {{getResponse(item)}}</span>
+                  </div>
+                </paper-item-body>
+              </paper-icon-item>
+            </template>
+          </paper-menu>
+        </paper-material>
+      </template>
+      <!--button style="position:absolute; right:5px; top:5px; background-color: red;">Clear</button-->
+      <paper-button on-click='resetMessages' style="position:absolute; right:5px; font-size: small; top:5px; padding-top:3px; height:20px; width:40px;">Clear</paper-button>
+    </div>
+
+
+  </template>
+  <script>
+  (function() {
+    //'use strict';
+
+    var poly;
+
+    Polymer({
+      is: 'solicit-view',
+
+      properties: {
+        visible: {
+          type: Boolean,
+          notify: true,
+          observer: '_visibleChanged'
+        },
+        notifications: { type: Array, notify: true},
+        messages: { type: Array, notify: true, value:[]},
+        groupByUser: { type: Boolean, notify: true, value: false},
+        users: {
+          type: Array,
+          notify: true
+        },
+        notificationsByUser: {
+          type: Object,
+          notify: true
+        },
+        _decoratedUserNotifications: {
+          type: Array,
+          computed: '_computeDecoratedUserNotifications(users, notificationsByUser, lastNotificationTimestamp)'
+        },
+        lastNotificationTimestamp: {
+          type: Number
+        },
+        lastMessageTimestamp: {
+          type: Number
+        },
+        notificationCount: { type: Number, notify: true},
+        messageCount: { type: Number, notify: true},
+        hasNotifications: { type: Boolean, notify: true, computed: '_computeHasNotifications(notifications.splices)'},
+        hasMessages: { type: Boolean, notify: true, computed: '_computeHasMessages(messages.splices)'},
+        queue:{type: Array, notify: true, value:[]},
+        messagesRemaining: {type:Number, notify: true, reflect: true, value: 0},
+        solicitConsumed:{ type: Boolean, notify: true, value: false}
+      },
+
+
+      ready: function () {
+        poly = this;
+      },
+
+      _visibleChanged: function () {
+        if (poly.visible) {
+          setTimeout(function() {
+            var solicit = document.querySelector('bridgeit-solicit');
+            if (solicit.getURLParameter('solicit') && !poly.solicitConsumed) {
+              poly.queue.push(solicit.data);
+              poly.solicitConsumed = true;
+            }
+            if (poly.queue.length >= 1) {
+              poly.messagesRemaining = poly.queue.length;
+              //if(poly.hasNotifications && !poly.notifications[poly.notifications.length-1].response){
+              document.querySelector('bridgeit-solicit').showSolicit();
+              poly.solicitUpdate();
+            }
+          }, 200);
+        }
+      },
+
+      sortNotifications: function(a,b) {
+        if (a.time > b.time) { return -1; }
+        else if (a.time < b.time) { return 1; }
+        return 0;
+      },
+
+      _computeDecoratedUserNotifications: function(users, notificationsByUser, lastNotificationTimestamp){
+        var list = [];
+        list.lastUpdated = lastNotificationTimestamp;
+        var usernames = users.map(function(user){return user.username;});
+        usernames.sort();
+        usernames.forEach(function(username){
+          var userNotifications = notificationsByUser[username] || [];
+          list.push({username: username, notifications: userNotifications});
+        });
+        return list;
+      },
+
+      _computeHasNotifications: function(notifications){
+        console.log('_computeHasNotifications(' + notifications + ')');
+        return this.notifications && this.notifications.length;
+      },
+
+      _computeHasMessages: function(messages){
+        console.log('_computeHasMessages(' + messages + ')');
+        return this.messages && this.messages.length;
+      },
+
+      getResponse: function(item){
+        if(item.response){
+          return item.response;
+        }
+        else{
+          return 'None';
+        }
+      },
+
+      updateResponse: function(response){
+        var message = poly.queue.shift();
+        message.response = response;
+
+        if(poly.queue.length !== 0){
+          poly.solicitUpdate();
+        }
+        else{
+          document.querySelector('bridgeit-solicit').hideSolicit();
+        }
+        poly.messagesRemaining = poly.queue.length;
+        //TODO: Check if this is ordered right, or if it needs to prepend
+        //poly.set('messages', []);
+        poly.push('messages', message);
+      },
+
+      solicitUpdate: function(){
+        var event = poly.queue[0];
+        var data = {};
+        data.message = event.message;
+        data.options = event.options;
+        data.event = event.event;
+        //var solicit = document.getElementById('solicit');
+        var solicit = document.querySelector('bridgeit-solicit');
+
+
+        solicit.setAttribute('data',JSON.stringify(data));
+
+        poly.setupButtons();
+      },
+
+      setupButtons: function(){
+        var solicit = document.querySelector('bridgeit-solicit');
+        setTimeout(function(){
+          var headerHeight = solicit.$$('.paper-header.bridgeit-solicit').clientHeight;
+          var buttonHeight = solicit.$$('.selectionButton').clientHeight;
+          var totalHeight = headerHeight + buttonHeight + 15;
+          var solicitDiv = document.getElementById('solicitDiv');
+          if(totalHeight > solicit.clientHeight) {
+            solicitDiv.style.height = totalHeight + 'px';
+          }
+        },500);
+        setTimeout(function(){
+          /* jshint ignore:start*/
+          var buttons = document.getElementsByClassName('selectionButton');
+          for (var i = 0; i < buttons.length; i++){
+            buttons[i].onclick = function(){
+              poly.updateResponse(this.textContent.trim());
+            };
+          }
+          /* jshint ignore:end*/
+        },600);
+      },
+
+      resetMessages: function(){
+        poly.messages = [];
+      }
+
+
+
+
+    });
+  })();
+  </script>
+</dom-module>

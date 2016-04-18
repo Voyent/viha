@@ -1,0 +1,140 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="locations-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+      bridgeit-location-simulator {
+        --location-sim-map: {
+          margin-bottom:0;
+          margin-top:-20px;
+        };
+        --location-sim-button: {
+          font: inherit;
+          background-color:#F9F9F9;
+          border-color: transparent;
+          color:black;
+          outline: none;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          cursor:pointer;
+        };
+        --location-sim-button-container: {
+        };
+        --location-sim-title: {
+          padding: 15px 0 15px 0;
+        };
+        --location-sim-tabs: {
+        };
+        --location-sim-first-tab: {
+          margin-left: 40px;
+        };
+        --location-sim-active-tab-label: {
+          color: #027244;
+        };
+      }
+      bridgeit-location-route {
+        --location-route-wrapper: {
+          padding: 20px;
+        };
+        --location-route-label: {
+          display: inline-block;
+          max-width: 100%;
+          margin-bottom: 5px;
+          font-weight: 700;
+        };
+        --location-route-input: {
+          display: block;
+          width: 100%;
+          padding:2px 3px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          color: #555;
+          background: #FFF;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+          -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        };
+        --location-route-input-disabled: {
+          background-color: rgb(248, 248, 248) !important;
+        };
+        --location-route-button: {
+          font: inherit;
+          background-color:#F9F9F9;
+          border-color: transparent;
+          color:black;
+          outline: none;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          cursor:pointer;
+        };
+        --location-route-button-disabled: {
+          color: graytext;
+        };
+      }
+      bridgeit-location-simulations {
+        --location-simulations-wrapper: {
+          padding:10px 0 10px 0;
+        };
+        --location-simulations-button: {
+          font: inherit;
+          background-color:#F9F9F9;
+          border-color: transparent;
+          color:black;
+          outline: none;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          cursor:pointer;
+        };
+      }
+    </style>
+    <h2 class="page-title">Locations</h2>
+    <template is="dom-if" if="{{visible}}">
+      <bridgeit-location-simulator id="locationSimulator">
+        <bridgeit-location-simulations></bridgeit-location-simulations>
+        <bridgeit-location-route></bridgeit-location-route>
+      </bridgeit-location-simulator>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'locations-view',
+
+      properties: {
+        visible: {
+          type: Boolean,
+          notify: true,
+          observer:'resizeMap'
+        }
+      },
+      resizeMap: function() {
+        setTimeout(function() {
+          if (this.$$('#locationSimulator')) {
+            this.$$('#locationSimulator').resizeMap();
+          }
+        }.bind(this),0);
+      }
+    });
+  })();
+  </script>
+</dom-module>
