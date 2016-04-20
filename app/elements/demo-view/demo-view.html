@@ -347,59 +347,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>Users</span>
             </a>
 
-            <a data-route="cargo" href="{{baseUrl}}cargo">
+            <a id="simulator" data-route="simulator" href="{{baseUrl}}simulator">
               <span class="demo-step-badge">2</span>
-              <span>Cargo</span>
+              <span>Simulator</span>
             </a>
 
-            <a data-route="regions" href="{{baseUrl}}regions">
+            <a data-route="notifications" href="{{baseUrl}}notifications">
               <span class="demo-step-badge">3</span>
-                <span>Regions</span>
-            </a>
-
-            <a data-route="locations" href="{{baseUrl}}locations">
-              <span class="demo-step-badge">4</span>
-              <span>Locations</span>
+              <span>Notifications</span>
             </a>
 
             <a data-route="triggers" href="{{baseUrl}}triggers">
-              <span class="demo-step-badge">5</span>
+              <span class="demo-step-badge">4</span>
               <span>Triggers</span>
             </a>
 
             <a data-route="actions" href="{{baseUrl}}actions">
-              <span class="demo-step-badge">6</span>
+              <span class="demo-step-badge">5</span>
               <span>Actions</span>
             </a>
 
-            <a data-route="accel" href="{{baseUrl}}accel">
-              <span class="demo-step-badge">7</span>
-              <span>Accelerometer</span>
-            </a>
-
-            <a data-route="notifications" href="{{baseUrl}}notifications">
-              <span class="demo-step-badge">8</span>
-              <span>Notifications</span>
+            <a data-route="debug" href="{{baseUrl}}debug">
+              <span class="demo-step-badge">6</span>
+              <span>Debug</span>
             </a>
 
             <a data-route="events" href="{{baseUrl}}events">
-              <span class="demo-step-badge">9</span>
+              <span class="demo-step-badge">7</span>
               <span>Events</span>
             </a>
 
             <a data-route="logs" href="{{baseUrl}}logs">
-              <span class="demo-step-badge">10</span>
+              <span class="demo-step-badge">8</span>
               <span>Logs</span>
-            </a>
-
-            <a data-route="backpack" href="{{baseUrl}}backpack">
-              <span class="demo-step-badge">11</span>
-              <span>Backpack</span>
-            </a>
-
-            <a data-route="queries" href="{{baseUrl}}queries">
-              <span class="demo-step-badge">12</span>
-              <span>Queries</span>
             </a>
 
           </template>
@@ -410,12 +390,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-icon icon="home"></iron-icon>
               <span>Home</span>
             </a>
-            <a data-route="solicit" href="{{baseUrl}}solicit">
-              <span class="demo-step-badge">1</span>
-              <span>Messages</span>
-            </a>
             <a data-route="notifications" href="{{baseUrl}}notifications">
-              <span class="demo-step-badge">2</span>
+              <span class="demo-step-badge">1</span>
               <span>Notifications</span>
             </a>
 
@@ -477,8 +453,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <users-view visible="{{isEqual('users', route)}}" ></users-view>
               </section>
 
-              <section data-route="regions">
-                <regions-view visible="{{isEqual('regions', route)}}"></regions-view>
+              <section data-route="simulator">
+                <simulator-view visible="{{isEqual('simulator', route)}}"></simulator-view>
               </section>
 
               <section data-route="queries">
@@ -493,8 +469,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <actions-view visible="{{isEqual('actions', route)}}">></actions-view>
               </section>
 
-              <section data-route="locations">
-                <locations-view visible="{{isEqual('locations', route)}}"></locations-view>
+              <section data-route="debug">
+                <debug-view visible="{{isEqual('debug', route)}}"></debug-view>
               </section>
 
               <section data-route="cargo">

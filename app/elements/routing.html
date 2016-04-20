@@ -77,29 +77,9 @@ function waitForApp(){
       setFocus(app.route);
     });
 
-    page('/locations', function () {
-      app.route = 'locations';
-      setFocus(app.route);
-    });
-
-    page('/cargo', function () {
-      app.route = 'cargo';
-      setFocus(app.route);
-    });
-
-    page('/regions', function () {
-      app.route = 'regions';
-      setFocus(app.route);
-    });
-
     page('/notifications', function () {
       app.route = 'notifications';
       app.scrollPageToTop();
-    });
-
-    page('/solicit', function () {
-      app.route = 'solicit';
-      setFocus(app.route);
     });
 
     page('/events', function () {
@@ -117,11 +97,6 @@ function waitForApp(){
       setFocus(app.route);
     });
 
-    page('/accel', function () {
-      app.route = 'accel';
-      setFocus(app.route);
-    });
-
     page('/actions', function () {
       app.route = 'actions';
       setFocus(app.route);
@@ -134,6 +109,16 @@ function waitForApp(){
 
     page('/backpack', function () {
       app.route = 'backpack';
+      app.scrollPageToTop();
+    });
+
+    page('/simulator', function () {
+      app.route = 'simulator';
+      app.scrollPageToTop();
+    });
+
+    page('/debug', function () {
+      app.route = 'debug';
       app.scrollPageToTop();
     });
 
