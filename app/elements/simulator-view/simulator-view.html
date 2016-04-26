@@ -15,7 +15,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="simulator-view">
 
   <template>
-    <script src="../../bower_components/dropzone/dist/dropzone.js"></script>
     <style include="shared-styles">
       :host {
         display: block;
@@ -68,16 +67,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
     </div>
-    <!--input type="file" id="your-files" multiple-->
 
-    <!--form action="/file-upload"
-          class="dropzone"
-          id="filedrop"></form-->
   </template>
   <script>
   (function() {
     'use strict';
-    //var Dropzone = window.Dropzone;
     var poly;
     Polymer({
       is: 'simulator-view',
