@@ -10,16 +10,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../styles/shared-styles.html">
-
+<script src="../../bower_components/papaParse/papaparse.js"></script>
 
 <dom-module id="simulator-view">
+
   <template>
+    <script src="../../bower_components/dropzone/dist/dropzone.js"></script>
     <style include="shared-styles">
       :host {
         display: block;
       }
     </style>
     <h2 class="page-title">Simulator</h2>
+    <div style="display:flex; align-items:baseline; justify-content:space-between;">
+      <div style="height:100%;display:inline-block">
+        <h4>Simulations:</h4>
+        <paper-radio-button checked on-click="setSim" id="simRadio"></paper-radio-button>
+        <paper-dropdown-menu on-click="setSim" id="simulationSelect">
+          <paper-listbox selected="0" class="dropdown-content">
+            <template is="dom-repeat" items="{{simulationList}}">
+              <paper-item>[[item]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        <h4>Chosen files:</h4>
+        <paper-radio-button on-click="setFile" id="fileRadio"></paper-radio-button>
+        <input id="the-file-input" type="file">
+      </div>
+      <div style="height:100%;display:inline-block">
+        <h4>Runspeed:</h4>
+        <div style="display:flex; align-items:center">
+          <div style="display:inline-block">
+            <paper-slider  min="1" max="5" value="{{sliderValue}}" pin step="0.5"></paper-slider>
+          </div>
+          <div style="display:inline-block; ">
+            <span style="display:inline-block;">[[sliderValue]]</span>X speed
+          </div>
+        </div>
+      </div>
+      <div style="height:100%;display:inline-block">
+        <h4>Simulated Start Time:</h4>
+        <div>
+          <select id="hourSelect">
+            <template is="dom-repeat" items="{{hourCounts}}">
+              <option value="[[item]]">[[item]]</option>
+            </template>
+          </select>
+           :
+          <select id="minuteSelect">
+            <template is="dom-repeat" items="{{minuteCounts}}">
+              <option value="[[item]]">[[item]]</option>
+            </template>
+          </select>
+        </div>
+      </div>
+      <div style="height:100%;display:inline-block; margin-top:30px; align-self:center"><paper-button raised on-click="buttonPress">Run <span>[[inputSource]]</span></paper-button></div>
+
+
+    </div>
+    <!--input type="file" id="your-files" multiple-->
+
     <!--form action="/file-upload"
           class="dropzone"
           id="filedrop"></form-->
@@ -27,18 +77,113 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
   (function() {
     'use strict';
-
+    //var Dropzone = window.Dropzone;
+    var poly;
     Polymer({
       is: 'simulator-view',
 
       properties: {
+        visible: {
+          type: Boolean,
+          notify: true
+        },
+        startTime: {
+          type: String,
+          notify: true,
+          reflectToAttribute:true
+        },
+        sliderValue: {'type':Number,value:1,notify:true},
+        uploadedArray: {'type':Array, value:[]},
+        inputSource: {'type':String, value:'Simulation', notify:true},
+        simulationList:{'type':Array, value:['simulation1']},
+        hourCounts:{'type':Array, value:['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']},
+        minuteCounts:{'type':Array, value:['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59']}
+      },
 
+      ready: function () {
+        poly = this;
+
+        $(poly.$$("#the-file-input")).change(function() {
+          poly.setFile();
+          Papa.parse(this.files[0],{'complete':function(results){
+            console.log("Parsing complete:", results);
+            var resultArray = results.data;
+            var jsonArray = [];
+            var headers = ['rowId','linkDescription','webSection', 'cieprd', 'node','status','detail','time'];
+            var startTime = 0;
+            var lastTime = 0;
+            for(var i = 0; i < resultArray.length; i++){
+              var event = {'event':'update','service':'viha','type':'status', 'data':{}};
+              for(var j = 0; j < headers.length; j++){
+                event.data[headers[j]] = resultArray[i][j];
+              }
+              var rawTime = resultArray[i][7];
+              var brokenTime = rawTime.split(":");
+              var milliTime = ((((parseInt(brokenTime[0]) * 60) + parseInt(brokenTime[1])) * 60) + parseInt(brokenTime[2])) * 1000;
+              if (startTime === 0){
+                startTime = milliTime;
+              }
+              while(milliTime < lastTime){
+                milliTime += 24*60*60*1000;
+              }
+              lastTime = milliTime;
+              event.delay = milliTime - startTime;
+              jsonArray.push(event);
+            }
+            poly.uploadedArray = jsonArray;
+          }});
+        });
+
+      },
+
+      setSim: function(){
+        poly.$$('#fileRadio').checked = false;
+        poly.$$('#simRadio').checked = true;
+        poly.inputSource = 'Simulation';
+      },
+
+      setFile: function(){
+        poly.$$('#simRadio').checked = false;
+        poly.$$('#fileRadio').checked = true;
+        poly.inputSource = 'File';
+      },
+
+      buttonPress : function(){
+        poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
+        if(poly.inputSource === 'Simulation') {
+          bridgeit.io.documents.getDocument({
+            "collection": 'simulations',
+            "id": poly.$$('#simulationSelect').value
+          }).then(function (sim) {
+            poly.runArray(sim.array);
+          });
+        }
+        else{
+          var activeArray = poly.uploadedArray;
+          if(activeArray == []){
+            console.log('No uploaded data found.');
+            return;
+          }
+          else{
+            poly.runArray(activeArray);
+          }
+        }
+
+      },
+
+      runArray: function(activeArray){
+        if(poly.sliderValue !== 1){
+          for(var i = 0; i < activeArray.length; i++){
+            activeArray[i].delay /= poly.sliderValue;
+          }
+        }
+        console.log(activeArray);
+        bridgeit.io.event.createCustomEvents({'eventArray':activeArray});
       }
 
     });
   })();
   </script>
-
 </dom-module>
 
 

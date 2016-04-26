@@ -23,7 +23,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notificationsByUser: {type: Object, notify: true, value: function(){ return {}; }},
         notifications: {type: Array, value: [], notify: true},
         lastNotificationTimestamp: {type: Date, notify: true},
-        notificationCount: { type: Number, notify: true, reflectToAttribute: true, computed: '_computeNotificationCount(notifications.splices)'}
+        notificationCount: { type: Number, notify: true, reflectToAttribute: true, computed: '_computeNotificationCount(notifications.splices)'},
+        startTime:{type:String, notify:true, reflectToAttribute:true}
       },
 
       _computeNotificationCount: function(notifications){

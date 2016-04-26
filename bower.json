@@ -13,7 +13,7 @@
     "bridgeit.xio.js": "https://github.com/bridgeit/bridgeit.xio.js.git#gh-pages",
     "jquery": "#~2.1.3",
     "awesomplete": "https://github.com/LeaVerou/awesomplete.git#^1.0.0",
-    "dropzone":"https://github.com/enyo/dropzone.git"
+    "papaParse":"https://github.com/mholt/PapaParse.git"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
