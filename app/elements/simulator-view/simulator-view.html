@@ -103,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log("Parsing complete:", results);
             var resultArray = results.data;
             var jsonArray = [];
-            var headers = ['rowId','linkDescription','webSection', 'cieprd', 'node','status','detail','time'];
+            var headers = ['rowId','linkDescription','webSection', 'node', 'detailDesc','status','detail','time'];
             var startTime = 0;
             var lastTime = 0;
             for(var i = 0; i < resultArray.length; i++){
@@ -116,15 +116,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var milliTime = ((((parseInt(brokenTime[0]) * 60) + parseInt(brokenTime[1])) * 60) + parseInt(brokenTime[2])) * 1000;
               if (startTime === 0){
                 startTime = milliTime;
+                lastTime = milliTime;
               }
               while(milliTime < lastTime){
                 milliTime += 24*60*60*1000;
               }
+              event.delay = milliTime - lastTime;
               lastTime = milliTime;
-              event.delay = milliTime - startTime;
               jsonArray.push(event);
             }
             poly.uploadedArray = jsonArray;
+            //bridgeit.io.documents.updateDocument({"collection":"simulations","id":"simulation1","document":{"array":jsonArray}});
           }});
         });
 

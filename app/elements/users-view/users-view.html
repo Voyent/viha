@@ -54,35 +54,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             --paper-toggle-button-unchecked-button-color: var(--paper-green-900);
             --paper-toggle-button-unchecked-ink-color: var(--paper-green-900);
         }
+
+        .userParent{
+          display:table-row;
+        }
+
+        .cell{
+          display:table-cell;
+        }
     </style>
     <h2 class="page-title">Users</h2>
     <template is="dom-if" if="{{visible}}">
-        <paper-material>
+        <paper-material id="topLevel" style="display:table">
             <template is="dom-repeat" items="{{users}}">
                 <paper-icon-item id="[[item._id]]" class="userParent">
-                    <iron-icon icon="account-circle" item-icon class="avatar"></iron-icon>
-                    <div class="item-body username">
+                    <iron-icon icon="account-circle" item-icon class="avatar cell"></iron-icon>
+                    <div class="item-body username cell">
                         <div class="flex">{{item._id}}</div>
                     </div>
-                    <div class="flex">
+                    <div class="flex cell">
                         <paper-dropdown-menu>
                             <iron-selector class="dropdown-content roleSelect" attr-for-selected="name"
                                            >
                               <div on-click="updateUser" name="manager">Manager</div>
-                              <div on-click="updateUser" name="driver">Driver</div>
-                              <div on-click="updateUser" name="adjuster">Adjuster</div>
-                                <div on-click="updateUser" name="inspector">Inspector</div>
+                              <div on-click="updateUser" name="team">Team</div>
                             </iron-selector>
                         </paper-dropdown-menu>
                     </div>
-                    <div class="flex routesDiv regionSelect">
-                      <template is="dom-repeat" items="{{regions}}">
-                        <paper-checkbox on-click="updateUser" name$="[[item]]">[[item]]</paper-checkbox><br/>
-                      </template>
+                    <div class="flex routesDiv regionSelect cell">
+                      <paper-radio-button on-click="onCallSelect" class="onCallButton"></paper-radio-button>
                     </div>
-                    <div class="flex">
-                      <paper-toggle-button on-click="updateUser" class="green toggleButton">On Duty</paper-toggle-button>
-                    </div>
+
                 </paper-icon-item>
             </template>
         </paper-material>
@@ -120,33 +122,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _visibleChanged: function () {
                 if (this.visible) {
-                    poly.regions = [];
-                    poly.loadRegions();
+                  if (poly.users.length === 0) {
+                    poly.loadUsers();
+                  }
+                  else {
+                    poly.updateToggles();
+                  }
                 }
             },
 
-            updateUser: function (e) {
+            updateUser: function (e,rawElement) {
                 setTimeout(function () {
-
-                    var username = e.srcElement.closest('.userParent').getAttribute('id');
-                    var regions = [];
-                    var regionEntries = poly.$$('#' + username).querySelector('.regionSelect').querySelectorAll('paper-checkbox');
-                    for (var i = 0; i < regionEntries.length; i++) {
-                        if(regionEntries[i].checked) {
-                          regions.push(regionEntries[i].getAttribute('name'));
-                        }
+                    var username;
+                    if(rawElement === true){
+                      username = e.closest('.userParent').getAttribute('id');
+                    }
+                    else{
+                      var node = e.srcElement.closest('.userParent');
+                      username = node.getAttribute('id');
                     }
                     var mailbox = {
                       info: {
-                        role: poly.$$('#' + username).querySelector('.roleSelect').querySelector('.iron-selected').getAttribute('name'),
-                        regions: regions
+                        role: poly.$$('#' + username).querySelector('.roleSelect').querySelector('.iron-selected').getAttribute('name')
                       },
                       state: {
-                        onDuty: poly.$$('#' + username).querySelector('.toggleButton').getAttribute('checked') !== null
+                        onCall: poly.$$('#' + username).querySelector('.onCallButton').getAttribute('checked') !== null
                       }
                     };
-
-                    bridgeit.io.mailbox.updateMailbox({id: username, mailbox: mailbox});
+                    console.log(mailbox);
+                    bridgeit.io.mailbox.updateMailbox({'id': username, 'mailbox': mailbox});
                 }, 10);
             },
 
@@ -160,47 +164,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             updateToggles: function () {
               function doToggleUpdate(user) {
                 setTimeout(function () {
-                  if (user.state.onDuty) {
-                    poly.$$('#' + user._id).querySelector('.toggleButton').setAttribute('checked', 'checked');
+                  if (user.state.onCall) {
+                    poly.$$('#' + user._id).querySelector('.onCallButton').setAttribute('checked', 'checked');
                   }
-                  user.info.regions.forEach(function (region) {
-                    var d = poly.$$('#' + user._id).querySelector('.regionSelect').querySelector('[name="' + region + '"]');
-                    if(d !== null) {
-                      d.setAttribute('checked', 'checked');
-                    }
-                  });
 
                   poly.$$('#' + user._id).querySelector('.roleSelect').setAttribute('selected',user.info.role);
                 },10);
               }
-
               for (var i=0; i<poly.users.length; i++) {
                 doToggleUpdate(poly.users[i]);
               }
             },
 
-            loadRegions: function () {
-                bridgeit.io.location.getAllRegions({}).then(function (locations) {
-                    locations.forEach(function (location) {
-                        try {
-                            var id = location.label ? location.label : location._id;
-                            poly.push('regions', id);
-                        }
-                        catch (e) {
-                            console.error(e);
-                        }
-                    });
-                    if (poly.users.length === 0) {
-                      poly.loadUsers();
-                    }
-                    else {
-                      poly.updateToggles();
-                    }
-                });
-            },
-
           driverTest: function(item){
             return item.info.role === 'driver';
+          },
+
+          onCallSelect:function(e){
+            console.log(e);
+            var buttons = Polymer.dom(poly.$$('#topLevel')).querySelectorAll(".onCallButton");
+            for (var i = 0; i < buttons.length; i++){
+              if( buttons[i] != e.srcElement.closest('.onCallButton')){
+                if(buttons[i].checked){
+                  buttons[i].checked = false;
+                  poly.updateUser(buttons[i],true);
+                }
+              }
+            }
+            poly.updateUser(e,false);
           }
         });
     })();

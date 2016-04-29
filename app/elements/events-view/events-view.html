@@ -78,14 +78,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <bridgeit-event-monitor-repeat id="eventMonitorRepeat">
         </bridgeit-event-monitor-repeat>
     </div>
-    
+
     <div id="eventMonitorSingle" style="display: none;">
         <bridgeit-event-monitor id="eventMonitor">
         </bridgeit-event-monitor>
     </div>
-    
+
     <br/><br/>
-    
+
     <div>
         <label>Query Results (Most Recent):
             <bridgeit-query-results id="queryResults" for="queryEditor" utc="false"></bridgeit-query-results>
@@ -106,7 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         }
       },
-      
+
       ready: function() {
         var eventMonitor = this.$$('#eventMonitor');
         var eventMonitorRepeat = this.$$('#eventMonitorRepeat');
@@ -114,45 +114,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var eventMonitorRepeatDiv = this.$$('#eventMonitorMulti');
         var queryEditor = this.$$('#queryEditor');
         var useMultipleEventMonitors = this.$$('#multiIn').checked;
-        
+
         // Listen for queryExecuted event
         queryEditor.addEventListener('queryExecuted', function(e) {
             // Change our divs to display the proper event monitor component
             eventMonitorDiv.style.display = useMultipleEventMonitors ? 'none' : 'inline';
             eventMonitorRepeatDiv.style.display = useMultipleEventMonitors ? 'inline' : 'none';
-            
+
             // Then fire the relevant method
             if (useMultipleEventMonitors) {
                 var newEM = eventMonitorRepeat.addEventMonitor(e.detail.results);
-                    
+
                 if (newEM) {
                     newEM.lastpoll = new Date();
                     newEM.lastpoll.setMilliseconds(newEM.lastpoll.getMilliseconds() - newEM.pollinterval);
-                    
+
                     newEM.poll(function() {
                         var query = queryEditor.lastquery;
-                        
+
                         // Manually append a time constraint to ignore results before our last poll
                         var timedQuery = { '$and':[ { 'time':{ '$gt': newEM.lastpoll.toISOString() } } ] };
                         timedQuery.$and.push(query);
-                        
+
                         // Set some basic params, everything else (auth token, etc.) will use the last known on the service
                         var params = {
                             collection: 'events',
                             options: {'limit':10,'sort':{'time':-1}},
                             query: timedQuery
                         };
-                        
+
                         function successCallback(results) {
                             // Append any results
                             // The validity of results will be checked inside the appendData function
                             newEM.appendData(results);
-                            
+
                             // Update our last poll date
                             newEM.lastpoll = new Date();
                             newEM.lastpoll.setMilliseconds(newEM.lastpoll.getMilliseconds() - newEM.pollinterval);
                         }
-                        
+
                         // Call our metrics service with our params
                         bridgeit.io.metrics.findEvents(params).then(successCallback).catch(function(error){
                             console.log('findEvents caught an error:', error);
@@ -168,11 +168,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         queryEditor.reloadEditor();
         queryEditor.fetchQueryList();
       },
-  
+
       updateLimit: function() {
         var limitField = this.$$('#limitIn');
         var newLimit = limitField.value;
-        
+
         if (!isNaN(newLimit)) {
             if (newLimit <= 0) {
                 newLimit = 100;
@@ -182,7 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 newLimit = 10000;
                 limitField.value = newLimit;
             }
-            
+
             this.$$('#queryEditor').options.limit = parseInt(newLimit);
         }
       }
