@@ -59,8 +59,13 @@ function waitForApp(){
       }
     }
 
+    function updateLastActiveTimestamp(ctx, next){
+      bridgeit.io.auth.updateLastActiveTimestamp();
+      next(); 
+    }
+
     // Routes
-    page('*', scrollToTop, closeDrawer,bridgeit.io.auth.updateLastActiveTimestamp, function(ctx, next) {
+    page('*', scrollToTop, closeDrawer, updateLastActiveTimestamp, function(ctx, next) {
       next();
     });
 
