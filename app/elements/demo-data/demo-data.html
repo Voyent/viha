@@ -12,28 +12,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="demo-data">
   <script>
-  (function() {
-    'use strict';
+    (function() {
+      'use strict';
 
-    Polymer({
-      is: 'demo-data',
+      Polymer({
+        is: 'demo-data',
 
-      properties: {
-        users: {type: Array, notify: true},
-        notificationsByUser: {type: Object, notify: true, value: function(){ return {}; }},
-        notifications: {type: Array, value: [], notify: true},
-        lastNotificationTimestamp: {type: Date, notify: true},
-        notificationCount: { type: Number, notify: true, reflectToAttribute: true, computed: '_computeNotificationCount(notifications.splices)'},
-        startTime:{type:String, notify:true, reflectToAttribute:true}
-      },
-
-      _computeNotificationCount: function(notifications){
-        var res = this.notifications ? this.notifications.length : 0;
-        console.log('_computeNotificationCount(' + notifications + ') = ' + res);
-        return res;
-      }
-
-    });
-  })();
+        properties: {
+          users: {type: Array, notify: true},
+          notificationsByUser: {type: Object, notify: true, value: function(){ return {}; }},
+          notifications: {type: Array, value: [], notify: true},
+          notificationCount: { type: Number, notify: true, reflectToAttribute: true, value:0}
+        }
+      });
+    })();
   </script>
 </dom-module>

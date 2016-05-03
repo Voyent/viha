@@ -165,10 +165,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               function doToggleUpdate(user) {
                 setTimeout(function () {
                   if (user.state.onCall) {
-                    poly.$$('#' + user._id).querySelector('.onCallButton').setAttribute('checked', 'checked');
+                    poly.$$('#' + user._id.split('.').join('\\.')).querySelector('.onCallButton').setAttribute('checked', 'checked');
                   }
 
-                  poly.$$('#' + user._id).querySelector('.roleSelect').setAttribute('selected',user.info.role);
+                  poly.$$('#' + user._id.split('.').join('\\.')).querySelector('.roleSelect').setAttribute('selected',user.info.role);
                 },10);
               }
               for (var i=0; i<poly.users.length; i++) {
