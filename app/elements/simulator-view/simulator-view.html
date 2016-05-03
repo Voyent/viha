@@ -168,10 +168,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       runArray: function(activeArray){
-        if(poly.sliderValue !== 1){
-          for(var i = 0; i < activeArray.length; i++){
+
+        var currentTime = new Date();
+        currentTime.setHours(poly.$$('#hourSelect').value);
+        currentTime.setMinutes(poly.$$('#minuteSelect').value);
+        currentTime.setSeconds(0);
+        for(var i = 0; i < activeArray.length; i++){
+          if(poly.sliderValue !== 1){
             activeArray[i].delay /= poly.sliderValue;
           }
+          currentTime = new Date(currentTime.getTime() + (activeArray[i].delay * poly.sliderValue));
+          activeArray[i].data.time = currentTime.toLocaleTimeString();
         }
         console.log(activeArray);
         bridgeit.io.event.createCustomEvents({'eventArray':activeArray});

@@ -183,14 +183,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           onCallSelect:function(e){
             console.log(e);
             var buttons = Polymer.dom(poly.$$('#topLevel')).querySelectorAll(".onCallButton");
-            for (var i = 0; i < buttons.length; i++){
+            /**for (var i = 0; i < buttons.length; i++){
               if( buttons[i] != e.srcElement.closest('.onCallButton')){
                 if(buttons[i].checked){
                   buttons[i].checked = false;
                   poly.updateUser(buttons[i],true);
                 }
               }
-            }
+            }*/
             poly.updateUser(e,false);
           }
         });
