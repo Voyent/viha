@@ -79,6 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <h2 class="page-title"><span>{{notificationCount}}</span>&nbsp;Notifications</h2>
     <paper-toggle-button checked="{{groupByUser}}">Group by User</paper-toggle-button>
+    <paper-button style="font-size: small;" on-click='resetNotifications'>Clear All</paper-button>
     <div style="position:relative">
     <template is="dom-if" if="{{!groupByUser}}">
       <template is="dom-if" if="{{!hasNotifications}}">
@@ -90,10 +91,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-repeat" items="[[notifications]]" sort="sortNotifications">
               <paper-icon-item>
                 <iron-icon icon="communication:message" item-icon></iron-icon>
-                <paper-item-body two-line>
-                  <div><span>{{item.usernameFromGroup}}</span> <span>{{item.message}}</span></div>
+                <paper-item-body three-line>
+                  <div><span>{{_getUsername(item.metadata.group)}}</span> <span>{{item.metadata.desc}}</span></div>
                   <div secondary>
-                    <span>{{item.time}}</span>
+                    <span>{{item.metadata.time}}</span>
+                  </div>
+                  <div>
+                    <paper-icon-button hidden$="{{hideNav}}" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
+                    <paper-icon-button icon="delete" on-click='removeNotification'></paper-icon-button>
                   </div>
                 </paper-item-body>
               </paper-icon-item>
@@ -114,10 +119,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-menu>
               <template is="dom-repeat" items="{{item.notifications}}" as="msg">
                 <paper-item>
-                  <paper-item-body two-line>
-                    <div>{{msg.message}}</div>
+                  <paper-item-body three-line>
+                    <div>{{msg.metadata.desc}}</div>
                     <div secondary>
-                      <span>{{msg.time}}</span>
+                      <span>{{msg.metadata.time}}</span>
+                    </div>
+                    <div>
+                      <paper-icon-button hidden$="{{hideNav}}" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
+                      <paper-icon-button icon="delete" on-click='removeNotification'></paper-icon-button>
                     </div>
                   </paper-item-body>
                 </paper-item>
@@ -138,8 +147,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'notifications-view',
 
       properties: {
-        notifications: { type: Array, notify: true},
-        groupByUser: { type: Boolean, notify: true, value: false},
+        notifications: { type: Array, notify: true, observer: '_notificationsUpdated' },
+        groupByUser: { type: Boolean, notify: true, value: false },
         users: {
           type: Array,
           notify: true
@@ -150,24 +159,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         _decoratedUserNotifications: {
           type: Array,
-          computed: '_computeDecoratedUserNotifications(users, notificationsByUser, lastNotificationTimestamp)'
+          computed: '_computeDecoratedUserNotifications(users, notificationsByUser)'
         },
-        lastNotificationTimestamp: {
-          type: Number
-        },
-        notificationCount: { type: Number, notify: true},
-        hasNotifications: { type: Boolean, notify: true, computed: '_computeHasNotifications(notifications.splices)'}
+        notificationCount: { type: Number, notify: true },
+        hasNotifications: { type: Boolean, notify: true },
+        hideNav: {type: Boolean, value: false}
       },
 
       sortNotifications: function(a,b) {
-        if (a.time > b.time) { return -1; }
-        else if (a.time < b.time) { return 1; }
+        if (a.metadata.time > b.metadata.time) { return -1; }
+        else if (a.metadata.time < b.metadata.time) { return 1; }
         return 0;
       },
 
-      _computeDecoratedUserNotifications: function(users, notificationsByUser, lastNotificationTimestamp){
+      _computeDecoratedUserNotifications: function(users, notificationsByUser){
         var list = [];
-        list.lastUpdated = lastNotificationTimestamp;
         var usernames = users.map(function(user){return user.username;});
         usernames.sort();
         usernames.forEach(function(username){
@@ -177,16 +183,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return list;
       },
 
-      _computeHasNotifications: function(notifications){
-        console.log('_computeHasNotifications(' + notifications + ')');
-        return this.notifications && this.notifications.length;
+      _getUsername: function(group) {
+        return group.split('/').pop();
       },
 
-      resetNotifications: function(){
-        this.notifications = [];
+      _notificationsUpdated: function() {
+        this.hasNotifications = !!bridgeit.notify.getNotificationCount();
+        //don't show redirect link for admins since notifications are only meant for regular users
+        this.hideNav = app.$.demoView.isAdmin;
+      },
+
+      resetNotifications: function() {
+        bridgeit.notify.clearNotificationQueue();
+      },
+
+      removeNotification: function(e) {
+        bridgeit.notify.removeNotification(e.model.item ? e.model.item : e.model.msg);
+      },
+
+      redirectToNotification: function(e) {
+        var notification = e.model.item ? e.model.item : e.model.msg;
+        bridgeit.notify.setCurrentNotification(notification);
+        page.redirect(notification.payload.route);
       }
-
-
     });
   })();
   </script>

@@ -41,6 +41,29 @@ function waitForApp(){
       page.base(app.baseUrl.replace(/\/$/, ''));
     }
 
+    // Close drawer after menu item is selected if drawerPanel is narrow
+    app.onDataRouteClick = function() {
+      var drawerPanel = document.getElementById('paperDrawerPanel');
+      if (drawerPanel.narrow) {
+        drawerPanel.closeDrawer();
+      }
+    };
+
+    // Scroll page to top and expand header
+    app.scrollPageToTop = function() {
+      var mainContainer = document.getElementById('mainContainer');
+      if (mainContainer && mainContainer.scrollTop) {
+        mainContainer.scrollTop = 0;
+      }
+    };
+
+    app.closeDrawer = function() {
+      var drawerPanel = document.getElementById('paperDrawerPanel');
+      if( drawerPanel ){
+        drawerPanel.closeDrawer();
+      }
+    };
+
     // Middleware
     function scrollToTop(ctx, next) {
       app.scrollPageToTop();
@@ -84,6 +107,11 @@ function waitForApp(){
 
     page('/notifications', function () {
       app.route = 'notifications';
+      app.scrollPageToTop();
+    });
+
+    page('/notifications-team', function () {
+      app.route = 'notifications-team';
       app.scrollPageToTop();
     });
 

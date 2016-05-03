@@ -11,6 +11,7 @@
     "es6-promise": "https://github.com/jakearchibald/es6-promise",
     "bridgeit-web-components": "#master",
     "bridgeit.xio.js": "https://github.com/bridgeit/bridgeit.xio.js.git#gh-pages",
+    "voyent.notify.js": "https://github.com/voyent/voyent.notify.js.git#master",
     "jquery": "#~2.1.3",
     "awesomplete": "https://github.com/LeaVerou/awesomplete.git#^1.0.0",
     "papaParse":"https://github.com/mholt/PapaParse.git"

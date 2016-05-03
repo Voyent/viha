@@ -488,8 +488,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <section data-route="notifications">
                 <notifications-view notifications="[[notifications]]" users="[[users]]"
-                  last-notification-timestamp="[[lastNotificationTimestamp]]"
-                  notifications-by-user="[[notificationsByUser]]" notification-count="[[notificationCount]]">
+                                    notifications-by-user="[[notificationsByUser]]" notification-count="[[notificationCount]]">
                 </notifications-view>
               </section>
 
@@ -509,8 +508,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <notifications-view notifications="[[notifications]]"></notifications-view>
               </section>
 
-              <section data-route="solicit">
-                <solicit-view notifications="[[notifications]]" visible="{{isEqual('solicit', route)}}"></solicit-view>
+              <section data-route="notifications-team">
+                <notifications-team-view visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
               </section>
 
             </template>
@@ -520,21 +519,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
       </paper-drawer-panel>
 
-      <paper-toast id="toast">
-        <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">{{message}}</span>
-      </paper-toast>
-
        <paper-toast id="errorToast" duration="20000">
         <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.errorToast.hide()">{{error}}</span>
       </paper-toast>
 
       <demo-data id="demoData"
-        notifications="{{notifications}}"
-        users="{{users}}"
-        scenarios="{{scenarios}}"
-        last-notification-timestamp="{{lastNotificationTimestamp}}"
-        notifications-by-user="{{notificationsByUser}}"
-        notification-count="{{notificationCount}}">
+                 notifications="{{notifications}}"
+                 users="{{users}}"
+                 scenarios="{{scenarios}}"
+                 notifications-by-user="{{notificationsByUser}}"
+                 notification-count="{{notificationCount}}">
       </demo-data>
     </template>
   </template>
