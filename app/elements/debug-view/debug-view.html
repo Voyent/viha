@@ -13,28 +13,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="debug-view">
   <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-      }
-
-    </style>
-    <h2 class="page-title">Debug</h2>
-
+    <h2 class="page-title">Backpack Logs</h2>
+    <template is="dom-if" if="{{visible}}">
+      <bridgeit-backpack-log id="backpackLog">
+      </bridgeit-backpack-log>
+    </template>
   </template>
   <script>
-  (function() {
-    'use strict';
+    (function() {
+      'use strict';
 
-    Polymer({
-      is: 'debug-view',
+      Polymer({
+        is: 'debug-view',
 
-      properties: {
-
-      }
-
-
-    });
-  })();
+        properties: {
+          visible: {
+            type: Boolean,
+            notify: true
+          }
+        }
+      });
+    })();
   </script>
 </dom-module>

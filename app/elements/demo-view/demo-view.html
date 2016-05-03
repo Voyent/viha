@@ -55,10 +55,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           background: #444444;
       }
       paper-toolbar#mainToolbar{
-        background-color: #5C6F38;
+        background-color: #2A415E;
       }
       #mainToolbar ::content #topBar{
-        color: #303A1D;
+        color: white;
       }
       #mainToolbar ::content #middleBar, #mainToolbar ::content #bottomBar{
         color: #FFF;
@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-shadow: 1px 1px 1px #000;
       }
       paper-drawer-panel ::content #drawer paper-toolbar ::content #topBar{
-        background-image: url(../../images/highwayCrop.jpg);
+        background-image: url(../../images/hospitalSidebar.jpg);
         background-size: 107%;
         text-shadow: 1px 1px 1px #000;
       }
@@ -151,7 +151,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .green-badge {
-        --paper-badge-background: var(--paper-red-300);
+        --paper-badge-background: #B25F72;
       }
 
       /* Breakpoints */
@@ -434,7 +434,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Application sub title -->
           <div class="bottom bottom-container center horizontal layout hidden-phone">
-            <div class="bottom-title paper-font-subhead"><span class="quote">&ldquo;</span>Delivering Your Sensitive Cargo<span class="quote">&rdquo;</span></div>
+            <div class="bottom-title paper-font-subhead"><span class="quote">&ldquo;</span>"Excellent health and care for everyone, everywhere, every time."<span class="quote">&rdquo;</span></div>
           </div>
 
         </paper-toolbar>
@@ -488,8 +488,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <section data-route="notifications">
                 <notifications-view notifications="[[notifications]]" users="[[users]]"
-                  last-notification-timestamp="[[lastNotificationTimestamp]]"
-                  notifications-by-user="[[notificationsByUser]]" notification-count="[[notificationCount]]">
+                                    notifications-by-user="[[notificationsByUser]]" notification-count="[[notificationCount]]">
                 </notifications-view>
               </section>
 
@@ -509,8 +508,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <notifications-view notifications="[[notifications]]"></notifications-view>
               </section>
 
-              <section data-route="solicit">
-                <solicit-view notifications="[[notifications]]" visible="{{isEqual('solicit', route)}}"></solicit-view>
+              <section data-route="notifications-team">
+                <notifications-team-view visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
               </section>
 
             </template>
@@ -520,21 +519,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
       </paper-drawer-panel>
 
-      <paper-toast id="toast">
-        <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">{{message}}</span>
-      </paper-toast>
-
        <paper-toast id="errorToast" duration="20000">
         <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.errorToast.hide()">{{error}}</span>
       </paper-toast>
 
       <demo-data id="demoData"
-        notifications="{{notifications}}"
-        users="{{users}}"
-        scenarios="{{scenarios}}"
-        last-notification-timestamp="{{lastNotificationTimestamp}}"
-        notifications-by-user="{{notificationsByUser}}"
-        notification-count="{{notificationCount}}">
+                 notifications="{{notifications}}"
+                 users="{{users}}"
+                 scenarios="{{scenarios}}"
+                 notifications-by-user="{{notificationsByUser}}"
+                 notification-count="{{notificationCount}}">
       </demo-data>
     </template>
   </template>

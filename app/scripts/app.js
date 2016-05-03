@@ -41,116 +41,70 @@
       }
     };
 
-    function tryParseJSON (jsonString){
-      try {
-        var o = JSON.parse(jsonString);
-        if (o && typeof o === 'object' && o !== null) {
-          return o;
-        }
-      }
-      catch (e) {
-        console.log('error parsing json', e);
-      }
-
-      return false;
-    }
-
     function setupNotificationListener(){
       bridgeit.xio.push.attach('http://'+app.host+'/pushio/demos/realms/' + bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername());
-      bridgeit.xio.push.addListener(function (payload) {
-        console.log('Notification: ', JSON.stringify(payload));
-
-        //normalize payload TODO!!
-        if(tryParseJSON(payload.message)){
-          payload.message = JSON.parse(payload.message);
-        }
-
-        if( payload.message && typeof payload.message === 'object' && payload.message.message){
-          if(payload.message.options){
-            payload.options = payload.message.options;
-          }
-          if(payload.message.event){
-            payload.event = payload.message.event;
-          }
-
-          payload.message = payload.message.message;
-        }
-
-        //ignore first batch of notifications for admin as they are irrelevant
-        payload.usernameFromGroup = payload.group.split('/').pop();
-        if( payload.message === 'joined' && payload.username !== payload.usernameFromGroup ){
-          console.log('suppressing notification display');
-          return;
-        }
-
-        var messageToDisplay;
-        if( payload.message === 'joined' ){
-          messageToDisplay = payload.usernameFromGroup + ' joined';
-        }
-        else{
-          messageToDisplay = payload.message;
-        }
-
-        var demoView = app.$.demoView;
-        demoView.$$('demo-data').push('notifications', payload);
-
-        demoView.message = messageToDisplay;
-        demoView.querySelector('#toast').show();
-
-        var demoData = demoView.$$('#demoData');
-        if( demoData ){
-          if( !demoData.notificationsByUser ){
-            demoData.notificationsByUser = {};
-          }
-          var userNotificationList = demoData.notificationsByUser[payload.usernameFromGroup];
-          if( !userNotificationList ){
-            userNotificationList = demoData.notificationsByUser[payload.usernameFromGroup] = [];
-          }
-          userNotificationList.push(payload);
-          demoData.lastNotificationTimestamp = payload.time;
-        }
-        else{
-          console.warn('could not locate demoData element to store user notification');
-        }
-        if(window.location.pathname.indexOf('client.html')!== -1 && payload.options){
-            var data = {};
-            data.message = payload.message;
-            data.options = payload.options;
-            data.event = payload.event;
-            var solicitView = document.querySelector('solicit-view');
-            solicitView.queue.push(data);
-            solicitView.messagesRemaining = solicitView.queue.length;
-            if(window.location.hash.indexOf('#!/solicit') !== -1 && document.querySelector('solicit-view').queue.length === 1) {
-              var solicit = document.getElementById('solicit');
-              solicit.setAttribute('data', JSON.stringify(data));
-              solicit.showSolicit();
-              setTimeout(function () {
-                var headerHeight = solicit.$$('.paper-header.bridgeit-solicit').clientHeight;
-                var buttonHeight = solicit.$$('.selectionButton').clientHeight;
-                var totalHeight = headerHeight + buttonHeight + 15;
-                var solicitDiv = document.getElementById('solicitDiv');
-                if (totalHeight > solicit.clientHeight) {
-                  solicitDiv.style.height = totalHeight + 'px';
-                }
-                /* jshint ignore:start*/
-                var buttons = document.getElementsByClassName('selectionButton');
-                for (var i = 0; i < buttons.length; i++) {
-                  buttons[i].onclick = function () {
-                    document.querySelector('solicit-view').updateResponse(this.textContent.trim());
-                  };
-                }
-                /* jshint ignore:end*/
-
-              }, 100);
-            }
-          else{
-              console.log('Adding to the queue');
-          }
-        }
-      });
-
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
+
+    function waitForBridgeItNotify() {
+      if (!window.bridgeit || !window.bridgeit.notify) {
+        setTimeout(waitForBridgeItNotify, 100);
+        return;
+      }
+
+      bridgeit.notify.config.clickListener = function(notification) {
+        //don't redirect link for admins since notifications are only meant for regular users
+        if (app.$.demoView.isAdmin) {
+          return;
+        }
+        bridgeit.notify.setCurrentNotification(notification);
+        var route = notification.payload.route;
+        if (route) {
+          var routeName = route.slice(1);
+          if (app.route === routeName) {
+            var routeRef = app.$.demoView.querySelector(routeName+'-view');
+            routeRef.loadNotification();
+          }
+          else {
+            page.redirect(route);
+          }
+        }
+      };
+    }
+    waitForBridgeItNotify();
+
+    document.addEventListener('queueUpdated',function(e) {
+      function waitForDemoData() {
+        if (!window.app || !window.app.$ || !window.app.$.demoView || !window.app.$.demoView.$$('demo-data')) {
+          setTimeout(waitForDemoData, 100);
+          return;
+        }
+        var demoData = app.$.demoView.$$('demo-data');
+        if (demoData) {
+          //sync the notification queue
+          demoData.set('notifications', e.detail.queue);
+          //sync the notification count
+          demoData.set('notificationCount', bridgeit.notify.getNotificationCount());
+          //convert the queue array to an user map object so we can group by users on the notification page
+          demoData.set('notificationsByUser', e.detail.queue.reduce(function (map, obj) {
+            var usernameFromGroup = obj.metadata.group.split('/').pop();
+            if (!map[usernameFromGroup]) {
+              map[usernameFromGroup] = [];
+            }
+            map[usernameFromGroup].push(obj);
+            return map;
+          }, {}));
+        }
+        else {
+          console.warn('could not locate demoData element to store user notification');
+        }
+      }
+      waitForDemoData();
+    });
+
+    /*document.addEventListener('notificationReceived',function(e) {
+     console.log('notificationReceived',e.detail.notification);
+     });*/
 
     // Listen for template bound event to know when bindings
     // have resolved and content has been stamped to the page
@@ -159,11 +113,6 @@
       if( bridgeit.io.auth.isLoggedIn()){
         setTimeout(function(){
           setupNotificationListener();
-          //initialize lastNotificationTimestamp so user list displays
-          var demoData = app.$.demoView.$$('#demoData');
-          if( demoData ){
-            demoData.lastNotificationTimestamp = new Date().getTime();
-          }
         }, 5000);
       }
     });
@@ -220,18 +169,6 @@
       // Scale middleContainer appName
       Polymer.Base.transform('scale(' + scaleMiddle + ') translateZ(0)', appName);
     });
-
-    // Scroll page to top and expand header
-    app.scrollPageToTop = function() {
-      document.getElementById('mainContainer').scrollTop = 0;
-    };
-
-    app.closeDrawer = function() {
-      var drawerPanel = document.getElementById('paperDrawerPanel');
-      if( drawerPanel ){
-        drawerPanel.closeDrawer();
-      }
-    };
   }
 
   var webComponentsSupported = (
