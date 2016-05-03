@@ -82,7 +82,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </paper-dropdown-menu>
                     </div>
                     <div class="flex routesDiv regionSelect cell">
-                      <paper-radio-button on-click="onCallSelect" class="onCallButton"></paper-radio-button>
+                      On Call:
+                      <paper-checkbox on-click="onCallSelect" class="onCallButton"></paper-checkbox>
                     </div>
 
                 </paper-icon-item>
@@ -143,10 +144,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                     var mailbox = {
                       info: {
-                        role: poly.$$('#' + username).querySelector('.roleSelect').querySelector('.iron-selected').getAttribute('name')
+                        role: poly.$$('#' + username.split('.').join('\\.')).querySelector('.roleSelect').querySelector('.iron-selected').getAttribute('name')
                       },
                       state: {
-                        onCall: poly.$$('#' + username).querySelector('.onCallButton').getAttribute('checked') !== null
+                        onCall: poly.$$('#' + username.split('.').join('\\.')).querySelector('.onCallButton').getAttribute('checked') !== null
                       }
                     };
                     console.log(mailbox);
@@ -181,8 +182,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
 
           onCallSelect:function(e){
-            console.log(e);
-            var buttons = Polymer.dom(poly.$$('#topLevel')).querySelectorAll(".onCallButton");
+            //console.log(e);
+            //var buttons = Polymer.dom(poly.$$('#topLevel')).querySelectorAll(".onCallButton");
             /**for (var i = 0; i < buttons.length; i++){
               if( buttons[i] != e.srcElement.closest('.onCallButton')){
                 if(buttons[i].checked){
