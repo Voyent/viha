@@ -60,7 +60,7 @@ function waitForApp(){
     }
 
     // Routes
-    page('*', scrollToTop, closeDrawer, function(ctx, next) {
+    page('*', scrollToTop, closeDrawer,bridgeit.io.auth.updateLastActiveTimestamp, function(ctx, next) {
       next();
     });
 
