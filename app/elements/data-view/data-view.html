@@ -1,0 +1,356 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="data-view">
+  <template>
+
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+
+      button {
+        font: inherit;
+        background-color:#F9F9F9;
+        border-color: transparent;
+        color:black;
+        outline: none;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        text-transform: uppercase;
+        cursor:pointer;
+      }
+
+      .tableRow{
+        display:table-row;
+      }
+
+      .tableCell{
+        display:table-cell;
+        border: 1px solid #ddd;
+      }
+
+      .headerCell{
+        text-align:center;
+      }
+
+      .eventTable{
+        font-size: 11px;
+        width: 100%;
+        margin-top: 10px;
+        color: #555;
+        display:table;
+        border: 1px solid #ddd;
+        border-spacing: 0;
+        border-collapse: collapse;
+      }
+
+      .eventTable > .tableRow > .tableCell {
+        background-color:#FFF;
+      }
+      .eventTable > .good > .tableCell {
+        background-color:lightgreen;
+      }
+      .eventTable > .debug > .tableCell {
+        background-color:#d9edf7;
+      }
+      .eventTable > .warn > .tableCell {
+        background-color:#fcf8e3;
+      }
+      .eventTable > .error > .tableCell {
+        background-color:#f2dede;
+      }
+    </style>
+    <h2 class="page-title">Events</h2>
+    <div class="eventTable" id="eventTable">
+      <div class="tableRow">
+        <div class="tableCell headerCell">Node</div>
+        <div class="tableCell headerCell">Status</div>
+        <div class="tableCell headerCell">Group</div>
+        <div class="tableCell headerCell">Time</div>
+        <div class="tableCell headerCell">Detail</div>
+      </div>
+      <div class="tableRow">
+        <div class="tableCell">
+          <paper-input id="nodeSelect" value="[[selectednode]]" on-change="nodeUp" label="Node Matching:"></paper-input>
+        </div>
+        <div class="tableCell" style="vertical-align:bottom;">
+          <paper-dropdown-menu style="padding-bottom:1px; width:100%;">
+            <iron-selector selected="[[selectedStatus]]" id="statusSelect" class="dropdown-content" attr-for-selected="value"
+            >
+              <div on-click="updateStatus" value="ALL">All</div>
+              <div on-click="updateStatus" value="OK">OK</div>
+              <div on-click="updateStatus" value="ER">Error</div>
+              <div on-click="updateStatus" value="CU">Catch Up</div>
+              <div on-click="updateStatus" value="SL">Stale</div>
+              <div on-click="updateStatus" value="OLD">Old</div>
+            </iron-selector>
+          </paper-dropdown-menu>
+        </div>
+        <div class="tableCell">
+          <paper-input id="groupSelect" value="[[selectedgroup]]" on-change="groupUp" label="Group matching:"></paper-input>
+        </div>
+        <div class="tableCell">
+          <paper-input id="timeSelect" value="[[selectedtime]]" on-change="timeUp" label="Times preceeding:"></paper-input>
+        </div>
+        <div class="tableCell">
+          <paper-input id="detailSelect" value="[[selecteddetail]]" on-change="detailUp" label="Detail Matching:"></paper-input>
+        </div>
+      </div>
+      <template is="dom-repeat" items="{{events}}">
+        <div class="tableRow polyRow" value$=[[item.data.status]] id$="[[item._id]]">
+          <div class="tableCell">[[item.data.node]]</div>
+          <div class="tableCell">[[item.data.status]]</div>
+          <div class="tableCell">[[item.data.linkDescription]]</div>
+          <div class="tableCell">[[item.data.time]]</div>
+          <div class="tableCell">[[item.data.detailDesc]]</div>
+        </div>
+      </template>
+    </div>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    var poly;
+    Polymer({
+      is: 'data-view',
+
+      properties: {
+        visible: {
+          type: Boolean,
+          notify: true,
+          observer: '_visibleChanged'
+        },
+        events:{
+          type:Array,
+          notify: true,
+          observer: '_eventsChanged'
+        },
+        selectednode:{
+          type:String,
+          notify:true,
+          observer:'_nodeChanged'
+        },
+        selecteddetail:{
+          type:String,
+          notify:true,
+          observer:'_detailChanged'
+        },
+        selectedgroup:{
+          type:String,
+          notify:true,
+          observer:'_groupChanged'
+        },
+        selectedStatus:{
+          type:String,
+          notify:true,
+          value:'ALL'
+        },
+        searchQuery:{
+          type:Object,
+          notify:true,
+          value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true }},options:{"sort":{"time":-1}}},
+          observer: '_queryChanged',
+          reflectToAttribute:true
+        },
+        selectedtime:{
+          type:String,
+          notify:true
+        }
+      },
+
+      ready: function() {
+        poly = this;
+
+
+        poly._queryChanged();
+      },
+
+      _visibleChanged: function(){
+
+      },
+
+      _eventsChanged: function(){
+        //Update colours
+        setTimeout(function(){
+          var allEvents = Polymer.dom(poly.$$('#eventTable')).querySelectorAll('.polyRow');
+          var okEvents = [];
+          var errEvents = [];
+          var warnEvents = [];
+
+          for(var i=0; i<allEvents.length;i++){
+            var status = allEvents[i].getAttribute('value');
+            if(status === 'OK'){
+              okEvents.push(allEvents[i]);
+            }
+            else if (status === 'ER'){
+              errEvents.push(allEvents[i]);
+            }
+            else{
+              warnEvents.push(allEvents[i]);
+            }
+          }
+          for(i=0;i<okEvents.length;i++){
+            okEvents[i].classList.add('good');
+            okEvents[i].classList.remove('error');
+            okEvents[i].classList.remove('warn');
+          }
+          for(i=0;i<errEvents.length;i++){
+            errEvents[i].classList.remove('good');
+            errEvents[i].classList.add('error');
+            errEvents[i].classList.remove('warn');
+          }
+          for(i=0;i<warnEvents.length;i++){
+            warnEvents[i].classList.remove('good');
+            warnEvents[i].classList.remove('error');
+            warnEvents[i].classList.add('warn');
+          }
+        },150);
+
+      },
+
+      nodeUp:function(e){
+        var element= e.srcElement;
+        var node = element.value;
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        if(node){
+          tempQuery.query['data.node'] = { $regex: node + '.*' };
+          poly.set('searchQuery',tempQuery);
+        }
+        else{
+          tempQuery.query['data.node'] = { $exists: true };
+          //poly.set('searchQuery',{});
+          poly.set('searchQuery',tempQuery);
+        }
+      },
+
+      detailUp:function(e){
+        var element= e.srcElement;
+        var detail = element.value;
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        if(detail){
+          tempQuery.query['data.detail'] = { $regex: '.*' + detail + '.*' };
+          poly.set('searchQuery',tempQuery);
+        }
+        else{
+          tempQuery.query['data.detail'] = { $exists: true };
+          //poly.set('searchQuery',{});
+          poly.set('searchQuery',tempQuery);
+        }
+      },
+
+      timeUp:function(e){
+        var element= e.srcElement;
+        var time = element.value;
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        if(time){
+          tempQuery.query['data.time'] = { $lt:time };
+          poly.set('searchQuery',tempQuery);
+        }
+        else{
+          tempQuery.query['data.time'] = { $exists: true };
+          //poly.set('searchQuery',{});
+          poly.set('searchQuery',tempQuery);
+        }
+      },
+
+      groupUp:function(e){
+        var element= e.srcElement;
+        var group = element.value;
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        if(group){
+          tempQuery.query['data.linkDescription'] = { $regex: '.*' + group + '.*' };
+          poly.set('searchQuery',tempQuery);
+        }
+        else{
+          tempQuery.query['data.linkDescription'] = { $exists: true };
+          //poly.set('searchQuery',{});
+          poly.set('searchQuery',tempQuery);
+        }
+      },
+
+
+      _queryChanged:function(){
+        if(this.searchQuery !== {}) {
+          bridgeit.io.event.findEvents(this.searchQuery).then(function (events) {
+            poly.events = events;
+            poly._eventsChanged();
+          });
+        }
+      },
+
+      updateStatus:function(e){
+        poly.selectedStatus = e.srcElement.getAttribute('value');
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        if(poly.selectedStatus !== 'ALL'){
+          tempQuery.query['data.status'] = poly.selectedStatus;
+          poly.set('searchQuery',tempQuery);
+        }
+        else{
+          tempQuery.query['data.status'] = { $exists: true };
+          //poly.set('searchQuery',{});
+          poly.set('searchQuery',tempQuery);
+        }
+      },
+
+      _nodeChanged:function(){
+        if(poly.selectednode){
+          var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+          if(poly.selectednode){
+            tempQuery.query['data.node'] = { $regex: poly.selectednode + '.*' };
+            poly.set('searchQuery',tempQuery);
+          }
+          else{
+            tempQuery.query['data.node'] = { $exists: true };
+            //poly.set('searchQuery',{});
+            poly.set('searchQuery',tempQuery);
+          }
+        }
+      },
+
+      _groupChanged:function(){
+        if(poly.selectedgroup){
+          var group = poly.selectedgroup;
+          var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+          if(group){
+            tempQuery.query['data.linkDescription'] = { $regex: '.*' + group + '.*' };
+            poly.set('searchQuery',tempQuery);
+          }
+          else{
+            tempQuery.query['data.linkDescription'] = { $exists: true };
+            //poly.set('searchQuery',{});
+            poly.set('searchQuery',tempQuery);
+          }
+        }
+      },
+
+      _detailChanged:function(){
+        if(poly.selecteddetail){
+          var detail = poly.selecteddetail;
+          var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+          if(detail){
+            tempQuery.query['data.detailDesc'] = { $regex: '.*' + detail + '.*' };
+            poly.set('searchQuery',tempQuery);
+          }
+          else{
+            tempQuery.query['data.detailDesc'] = { $exists: true };
+            //poly.set('searchQuery',{});
+            poly.set('searchQuery',tempQuery);
+          }
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

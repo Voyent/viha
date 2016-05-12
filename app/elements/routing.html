@@ -84,7 +84,7 @@ function waitForApp(){
 
     function updateLastActiveTimestamp(ctx, next){
       bridgeit.io.auth.updateLastActiveTimestamp();
-      next(); 
+      next();
     }
 
     // Routes
@@ -152,6 +152,11 @@ function waitForApp(){
 
     page('/debug', function () {
       app.route = 'debug';
+      app.scrollPageToTop();
+    });
+
+    page('/data', function () {
+      app.route = 'data';
       app.scrollPageToTop();
     });
 

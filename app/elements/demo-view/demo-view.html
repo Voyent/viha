@@ -377,8 +377,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>Events</span>
             </a>
 
-            <a data-route="logs" href="{{baseUrl}}logs">
+            <a data-route="data" href="{{baseUrl}}data">
               <span class="demo-step-badge">8</span>
+              <span>Data</span>
+            </a>
+
+            <a data-route="logs" href="{{baseUrl}}logs">
+              <span class="demo-step-badge">9</span>
               <span>Logs</span>
             </a>
 
@@ -393,6 +398,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <a data-route="notifications" href="{{baseUrl}}notifications">
               <span class="demo-step-badge">1</span>
               <span>Notifications</span>
+            </a>
+            <a data-route="data" href="{{baseUrl}}data">
+              <span class="demo-step-badge">2</span>
+              <span>Data</span>
             </a>
 
           </template>
@@ -478,6 +487,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </cargo-view>
               </section>
 
+              <section data-route="data">
+                <data-view selectednode="{{selectednode}}" visible="{{isEqual('data', route)}}">
+                </data-view>
+              </section>
+
               <section data-route="accel">
                 <accel-view visible="{{isEqual('accel', route)}}"></accel-view>
               </section>
@@ -509,7 +523,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </section>
 
               <section data-route="notifications-team">
-                <notifications-team-view visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
+                <notifications-team-view route="{{route}}" selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedtime="{{selectedtime}}" selectedgroup="{{selectedgroup}}" visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
+              </section>
+
+              <section data-route="data">
+                <data-view selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedgroup="{{selectedgroup}}" selectedtime="{{selectedtime}}" visible="{{isEqual('data', route)}}">
+                </data-view>
               </section>
 
             </template>
@@ -646,6 +665,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           notify: true,
           computed: '_computeDrawerWidth(vgaWidth)'
+        },
+        selectednode:{
+          type:String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        selecteddetail:{
+          type:String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        selectedgroup:{
+          type:String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        selectedtime:{
+          type:String,
+          notify:true,
+          reflectToAttribute:true
         }
       },
 

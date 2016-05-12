@@ -142,6 +142,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function () {
         poly = this;
 
+
         $(poly.$$("#the-file-input")).change(function() {
           poly.setFile();
           Papa.parse(this.files[0],{'complete':function(results){
@@ -190,26 +191,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       buttonPress : function(){
-        poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
-        if(poly.inputSource === 'Simulation') {
-          bridgeit.io.documents.getDocument({
-            "collection": 'simulations',
-            "id": poly.$$('#simulationSelect').value
-          }).then(function (sim) {
-            poly.runArray(sim.array);
-          });
-        }
-        else{
-          var activeArray = poly.uploadedArray;
-          if(activeArray == []){
-            console.log('No uploaded data found.');
-            return;
-          }
-          else{
-            poly.runArray(activeArray);
-          }
-        }
 
+        bridgeit.io.event.stopEvents();
+          poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
+          if (poly.inputSource === 'Simulation') {
+            bridgeit.io.documents.getDocument({
+              "collection": 'simulations',
+              "id": poly.$$('#simulationSelect').value
+            }).then(function (sim) {
+              poly.runArray(sim.array);
+            });
+          }
+          else {
+            var activeArray = poly.uploadedArray;
+            if (activeArray == []) {
+              console.log('No uploaded data found.');
+              return;
+            }
+            else {
+              poly.runArray(JSON.parse(JSON.stringify(activeArray)));
+            }
+          }
       },
 
       runArray: function(activeArray){
@@ -223,7 +225,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             activeArray[i].delay /= poly.sliderValue;
           }
           currentTime = new Date(currentTime.getTime() + (activeArray[i].delay * poly.sliderValue));
-          activeArray[i].data.time = currentTime.toLocaleTimeString();
+          activeArray[i].data.time = currentTime.toLocaleTimeString("en-GB") + '.000';
         }
         console.log(activeArray);
         bridgeit.io.event.createCustomEvents({'eventArray':activeArray});
@@ -278,8 +280,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               "data" : { "rowId" : "33203", "linkDescription" : "PROD_EXCELLERIS",
                 "webSection" : "CRITICAL", "node" : machine, "detailDesc" : "test_machine",
                 "status" : status,
-                "detail" : "Detail stuff", "time" : date.toTimeString() }};
-            console.log(event);
+                "detail" : "Detail stuff", "time" : date.toLocaleTimeString("en-GB") + '.000' }};
             bridgeit.io.event.createCustomEvent({"event":event})
           }
           setTimeout(function () {

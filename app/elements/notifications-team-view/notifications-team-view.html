@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width:100%;
       }
       .paper-header {
-        background-color:#5c6f38;
+        background-color:#2A415E;
         color:white;
         text-align:center;
         transition:height 0.2s ease 0s;
@@ -88,32 +88,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       No notification to display.
     </template>
 
-    <h2>Past Messages:</h2>
-    <div style="position:relative">
-      <template is="dom-if" if="{{!hasMessages}}">
-        <paper-material>No responses yet...</paper-material>
-      </template>
-      <template is="dom-if" if="{{hasMessages}}">
-        <paper-material>
-          <paper-menu class="notifications">
-            <template is="dom-repeat" items="{{messages}}" sort="sortNotifications">
-              <paper-icon-item>
-                <iron-icon icon="communication:message" item-icon></iron-icon>
-                <paper-item-body three-line>
-                  <div><span>{{item.metadata.desc}}</span></div>
-                  <div secondary>
-                    <span>{{item.metadata.time}}</span>
-                  </div>
-                  <div secondary>
-                    <span>Response given:</span> <span>{{item.response}}</span>
-                  </div>
-                </paper-item-body>
-              </paper-icon-item>
-            </template>
-          </paper-menu>
-        </paper-material>
-      </template>
-      <paper-button class="clear" on-click='resetMessages'>Clear</paper-button>
+    <h2>Search Past Data:</h2>
+    <div style="width:100%;display:flex;">
+      <paper-button on-click="byNode" raised>By Node</paper-button>
+      <paper-button on-click="byDetail" raised>By Detail</paper-button>
+      <paper-button on-click="byGroup" raised>By Group</paper-button>
+      <paper-button on-click="byTime" raised>By Time</paper-button>
+    </div>
     </div>
   </template>
 
@@ -141,6 +122,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           hasMessages: {
             type: Boolean,
             computed: '_computeHasMessages(messages.splices)'
+          },
+          selectednode:{
+            type:String,
+            notify:true,
+            reflectToAttribute:true
+          },
+          route: {
+            type: String,
+            notify: true,
+            reflectToAttribute:true
+          },
+          selecteddetail:{
+            type:String,
+            notify:true,
+            reflectToAttribute:true
+          },
+          selectedgroup:{
+            type:String,
+            notify:true,
+            reflectToAttribute:true
+          },
+          selectedtime:{
+            type:String,
+            notify:true,
+            reflectToAttribute:true
           }
         },
 
@@ -186,6 +192,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         resetMessages: function(){
           this.messages = [];
+        },
+
+        byNode:function(){
+          var postColon = this.message.split(':')[1];
+          var node = postColon.split('/')[1].trim();
+          this.set('selectednode',node);
+          this.set('route','data');
+        },
+        byLevel:function(){
+          var preColon = this.message.split(':')[0].trim();
+          this.set('selecteddetail',preColon);
+          this.set('route','data');
+
+        },
+        byDetail:function(){
+          var postColon = this.message.split(':')[1];
+          var detail = postColon.split('/')[2].trim();
+          this.set('selecteddetail',detail);
+          this.set('route','data');
+        },
+        byGroup:function(){
+          var postColon = this.message.split(':')[1];
+          var group = postColon.split('/')[0].trim();
+          this.set('selectedgroup',group);
+          this.set('route','data');
+        },
+        byTime:function(){
+          console.log('To expand');
         }
       });
     })();
