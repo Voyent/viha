@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <h2 class="page-title">Simulator</h2>
     <div style="display:flex; align-items:baseline; justify-content:space-between;">
-      <div style="height:100%;display:inline-block">
+      <div style="height:100%;display:inline-block; flex-grow:2;">
         <h4>Simulations:</h4>
         <paper-radio-button checked on-click="setSim" id="simRadio"></paper-radio-button>
         <paper-dropdown-menu on-click="setSim" id="simulationSelect">
@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-radio-button on-click="setFile" id="fileRadio"></paper-radio-button>
         <input id="the-file-input" type="file">
       </div>
-      <div style="height:100%;display:inline-block">
+      <div style="height:100%;display:inline-block; flex-grow:2;">
         <h4>Simulated Runspeed:</h4>
         <div style="display:flex; align-items:center">
           <div style="display:inline-block">
@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </div>
-      <div style="height:100%;display:inline-block">
+      <div style="height:100%;display:inline-block;">
         <h4>Simulated Start Time:</h4>
         <div>
           <select id="hourSelect">
@@ -63,8 +63,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </select>
         </div>
       </div>
-      <div style="height:100%;display:inline-block; margin-top:30px; align-self:center"><paper-button raised on-click="buttonPress">Run <span>[[inputSource]]</span></paper-button></div>
-
+      <div style="height:100%;display:inline-block; margin-top:30px; flex-shrink:2; align-self:center;text-align:center;">
+        <paper-button raised on-click="buttonPress">Run <span>[[inputSource]]</span></paper-button>
+        <br/>
+        <div style="text-align:center;">Currently running:</div>
+        <div style="text-align:center;"><span>[[currentEvent]]</span>/<span>[[totalEvents]]</span></div>
+        <br/>
+        <div style="text-align:center;"><span on-click="resumeArray">Resume</span>      <span on-click="pauseArray">Pause</span></div>
+      </div>
 
     </div>
     <br/><br/>
@@ -136,7 +142,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         liveStatus: {'type':String,value:"Start", notify:true},
         liveRunning: {'type':Boolean,value:false,notify:false},
         liveTime: {'type':String,notify:true},
-        liveSliderValue: {'type':Number,value:1,notify:true}
+        liveSliderValue: {'type':Number,value:1,notify:true},
+        currentEvent:{'type':Number,value:0,notify:true},
+        totalEvents:{'type':Number,value:0,notify:true},
+        simRunning: {'type':Boolean,value:false,notify:false}
       },
 
       ready: function () {
@@ -192,7 +201,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       buttonPress : function(){
 
-        bridgeit.io.event.stopEvents();
+          bridgeit.io.event.stopEvents();
           poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
           if (poly.inputSource === 'Simulation') {
             bridgeit.io.documents.getDocument({
@@ -217,6 +226,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       runArray: function(activeArray){
 
         var currentTime = new Date();
+        poly.currentEvent = bridgeit.io.event.getCurrentEvent();
+        poly.totalEvents = bridgeit.io.event.getEventsSize();
+        poly.updateInfo();
         currentTime.setHours(poly.$$('#hourSelect').value);
         currentTime.setMinutes(poly.$$('#minuteSelect').value);
         currentTime.setSeconds(0);
@@ -288,6 +300,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             poly.runCycle();
           }, cycleTime);
         }
+      },
+
+      updateInfo:function(){
+        setTimeout(function(){
+          poly.currentEvent = bridgeit.io.event.getCurrentEvent();
+          poly.totalEvents = bridgeit.io.event.getEventsSize();
+          if(poly.currentEvent !== poly.totalEvents){
+            poly.updateInfo();
+          }
+        },500)
+      },
+
+      resumeArray:function(){
+        console.log('Resume');
+        bridgeit.io.event.restartEvents({});
+      },
+
+      pauseArray:function(){
+        console.log('Pause');
+        bridgeit.io.event.stopEvents();
       }
 
     });
