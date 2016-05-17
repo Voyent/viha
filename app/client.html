@@ -91,6 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <bridgeit-auth-provider id="authProvider" account="demos" realm="viha"
       host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120"
       scope-to-path="/demos/viha/">
+      <!--scope-to-path="/demos/staging/viha/">-->
     </bridgeit-auth-provider>
     <bridgeit-login-paper-card  heading="Viha Demo Client Sign In" username="{{username}}" password="{{password}}" error="{{loginError}}"
       auth-provider="authProvider" submit-label="Login" cancel-label="Cancel" hidden="{{isLoggedIn}}"

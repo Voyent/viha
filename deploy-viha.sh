@@ -11,10 +11,17 @@ if [[ $ENVIRONMENT == *'staging'* ]] ; then
 	echo "For the staging demo to function ensure:"
 	echo "1. app/scripts/app.js has app.baseUrl changed from:"
 	echo "  app.baseUrl = '/demos/viha/';'"
+    echo "  app.baseUrl = '/demos/viha/client.html/';"
 	echo "to"
 	echo "  app.baseUrl = '/demos/staging/viha/';"
+	echo "  app.baseUrl = '/demos/staging/viha/client.html/'"
 	echo
 	echo "2. app/index.html has scope-to-path changed from:"
+	echo ' scope-to-path="/demos/viha/"'
+	echo "to"
+	echo ' scope-to-path="/demos/staging/viha/"'
+	echo
+	echo "3. app/client.html has scope-to-path changed from:"
 	echo ' scope-to-path="/demos/viha/"'
 	echo "to"
 	echo ' scope-to-path="/demos/staging/viha/"'
