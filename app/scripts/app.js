@@ -53,25 +53,34 @@
       }
 
       bridgeit.notify.config.clickListener = function(notification) {
-        //don't redirect link for admins since notifications are only meant for regular users
+        //don't redirect link for admins since notifications
+        //are only acted on by regular users
         if (app.$.demoView.isAdmin) {
           return;
         }
+        //set the current notification
         bridgeit.notify.setCurrentNotification(notification);
-        var route = notification.payload.route;
-        if (route) {
-          var routeName = route.slice(1);
-          if (app.route === routeName) {
-            var routeRef = app.$.demoView.querySelector(routeName+'-view');
-            routeRef.loadNotification();
-          }
-          else {
-            page.redirect(route);
-          }
+        var routeName = 'notifications-team';
+        if (app.route === routeName) {
+          var routeRef = app.$.demoView.querySelector(routeName+'-view');
+          routeRef.loadNotification();
+        }
+        else {
+          page.redirect('/'+routeName);
         }
       };
     }
     waitForBridgeItNotify();
+
+    document.addEventListener('afterCurrentNotificationSet',function() {
+      //when the current notification is set we want to
+      //load the notification if we are on the page
+      var routeName = 'notifications-team';
+      if (app.route === routeName) {
+        var routeRef = app.$.demoView.querySelector(routeName+'-view');
+        routeRef.loadNotification();
+      }
+    });
 
     document.addEventListener('queueUpdated',function(e) {
       function waitForDemoData() {
