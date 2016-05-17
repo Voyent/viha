@@ -17,6 +17,8 @@
     // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
     var app = document.querySelector('#app');
 
+    //save a reference to the actionable notifications route
+    app.notificationsRoute = 'notifications-team';
 
     //set default host;
     app.host = 'dev.bridgeit.io';
@@ -62,13 +64,12 @@
         }
         //set the current notification
         bridgeit.notify.setCurrentNotification(notification);
-        var routeName = 'notifications-team';
-        if (app.route === routeName) {
-          var routeRef = app.$.demoView.querySelector(routeName+'-view');
+        if (app.route === app.notificationsRoute) {
+          var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
           routeRef.loadNotification();
         }
         else {
-          page.redirect('/'+routeName);
+          page.redirect('/'+app.notificationsRoute);
         }
       };
     }
@@ -77,9 +78,8 @@
     document.addEventListener('afterCurrentNotificationSet',function() {
       //when the current notification is set we want to
       //load the notification if we are on the page
-      var routeName = 'notifications-team';
-      if (app.route === routeName) {
-        var routeRef = app.$.demoView.querySelector(routeName+'-view');
+      if (app.route === app.notificationsRoute) {
+        var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
         routeRef.loadNotification();
       }
     });

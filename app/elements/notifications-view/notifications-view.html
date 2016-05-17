@@ -203,7 +203,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       redirectToNotification: function(e) {
         var notification = e.model.item ? e.model.item : e.model.msg;
         bridgeit.notify.setCurrentNotification(notification);
-        page.redirect(notification.payload.route);
+        page.redirect('/'+app.notificationsRoute);
       }
     });
   })();
