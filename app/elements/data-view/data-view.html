@@ -167,6 +167,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         selectedtime:{
           type:String,
           notify:true
+        },
+        trimEvents:{
+          type:Boolean,
+          notify:false
+        },
+        minutesToTimeout:{
+          type:Number,
+          value:10
         }
       },
 
@@ -182,6 +190,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _eventsChanged: function(){
+        if(poly.trimEvents) {
+          //trim discontinuous time
+          var lastTime;
+          var initialTime;
+          var currentTime;
+          for (var j = 0; j < poly.events.length; j++) {
+            if (j === 0) {
+              lastTime = poly.events[j].data.time;
+              initialTime = new Date();
+              initialTime.setHours(lastTime.split(':')[0]);
+              initialTime.setMinutes(lastTime.split(':')[1]);
+              initialTime.setSeconds(lastTime.split(':')[2]);
+            }
+            if (lastTime < poly.events[j].data.time) {
+              poly.splice('events', j, poly.events.length);
+              break;
+            }
+            lastTime = poly.events[j].data.time;
+            currentTime = new Date();
+            currentTime.setHours(lastTime.split(':')[0]);
+            currentTime.setMinutes(lastTime.split(':')[1]);
+            currentTime.setSeconds(lastTime.split(':')[2]);
+            var diff = initialTime.getTime() - currentTime.getTime();
+
+            if (diff >= (poly.minutesToTimeout * 60 * 1000)) {
+              poly.splice('events', j, poly.events.length);
+              break;
+            }
+          }
+        }
         //Update colours
         setTimeout(function(){
           var allEvents = Polymer.dom(poly.$$('#eventTable')).querySelectorAll('.polyRow');
