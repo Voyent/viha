@@ -523,11 +523,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </section>
 
               <section data-route="notifications-team">
-                <notifications-team-view route="{{route}}" selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedtime="{{selectedtime}}" selectedgroup="{{selectedgroup}}" visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
+                <notifications-team-view route="{{route}}" selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedtime="{{selectedtime}}" selectedgroup="{{selectedgroup}}" time="{{notificationTime}}" visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
               </section>
 
               <section data-route="data">
-                <data-view selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedgroup="{{selectedgroup}}" selectedtime="{{selectedtime}}" visible="{{isEqual('data', route)}}">
+                <data-view selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedgroup="{{selectedgroup}}" time="{{notificationTime}}" selectedtime="{{selectedtime}}" visible="{{isEqual('data', route)}}">
                 </data-view>
               </section>
 
@@ -683,6 +683,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         selectedtime:{
           type:String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        notificationTime: {
+          type: String,
+          value:null,
           notify:true,
           reflectToAttribute:true
         }

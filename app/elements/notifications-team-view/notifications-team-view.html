@@ -89,11 +89,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <h2>Search Past Data:</h2>
-    <div style="width:100%;display:flex;">
-      <paper-button on-click="byNode" raised>By Node</paper-button>
-      <paper-button on-click="byDetail" raised>By Detail</paper-button>
-      <paper-button on-click="byGroup" raised>By Group</paper-button>
-      <paper-button on-click="byTime" raised>By Time</paper-button>
+    <div style="width:100%;display:flex; align-content:center">
+      <paper-button on-click="getData" raised>Historic Data</paper-button>
+
     </div>
     </div>
   </template>
@@ -118,6 +116,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           message: {
             type: String,
             value:null
+          },
+          time: {
+            type: String,
+            value:null,
+            notify:true,
+            reflectToAttribute:true
           },
           hasMessages: {
             type: Boolean,
@@ -153,6 +157,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         loadNotification: function() {
           if (bridgeit.notify.payload && bridgeit.notify.metadata) {
             this.message = bridgeit.notify.metadata.desc;
+            this.time = bridgeit.notify.metadata.time;
           }
         },
 
@@ -218,8 +223,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('selectedgroup',group);
           this.set('route','data');
         },
-        byTime:function(){
-          console.log('To expand');
+        getData:function(){
+          this.set('selectednode',"");
+          this.set('selecteddetail',"");
+          this.set('selectedgroup',"");
+          var postColon = this.message.split(':')[1];
+          var node = postColon.split('/')[1].trim();
+          this.set('selectednode',node);
+          var detail = postColon.split('/')[2].trim();
+          this.set('selecteddetail',detail);
+          var group = postColon.split('/')[0].trim();
+          this.set('selectedgroup',group);
+          var data = document.querySelector("data-view");
+          data.historyCheck();
+          this.set('route','data');
         }
       });
     })();

@@ -100,7 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-input id="groupSelect" value="[[selectedgroup]]" on-change="groupUp" label="Group matching:"></paper-input>
         </div>
         <div class="tableCell">
-          <paper-input id="timeSelect" value="[[selectedtime]]" on-change="timeUp" label="Times preceeding:"></paper-input>
+          <!--paper-input id="timeSelect" value="[[selectedtime]]" on-change="timeUp" label="Times preceeding:"></paper-input-->
         </div>
         <div class="tableCell">
           <paper-input id="detailSelect" value="[[selecteddetail]]" on-change="detailUp" label="Detail Matching:"></paper-input>
@@ -161,7 +161,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type:Object,
           notify:true,
           value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true }},options:{"sort":{"time":-1}}},
-          observer: '_queryChanged',
           reflectToAttribute:true
         },
         selectedtime:{
@@ -175,6 +174,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         minutesToTimeout:{
           type:Number,
           value:10
+        },
+        time: {
+          type: String,
+          value:null,
+          notify:true
         }
       },
 
@@ -218,6 +222,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               poly.splice('events', j, poly.events.length);
               break;
             }
+
+            poly.trimEvents = false;
+            //var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+            //tempQuery.query['time'] = {  $exists: true};
+            //this.set('searchQuery',tempQuery);
           }
         }
         //Update colours
@@ -271,6 +280,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
+        this._queryChanged();
       },
 
       detailUp:function(e){
@@ -286,6 +296,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
+        this._queryChanged();
       },
 
       timeUp:function(e){
@@ -301,6 +312,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
+        this._queryChanged();
       },
 
       groupUp:function(e){
@@ -316,6 +328,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
+        this._queryChanged();
       },
 
 
@@ -386,6 +399,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //poly.set('searchQuery',{});
             poly.set('searchQuery',tempQuery);
           }
+        }
+      },
+
+      historyCheck:function(){
+        if(this.time){
+          var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+          tempQuery.query['time'] = { $lte:this.time };
+          this.trimEvents = true;
+          this.set('searchQuery',tempQuery);
+          this._queryChanged();
         }
       }
     });
