@@ -36,6 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .tableCell{
         display:table-cell;
+        position:relative;
         border: 1px solid #ddd;
       }
 
@@ -69,19 +70,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .eventTable > .error > .tableCell {
         background-color:#f2dede;
       }
+      paper-autocomplete{
+        position:absolute;
+        bottom:0;
+        width:100%;
+      }
     </style>
     <h2 class="page-title">Events</h2>
-    <div class="eventTable" id="eventTable">
+    <div class="eventTable" id="eventTable" style="width:100%">
       <div class="tableRow">
-        <div class="tableCell headerCell">Node</div>
-        <div class="tableCell headerCell">Status</div>
-        <div class="tableCell headerCell">Group</div>
-        <div class="tableCell headerCell">Time</div>
-        <div class="tableCell headerCell">Detail</div>
+        <div class="tableCell headerCell" style="width:20%;">Node</div>
+        <div class="tableCell headerCell" style="width:20%;">Status</div>
+        <div class="tableCell headerCell" style="width:20%;">Group</div>
+        <div class="tableCell headerCell" style="width:20%;">Time</div>
+        <div class="tableCell headerCell" style="width:20%;">Detail</div>
       </div>
-      <div class="tableRow">
+      <div class="tableRow" style="position:relative">
         <div class="tableCell">
-          <paper-input id="nodeSelect" value="[[selectednode]]" on-change="nodeUp" label="Node Matching:"></paper-input>
+          <paper-autocomplete id="nodeSelect" value="[[selectednode]]" source="{{nodeArray}}" on-change="nodeUp" label="Node matching:"></paper-autocomplete>
+          <!--paper-input id="nodeSelect" value="[[selectednode]]" on-change="nodeUp" label="Node Matching:"></paper-input-->
         </div>
         <div class="tableCell" style="vertical-align:bottom;">
           <paper-dropdown-menu style="padding-bottom:1px; width:100%;">
@@ -97,13 +104,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-dropdown-menu>
         </div>
         <div class="tableCell">
-          <paper-input id="groupSelect" value="[[selectedgroup]]" on-change="groupUp" label="Group matching:"></paper-input>
+          <paper-autocomplete id="groupSelect" value="[[selectedgroup]]" source="{{groupArray}}" on-change="groupUp" label="Group matching:"></paper-autocomplete>
+          <!--paper-input id="groupSelect" value="[[selectedgroup]]" on-change="groupUp" label="Group matching:"></paper-input-->
         </div>
         <div class="tableCell">
           <!--paper-input id="timeSelect" value="[[selectedtime]]" on-change="timeUp" label="Times preceeding:"></paper-input-->
         </div>
         <div class="tableCell">
-          <paper-input id="detailSelect" value="[[selecteddetail]]" on-change="detailUp" label="Detail Matching:"></paper-input>
+          <paper-autocomplete id="detailSelect" value="[[selecteddetail]]" source="{{detailArray}}" on-change="detailUp" label="Detail matching:"></paper-autocomplete>
+          <!--paper-input-- id="detailSelect" value="[[selecteddetail]]" on-change="detailUp" label="Detail Matching:"></paper-input-->
         </div>
       </div>
       <template is="dom-repeat" items="{{events}}">
@@ -179,6 +188,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value:null,
           notify:true
+        },
+        groupArray:{
+          type:Array,
+          notify:true,
+          value:[]
+        },
+        nodeArray:{
+          type:Array,
+          notify:true,
+          value:[]
+        },
+        detailArray:{
+          type:Array,
+          notify:true,
+          value:[]
         }
       },
 
@@ -229,6 +253,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //this.set('searchQuery',tempQuery);
           }
         }
+
+        var tempGroup = [];
+        var tempDetail = [];
+        var tempNode = [];
+        for(var k=0;k<poly.events.length; k++){
+          if(tempGroup.indexOf(poly.events[k].data.linkDescription) === -1){
+            tempGroup.push(poly.events[k].data.linkDescription)
+          }
+          if(tempDetail.indexOf(poly.events[k].data.detailDesc) === -1){
+            tempDetail.push(poly.events[k].data.detailDesc)
+          }
+          if(tempNode.indexOf(poly.events[k].data.node) === -1){
+            tempNode.push(poly.events[k].data.node)
+          }
+        }
+        poly.set('groupArray',tempGroup);
+        poly.set('nodeArray',tempNode);
+        poly.set('detailArray',tempDetail);
         //Update colours
         setTimeout(function(){
           var allEvents = Polymer.dom(poly.$$('#eventTable')).querySelectorAll('.polyRow');
@@ -268,7 +310,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       nodeUp:function(e){
-        var element= e.srcElement;
+        var element= e.srcElement? e.srcElement : e.target;
         var node = element.value;
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(node){
@@ -284,15 +326,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       detailUp:function(e){
-        var element= e.srcElement;
-        var detail = element.value;
+        var element= e.srcElement? e.srcElement : e.target;
+        var detail = element.value.trim();
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(detail){
-          tempQuery.query['data.detail'] = { $regex: '.*' + detail + '.*' };
+          tempQuery.query['data.detailDesc'] = { $regex: '.*' + detail + '.*' };
           poly.set('searchQuery',tempQuery);
         }
         else{
-          tempQuery.query['data.detail'] = { $exists: true };
+          tempQuery.query['data.detailDesc'] = { $exists: true };
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
@@ -300,7 +342,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       timeUp:function(e){
-        var element= e.srcElement;
+        var element= e.srcElement? e.srcElement : e.target;
         var time = element.value;
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(time){
@@ -316,7 +358,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       groupUp:function(e){
-        var element= e.srcElement;
+        var element= e.srcElement? e.srcElement : e.target;
         var group = element.value;
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(group){
@@ -342,7 +384,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       updateStatus:function(e){
-        poly.selectedStatus = e.srcElement.getAttribute('value');
+        poly.selectedStatus = e.srcElement? e.srcElement.getAttribute('value') : e.target.getAttribute('value');
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(poly.selectedStatus !== 'ALL'){
           tempQuery.query['data.status'] = poly.selectedStatus;
@@ -353,6 +395,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
+        this._queryChanged();
       },
 
       _nodeChanged:function(){

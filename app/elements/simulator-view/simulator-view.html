@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <h2 class="page-title">Simulator</h2>
     <div style="display:flex; align-items:baseline; justify-content:space-between;">
-      <div style="height:100%;display:inline-block; flex-grow:2;">
+      <div style="height:100%;display:inline-block;flex-shrink:2;">
         <h4>Simulations:</h4>
         <paper-radio-button checked on-click="setSim" id="simRadio"></paper-radio-button>
         <paper-dropdown-menu on-click="setSim" id="simulationSelect">
@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-radio-button on-click="setFile" id="fileRadio"></paper-radio-button>
         <input id="the-file-input" type="file">
       </div>
-      <div style="height:100%;display:inline-block; flex-grow:2;">
+      <div style="height:100%;display:inline-block;flex-shrink:2;">
         <h4>Simulated Runspeed:</h4>
         <div style="display:flex; align-items:center">
           <div style="display:inline-block">
@@ -47,8 +47,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </div>
-      <div style="height:100%;display:inline-block;">
-        <h4>Simulated Start Time:</h4>
+      <div style="height:100%;display:inline-block;flex-shrink:2;">
+        <!--h4>Simulated Start Time:</h4>
         <div>
           <select id="hourSelect">
             <template is="dom-repeat" items="{{hourCounts}}">
@@ -61,6 +61,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <option value="[[item]]">[[item]]</option>
             </template>
           </select>
+        </div-->
+        <h4>Off Hours:</h4>
+        <div style="width:230px">
+          <paper-toggle-button on-click="toggleHours" checked="{{offHours}}">Currently: {{offHoursString}}</paper-toggle-button>
         </div>
       </div>
       <div style="height:100%;display:inline-block; margin-top:30px; flex-shrink:2; align-self:center;text-align:center;">
@@ -69,7 +73,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div style="text-align:center;">Currently running:</div>
         <div style="text-align:center;"><span>[[currentEvent]]</span>/<span>[[totalEvents]]</span></div>
         <br/>
-        <div style="text-align:center;"><span on-click="resumeArray">Resume</span>      <span on-click="pauseArray">Pause</span></div>
+        <div style="text-align:center;">
+          <!--span on-click="resumeArray">Resume</span>      <span on-click="pauseArray">Pause</span-->
+          <template is="dom-if" if="{{canRun}}">
+            <template is="dom-if" if="{{running}}">
+              <paper-icon-button on-click="pauseArray" src="../../images/pause.png"></paper-icon-button>
+            </template>
+            <template is="dom-if" if="{{!running}}">
+              <paper-icon-button on-click="resumeArray" src="../../images/play.png"></paper-icon-button>
+            </template>
+          </template>
+        </div>
       </div>
 
     </div>
@@ -145,12 +159,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         liveSliderValue: {'type':Number,value:1,notify:true},
         currentEvent:{'type':Number,value:0,notify:true},
         totalEvents:{'type':Number,value:0,notify:true},
-        simRunning: {'type':Boolean,value:false,notify:false}
+        running: {'type':Boolean,value:false},
+        canRun:{'type':Boolean,value:false},
+        offHours: {'type':Boolean,value:false,notify:true},
+        offHoursString: {'type':String,value:'Business Hours',notify:true}
+      },
+
+      created: function(){
+        poly = this;
       },
 
       ready: function () {
         poly = this;
 
+        bridgeit.io.documents.getDocument({id:'vihaHours'}).then(function(document){
+          setTimeout(function(){
+            poly.offHours = document.offHours;
+            if(this.offHours){
+              this.offHoursString = 'Off Hours';
+            }
+            else {
+              this.offHoursString = 'Business Hours';
+            }},200);
+
+        });
 
         $(poly.$$("#the-file-input")).change(function() {
           poly.setFile();
@@ -202,7 +234,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       buttonPress : function(){
 
           bridgeit.io.event.stopEvents();
-          poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
+          poly.running = true;
+          poly.canRun = true;
+          //poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
           if (poly.inputSource === 'Simulation') {
             bridgeit.io.documents.getDocument({
               "collection": 'simulations',
@@ -229,8 +263,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poly.currentEvent = bridgeit.io.event.getCurrentEvent();
         poly.totalEvents = bridgeit.io.event.getEventsSize();
         poly.updateInfo();
-        currentTime.setHours(poly.$$('#hourSelect').value);
-        currentTime.setMinutes(poly.$$('#minuteSelect').value);
+        //currentTime.setHours(poly.$$('#hourSelect').value);
+        //currentTime.setMinutes(poly.$$('#minuteSelect').value);
+        currentTime.setHours(0);
+        currentTime.setMinutes(0);
         currentTime.setSeconds(0);
         for(var i = 0; i < activeArray.length; i++){
           if(poly.sliderValue !== 1){
@@ -244,8 +280,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       setComputer: function(e){
-        var machineName = e.srcElement.getAttribute('id');
-        var status = $(e.srcElement).val();
+        var element = e.srcElement ? e.srcElement : e.target;
+        var machineName = element.getAttribute('id');
+        var status = $(element).val();
         var mailbox = {
           info:{
             'role':'machine'
@@ -309,18 +346,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if(poly.currentEvent !== poly.totalEvents){
             poly.updateInfo();
           }
+          else{
+            poly.canRun = false;
+          }
         },500)
       },
 
       resumeArray:function(){
         console.log('Resume');
+        poly.running = true;
         bridgeit.io.event.restartEvents({});
       },
 
       pauseArray:function(){
         console.log('Pause');
+        poly.running = false;
         bridgeit.io.event.stopEvents();
+      },
+
+      toggleHours:function(){
+        if(this.offHours){
+          this.offHoursString = 'Off Hours';
+          bridgeit.io.documents.updateDocument({id:'vihaHours',document:{'offHours':true}});
+        }
+        else {
+          this.offHoursString = 'Business Hours';
+          bridgeit.io.documents.updateDocument({id:'vihaHours',document:{'offHours':false}});
+        }
+
       }
+
 
     });
   })();
