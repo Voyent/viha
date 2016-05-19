@@ -585,13 +585,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           _this.querySelector('#errorToast').show();
         });
 
-        //temperature event handling
-        this.addEventListener('temp-changed',  function(e){
-          console.log('handling temp-changed: ' + JSON.stringify(e.detail));
-          _this.message = 'Temperture changed. Current: ' + e.detail.currentTemp + 'deg, Threshold: ' + e.detail.thresholdTemp + 'deg.';
-          _this.querySelector('#toast').show();
-        });
-
         //check cloud push status
         this.cloudPushRegistered = this.cloudPushSelected = bridgeit.xio.push.cloudPushRegistered();
 
@@ -718,7 +711,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log('registered for cloud push promise returned');
           _this.cloudPushRegistered = true;
           _this.message = 'Registered for Cloud Push notifications';
-          _this.$$('#toast').show();
+          if (_this.querySelector('#toast')) {
+            _this.querySelector('#toast').show();
+          }
         });
       },
 
@@ -743,7 +738,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var _this = this;
             setTimeout(function(){
               _this.message = 'Unregistered from Cloud Push notifications';
-              _this.$$('#toast').show();
+              if (_this.querySelector('#toast')) {
+                _this.querySelector('#toast').show();
+              }
             },200);
 
           }
