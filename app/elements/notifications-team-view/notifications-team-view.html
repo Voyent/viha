@@ -74,17 +74,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <h2>Current Message:</h2>
-    <template is="dom-if" if="{{message}}">
+    <template is="dom-if" if="{{hasCurrentNotification}}">
       <div class="wrapperDiv">
         <paper-header-panel>
-          <div class="paper-header">{{message}}</div>
+          <div class="paper-header" data-metadata-desc></div>
           <div class="content">
             <paper-button raised on-click="fireEvent" data-response="Acknowledge" data-result="ack">Acknowledge</paper-button>
           </div>
         </paper-header-panel>
       </div>
     </template>
-    <template is="dom-if" if="{{!message}}">
+    <template is="dom-if" if="{{!hasCurrentNotification}}">
       No notification to display.
     </template>
 
@@ -108,6 +108,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             notify: true,
             observer:"loadNotification"
+          },
+          hasCurrentNotification: {
+            type: Boolean,
+            value: false
           },
           messages: {
             type: Array,
@@ -156,8 +160,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         loadNotification: function() {
           if (bridgeit.notify.payload && bridgeit.notify.metadata) {
+            this.hasCurrentNotification = true;
+            bridgeit.notify.injectNotificationData();
+
             this.message = bridgeit.notify.metadata.desc;
             this.time = bridgeit.notify.metadata.time;
+          }
+          else {
+            this.hasCurrentNotification = false;
           }
         },
 
