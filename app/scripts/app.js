@@ -50,32 +50,26 @@
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
 
-    function waitForBridgeItNotify() {
-      if (!window.bridgeit || !window.bridgeit.notify) {
-        setTimeout(waitForBridgeItNotify, 100);
+
+    document.addEventListener('notificationClicked',function(e) {
+      var notification = e.detail.notification;
+      //don't redirect link for admins since notifications
+      //are only acted on by regular users
+      if (app.$.demoView.isAdmin) {
         return;
       }
+      //set the current notification
+      bridgeit.notify.setCurrentNotification(notification);
+      if (app.route === app.notificationsRoute) {
+        var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
+        routeRef.loadNotification();
+      }
+      else {
+        page.redirect('/'+app.notificationsRoute);
+      }
+    });
 
-      bridgeit.notify.config.clickListener = function(notification) {
-        //don't redirect link for admins since notifications
-        //are only acted on by regular users
-        if (app.$.demoView.isAdmin) {
-          return;
-        }
-        //set the current notification
-        bridgeit.notify.setCurrentNotification(notification);
-        if (app.route === app.notificationsRoute) {
-          var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
-          routeRef.loadNotification();
-        }
-        else {
-          page.redirect('/'+app.notificationsRoute);
-        }
-      };
-    }
-    waitForBridgeItNotify();
-
-    document.addEventListener('afterCurrentNotificationSet',function() {
+    document.addEventListener('currentNotificationSet',function() {
       //when the current notification is set we want to
       //load the notification if we are on the page
       if (app.route === app.notificationsRoute) {
@@ -84,7 +78,7 @@
       }
     });
 
-    document.addEventListener('queueUpdated',function(e) {
+    document.addEventListener('afterQueueUpdated',function(e) {
       function waitForDemoData() {
         if (!window.app || !window.app.$ || !window.app.$.demoView || !window.app.$.demoView.$$('demo-data')) {
           setTimeout(waitForDemoData, 100);
@@ -112,10 +106,6 @@
       }
       waitForDemoData();
     });
-
-    /*document.addEventListener('notificationReceived',function(e) {
-     console.log('notificationReceived',e.detail.notification);
-     });*/
 
     // Listen for template bound event to know when bindings
     // have resolved and content has been stamped to the page
