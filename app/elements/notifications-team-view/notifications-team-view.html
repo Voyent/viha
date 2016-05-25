@@ -199,30 +199,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.messages = [];
         },
 
-        byNode:function(){
-          var postColon = this.message.split(':')[1];
-          var node = postColon.split('/')[1].trim();
-          this.set('selectednode',node);
-          this.set('route','data');
-        },
-        byLevel:function(){
-          var preColon = this.message.split(':')[0].trim();
-          this.set('selecteddetail',preColon);
-          this.set('route','data');
-
-        },
-        byDetail:function(){
-          var postColon = this.message.split(':')[1];
-          var detail = postColon.split('/')[2].trim();
-          this.set('selecteddetail',detail);
-          this.set('route','data');
-        },
-        byGroup:function(){
-          var postColon = this.message.split(':')[1];
-          var group = postColon.split('/')[0].trim();
-          this.set('selectedgroup',group);
-          this.set('route','data');
-        },
         getData:function(){
           this.set('selectednode',"");
           this.set('selecteddetail',"");

@@ -77,6 +77,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <h2 class="page-title">Events</h2>
+    <template is="dom-if" if="[[trimEvents]]">
+      <paper-button raised on-click="returnNormal">Show all entries</paper-button>
+    </template>
     <div class="eventTable" id="eventTable" style="width:100%">
       <div class="tableRow">
         <div class="tableCell headerCell" style="width:20%;">Node</div>
@@ -87,11 +90,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
       <div class="tableRow" style="position:relative">
         <div class="tableCell">
-          <paper-autocomplete id="nodeSelect" value="[[selectednode]]" source="{{nodeArray}}" on-change="nodeUp" label="Node matching:"></paper-autocomplete>
+          <!--paper-autocomplete id="nodeSelect" value="[[selectednode]]" source="{{nodeArray}}" on-autocomplete.selected="nodeUp" label="Node matching:"></paper-autocomplete-->
+          <input class="awesomplete" value="[[selectednode]]" id="nodeSelect" list="nodelist" on-change="nodeUp" label="Node matching:"/>
+          <datalist id="nodelist">
+            <template is="dom-repeat" items="{{nodeArray}}">
+              <option>[[item]]</option>
+            </template>
+          </datalist>
           <!--paper-input id="nodeSelect" value="[[selectednode]]" on-change="nodeUp" label="Node Matching:"></paper-input-->
         </div>
         <div class="tableCell" style="vertical-align:bottom;">
-          <paper-dropdown-menu style="padding-bottom:1px; width:100%;">
+          <!--paper-dropdown-menu style="padding-bottom:1px; width:100%;">
             <iron-selector selected="[[selectedStatus]]" id="statusSelect" class="dropdown-content" attr-for-selected="value"
             >
               <div on-click="updateStatus" value="ALL">All</div>
@@ -101,17 +110,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div on-click="updateStatus" value="SL">Stale</div>
               <div on-click="updateStatus" value="OLD">Old</div>
             </iron-selector>
-          </paper-dropdown-menu>
+          </paper-dropdown-menu-->
+          <input class="awesomplete" id="statusSelect" list="statuslist" on-change="statusUp" label="Status matching:"/>
+          <datalist id="statuslist">
+            <template is="dom-repeat" items="{{statusArray}}">
+              <option value$="[[item.value]]">[[item.name]]</option>
+            </template>
+          </datalist>
         </div>
         <div class="tableCell">
-          <paper-autocomplete id="groupSelect" value="[[selectedgroup]]" source="{{groupArray}}" on-change="groupUp" label="Group matching:"></paper-autocomplete>
+          <input class="awesomplete" id="groupSelect" value="[[selectedgroup]]" list="grouplist" on-change="groupUp" label="Group matching:"/>
+          <datalist id="grouplist">
+            <template is="dom-repeat" items="{{groupArray}}">
+              <option>[[item]]</option>
+            </template>
+          </datalist>
+          <!--paper-autocomplete id="groupSelect" value="[[selectedgroup]]" source="{{groupArray}}" on-change="groupUp" label="Group matching:"></paper-autocomplete-->
           <!--paper-input id="groupSelect" value="[[selectedgroup]]" on-change="groupUp" label="Group matching:"></paper-input-->
         </div>
         <div class="tableCell">
           <!--paper-input id="timeSelect" value="[[selectedtime]]" on-change="timeUp" label="Times preceeding:"></paper-input-->
         </div>
         <div class="tableCell">
-          <paper-autocomplete id="detailSelect" value="[[selecteddetail]]" source="{{detailArray}}" on-change="detailUp" label="Detail matching:"></paper-autocomplete>
+          <input class="awesomplete" id="detailSelect" value='[[selecteddetail]]' list="detaillist" on-change="detailUp" label="Detail matching:"/>
+          <datalist id="detaillist">
+            <template is="dom-repeat" items="{{detailArray}}">
+              <option>[[item]]</option>
+            </template>
+          </datalist>
+          <!--paper-autocomplete id="detailSelect" value="[[selecteddetail]]" source="{{detailArray}}" on-change="detailUp" label="Detail matching:"></paper-autocomplete-->
           <!--paper-input-- id="detailSelect" value="[[selecteddetail]]" on-change="detailUp" label="Detail Matching:"></paper-input-->
         </div>
       </div>
@@ -203,14 +230,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type:Array,
           notify:true,
           value:[]
+        },
+        statusArray:{
+          type:Array,
+          notify:true,
+          value:[{'name':'OK','value':'OK'},{'name':'Error','value':'ER'},{'name':'Catch Up','value':'CU'},{'name':'Stale','value':'SL'},{'name':'OLD','value':'OLD'}]
         }
       },
 
       ready: function() {
         poly = this;
-
-
+        //var nodeSelect = poly.$$('#nodeSelect');
+        //var nodeComplete = new Awesomeplete(nodeSelect);
+        //nodeComplete.list=['test','one','two'];
         poly._queryChanged();
+        //this.listen(this.$.statusSelect, '', 'onTap');
       },
 
       _visibleChanged: function(){
@@ -247,7 +281,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               break;
             }
 
-            poly.trimEvents = false;
+            //poly.trimEvents = false;
             //var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
             //tempQuery.query['time'] = {  $exists: true};
             //this.set('searchQuery',tempQuery);
@@ -310,8 +344,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       nodeUp:function(e){
+
         var element= e.srcElement? e.srcElement : e.target;
+        //var element = poly.$$('#nodeSelect');
         var node = element.value;
+        //var node = element.getOption();
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(node){
           tempQuery.query['data.node'] = { $regex: node + '.*' };
@@ -319,6 +356,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else{
           tempQuery.query['data.node'] = { $exists: true };
+          //poly.set('searchQuery',{});
+          poly.set('searchQuery',tempQuery);
+        }
+        this._queryChanged();
+      },
+
+      statusUp:function(e){
+        var element= e.srcElement? e.srcElement : e.target;
+        //var element = poly.$$('#nodeSelect');
+        var status = element.value;
+        //var node = element.getOption();
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        if(status){
+          tempQuery.query['data.status'] = status;
+          poly.set('searchQuery',tempQuery);
+        }
+        else{
+          tempQuery.query['data.status'] = { $exists: true };
           //poly.set('searchQuery',{});
           poly.set('searchQuery',tempQuery);
         }
@@ -453,6 +508,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('searchQuery',tempQuery);
           this._queryChanged();
         }
+      },
+
+      returnNormal:function(){
+        poly.set('trimEvents',false);
+        poly._queryChanged();
       }
     });
   })();
