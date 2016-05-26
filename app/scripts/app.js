@@ -50,6 +50,9 @@
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
 
+    document.addEventListener('voyentNotifyInitialized',function(e) {
+      e.detail.config.icon = 'http://www.viha.ca/www//images/common/logo-viha.gif';
+    });
 
     document.addEventListener('notificationClicked',function(e) {
       var notification = e.detail.notification;
