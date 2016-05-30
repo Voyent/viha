@@ -90,9 +90,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="tableCell headerCell" style="width:20%;">Detail</div>
       </div>
       <div class="tableRow" style="position:relative">
-        <div class="tableCell">
+        <div class="tableCell" id="nodeSelectWrapper">
           <!--paper-autocomplete id="nodeSelect" value="[[selectednode]]" source="{{nodeArray}}" on-autocomplete.selected="nodeUp" label="Node matching:"></paper-autocomplete-->
-          <input class="awesomplete" value="[[selectednode]]" id="nodeSelect" list="nodelist" on-change="nodeUp" label="Node matching:"/>
+          <input class="awesomplete" value="[[selectednode]]" id="nodeSelect" list="nodelist" on-input="nodeUp" label="Node matching:"/>
           <datalist id="nodelist">
             <template is="dom-repeat" items="{{nodeArray}}">
               <option>[[item]]</option>
@@ -112,7 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div on-click="updateStatus" value="OLD">Old</div>
             </iron-selector>
           </paper-dropdown-menu-->
-          <input class="awesomplete" id="statusSelect" list="statuslist" on-change="statusUp" label="Status matching:"/>
+          <input class="awesomplete" id="statusSelect" list="statuslist" on-input="statusUp" label="Status matching:"/>
           <datalist id="statuslist">
             <template is="dom-repeat" items="{{statusArray}}">
               <option value$="[[item.value]]">[[item.name]]</option>
@@ -120,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </datalist>
         </div>
         <div class="tableCell">
-          <input class="awesomplete" id="groupSelect" value="[[selectedgroup]]" list="grouplist" on-change="groupUp" label="Group matching:"/>
+          <input class="awesomplete" id="groupSelect" value="[[selectedgroup]]" list="grouplist" on-input="groupUp" label="Group matching:"/>
           <datalist id="grouplist">
             <template is="dom-repeat" items="{{groupArray}}">
               <option>[[item]]</option>
@@ -133,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!--paper-input id="timeSelect" value="[[selectedtime]]" on-change="timeUp" label="Times preceeding:"></paper-input-->
         </div>
         <div class="tableCell">
-          <input class="awesomplete" id="detailSelect" value='[[selecteddetail]]' list="detaillist" on-change="detailUp" label="Detail matching:"/>
+          <input class="awesomplete" id="detailSelect" value='[[selecteddetail]]' list="detaillist" on-input="detailUp" label="Detail matching:"/>
           <datalist id="detaillist">
             <template is="dom-repeat" items="{{detailArray}}">
               <option>[[item]]</option>
