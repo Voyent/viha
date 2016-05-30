@@ -80,6 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="[[trimEvents]]">
       <paper-button raised on-click="returnNormal">Show all entries</paper-button>
     </template>
+    <paper-button raised on-click="returnQuery">Return to Default</paper-button>
     <div class="eventTable" id="eventTable" style="width:100%">
       <div class="tableRow">
         <div class="tableCell headerCell" style="width:20%;">Node</div>
@@ -142,13 +143,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!--paper-input-- id="detailSelect" value="[[selecteddetail]]" on-change="detailUp" label="Detail Matching:"></paper-input-->
         </div>
       </div>
-      <template is="dom-repeat" items="{{events}}">
-        <div class="tableRow polyRow" value$=[[item.data.status]] id$="[[item._id]]">
-          <div class="tableCell">[[item.data.node]]</div>
-          <div class="tableCell">[[item.data.status]]</div>
-          <div class="tableCell">[[item.data.linkDescription]]</div>
-          <div class="tableCell">[[item.data.time]]</div>
-          <div class="tableCell">[[item.data.detailDesc]]</div>
+      <template is="dom-if" if="[[hasEvents]]">
+        <template is="dom-repeat" items="{{events}}">
+          <div class="tableRow polyRow" value$=[[item.data.status]] id$="[[item._id]]">
+            <div class="tableCell">[[item.data.node]]</div>
+            <div class="tableCell">[[item.data.status]]</div>
+            <div class="tableCell">[[item.data.linkDescription]]</div>
+            <div class="tableCell">[[item.data.time]]</div>
+            <div class="tableCell">[[item.data.detailDesc]]</div>
+          </div>
+        </template>
+      </template>
+      <template is="dom-if" if="[[!hasEvents]]">
+        <div style="width:100%;">
+          No events with those fields. Please change one and try again.
         </div>
       </template>
     </div>
@@ -196,6 +204,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         searchQuery:{
           type:Object,
           notify:true,
+          value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true }},options:{"sort":{"time":-1}}}
+        },
+        startQuery:{
+          type:Object,
+          notify:true,
           value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true }},options:{"sort":{"time":-1}}},
           reflectToAttribute:true
         },
@@ -206,6 +219,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         trimEvents:{
           type:Boolean,
           notify:false
+        },
+        hasEvents:{
+          type:Boolean,
+          computed:'computeHasEvents(events)'
         },
         minutesToTimeout:{
           type:Number,
@@ -251,6 +268,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
 
+      computeHasEvents:function(events){
+        return events.length !== 0;
+      },
+
       _eventsChanged: function(){
         if(poly.trimEvents) {
           //trim discontinuous time
@@ -288,9 +309,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
 
-        var tempGroup = [];
-        var tempDetail = [];
-        var tempNode = [];
+        var tempGroup = JSON.parse(JSON.stringify(poly.groupArray));
+        var tempDetail = JSON.parse(JSON.stringify(poly.detailArray));
+        var tempNode = JSON.parse(JSON.stringify(poly.nodeArray));
+
         for(var k=0;k<poly.events.length; k++){
           if(tempGroup.indexOf(poly.events[k].data.linkDescription) === -1){
             tempGroup.push(poly.events[k].data.linkDescription)
@@ -512,6 +534,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       returnNormal:function(){
         poly.set('trimEvents',false);
+        poly._queryChanged();
+      },
+
+      returnQuery:function(){
+        var tempQuery = JSON.parse(JSON.stringify(poly.startQuery));
+        poly.$$('#nodeSelect').value = '';
+        poly.$$('#statusSelect').value = '';
+        poly.$$('#groupSelect').value = '';
+        poly.$$('#detailSelect').value = '';
+        poly.set('searchQuery',tempQuery);
         poly._queryChanged();
       }
     });
