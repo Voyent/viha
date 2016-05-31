@@ -82,16 +82,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-button style="font-size: small;" on-click='resetNotifications'>Clear All</paper-button>
     <div style="position:relative">
     <template is="dom-if" if="{{!groupByUser}}">
-      <template is="dom-if" if="{{!hasNotifications}}">
-        <paper-material>No notifications yet...</paper-material>
+      <template is="dom-if" if="{{!sliceHasNotifications}}">
+        <paper-material>No notifications to display</paper-material>
       </template>
-      <template is="dom-if" if="{{hasNotifications}}">
+      <template is="dom-if" if="{{sliceHasNotifications}}">
         <paper-material>
           <paper-menu class="notifications">
-            <template is="dom-repeat" items="[[notifications]]" sort="sortNotifications">
+            <template is="dom-repeat" items="[[queueSlice]]" sort="sortNotifications">
               <paper-icon-item>
                 <iron-icon icon="communication:message" item-icon></iron-icon>
-                <paper-item-body three-line>
+                <paper-item-body on-click="injectData" three-line>
                   <div><span>{{_getUsername(item.metadata.group)}}</span> <span>{{item.metadata.desc}}</span></div>
                   <div secondary>
                     <span>{{item.metadata.time}}</span>
@@ -107,6 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-material>
       </template>
     </template>
+      <!--TODO: Fix group by user with smaller pages if Steve likes.-->
     <template is="dom-if" if="{{groupByUser}}">
       <template is="dom-repeat" items="{{_decoratedUserNotifications}}">
         <paper-card>
@@ -136,6 +137,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-card>
       </template>
     </template>
+      <br/>
+      <paper-button raised disabled="{{blockPast}}" on-click="lastQueue">Last</paper-button>
+      <paper-button raised disabled="{{!sliceHasNotifications}}" on-click="nextQueue">Next</paper-button>
     </div>
   </template>
   <script>
@@ -146,6 +150,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'notifications-view',
 
       properties: {
+        queueStart: {type:Number,notify:true,value:0},
+        queueSlice: {type:Array, notify:true, computed:'sliced(notifications,queueStart)'},
+        sliceHasNotifications: {type:Boolean, computed:'getSliceNotifications(queueSlice)'},
+        blockPast:{type:Boolean,computed:'checkIfFirst(queueStart)'},
         notifications: { type: Array, notify: true, observer: '_notificationsUpdated' },
         groupByUser: { type: Boolean, notify: true, value: false },
         users: {
@@ -162,7 +170,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         notificationCount: { type: Number, notify: true },
         hasNotifications: { type: Boolean, notify: true },
-        hideNav: {type: Boolean, value: false}
+        hideNav: {type: Boolean, value: false},
+        listLength:{type:Number,value:3}
+      },
+
+      sliced:function(notifications,start){
+        return notifications.slice(start,start+this.listLength);
+      },
+
+      getSliceNotifications:function(slice){
+        return slice.length !== 0;
+      },
+
+      checkIfFirst:function(queueStart){
+        return queueStart === 0;
+      },
+
+      nextQueue:function(){
+        this.queueStart += this.listLength;
+      },
+
+      lastQueue:function(){
+        this.queueStart -= this.listLength;
       },
 
       sortNotifications: function(a,b) {
@@ -204,6 +233,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var notification = e.model.item ? e.model.item : e.model.msg;
         bridgeit.notify.setCurrentNotification(notification);
         page.redirect('/'+app.notificationsRoute);
+      },
+
+      injectData:function(e){
+        var notification = e.model.item ? e.model.item : e.model.msg;
+        bridgeit.notify.setCurrentNotification(notification);
+
       }
     });
   })();

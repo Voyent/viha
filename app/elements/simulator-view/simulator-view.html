@@ -21,7 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <h2 class="page-title">Simulator</h2>
-    <div style="display:flex; align-items:baseline; justify-content:space-between;">
+    <div style="display:flex; align-items:baseline; justify-content:space-around;">
       <div style="height:100%;display:inline-block;flex-shrink:2;">
         <h4>Simulations:</h4>
         <paper-radio-button checked on-click="setSim" id="simRadio"></paper-radio-button>
@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-radio-button on-click="setFile" id="fileRadio"></paper-radio-button>
         <input id="the-file-input" type="file">
       </div>
-      <div style="height:100%;display:inline-block;flex-shrink:2;">
+      <!--div style="height:100%;display:inline-block;flex-shrink:2;">
         <h4>Simulated Runspeed:</h4>
         <div style="display:flex; align-items:center">
           <div style="display:inline-block">
@@ -46,7 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <span style="display:inline-block;">[[sliderValue]]</span>X speed
           </div>
         </div>
-      </div>
+      </div-->
       <div style="height:100%;display:inline-block;flex-shrink:2;">
         <!--h4>Simulated Start Time:</h4>
         <div>
@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </div>
       <div style="height:100%;display:inline-block; margin-top:30px; flex-shrink:2; align-self:center;text-align:center;">
-        <paper-button raised on-click="buttonPress">Run <span>[[inputSource]]</span></paper-button>
+        <paper-button raised on-click="buttonPress">Run  <span>[[inputSource]]</span></paper-button>
         <br/>
         <div style="text-align:center;">Currently running:</div>
         <div style="text-align:center;"><span>[[currentEvent]]</span>/<span>[[totalEvents]]</span></div>
@@ -265,9 +265,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poly.updateInfo();
         //currentTime.setHours(poly.$$('#hourSelect').value);
         //currentTime.setMinutes(poly.$$('#minuteSelect').value);
+        /** Below is part of accelerated time. Above is false start time
         currentTime.setHours(0);
         currentTime.setMinutes(0);
         currentTime.setSeconds(0);
+         */
         for(var i = 0; i < activeArray.length; i++){
           if(poly.sliderValue !== 1){
             activeArray[i].delay /= poly.sliderValue;

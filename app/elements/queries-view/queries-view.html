@@ -74,6 +74,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-dropdown-menu.letters {
         width: 90px;
       }
+      paper-tabs {
+        color: #333;
+      }
       .large {
         width:385px;
       }
@@ -91,46 +94,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .floatLeft {
         float:left;
       }
-
+      .tab-content {
+        border: 1px solid #777;
+        padding: 10px;
+        overflow-y:scroll;
+        color: #333 !important;
+        background-color: transparent !important;
+      }
     </style>
-    <h2 class="page-title">Queries</h2>
-      <bridgeit-query-list for="queries"></bridgeit-query-list>
-      <div class="buttons">
-        <button onclick="document.getElementById('queries').resetEditor();">New/Reset</button>
-        <button onclick="document.getElementById('queries').runQuery();">Run</button>
-        <button onclick="document.getElementById('queries').saveQueryWithPrompt();">Save</button>
-        <button onclick="document.getElementById('queries').cloneQueryWithPrompt();">Clone</button>
-        <button onclick="document.getElementById('queries').deleteQuery();">Delete</button>
-      </div>
-      <div class="query-options">
-        <paper-dropdown-menu label="Service:" class$="{{getClass(service)}}" style="padding-right:5px;">
-          <iron-selector class="dropdown-content" attr-for-selected="name" selected={{service}}>
-            <div name="location">Location</div>
-            <div name="mailbox">Mailbox</div>
-            <div name="documents">Document</div>
-            <div name="metrics">Events</div>
-            <div name="authadmin">AuthAdmin</div>
-          </iron-selector>
-        </paper-dropdown-menu>
-        <div class="small floatLeft">
-          <template is="dom-if" if="{{isEqual('documents', service)}}">
-            <paper-input label="Collection:" value="{{collection}}"></paper-input>
-          </template>
-          <template is="dom-if" if="{{isEqual('location', service)}}">
-            <paper-dropdown-menu label="Collection:">
-              <iron-selector class="dropdown-content" attr-for-selected="name" selected={{collection}}>
-                <div name="regions">Regions</div>
-                <div name="poi">POI</div>
-                <div name="locations">Locations</div>
-              </iron-selector>
-            </paper-dropdown-menu>
-          </template>
+
+    <br/>
+    <paper-tabs selected="{{selectedTab}}" no-bar>
+      <paper-tab>Queries</paper-tab>
+      <paper-tab>Query Chain Editor</paper-tab>
+    </paper-tabs>
+    <iron-pages selected="{{selectedTab}}">
+      <div class="tab-content">
+        <h2 class="page-title">Queries</h2>
+        <bridgeit-query-list for="queries"></bridgeit-query-list>
+        <div class="buttons">
+          <button onclick="document.getElementById('queries').resetEditor();">New/Reset</button>
+          <button onclick="document.getElementById('queries').runQuery();">Run</button>
+          <button onclick="document.getElementById('queries').saveQueryWithPrompt();">Save</button>
+          <button onclick="document.getElementById('queries').cloneQueryWithPrompt();">Clone</button>
+          <button onclick="document.getElementById('queries').deleteQuery();">Delete</button>
         </div>
-        <div style="clear:both;"></div>
+        <div class="query-options">
+          <paper-dropdown-menu label="Service:" class$="{{getClass(service)}}" style="padding-right:5px;">
+            <iron-selector class="dropdown-content" attr-for-selected="name" selected={{service}}>
+              <div name="location">Location</div>
+              <div name="mailbox">Mailbox</div>
+              <div name="documents">Document</div>
+              <div name="metrics">Events</div>
+              <div name="authadmin">AuthAdmin</div>
+            </iron-selector>
+          </paper-dropdown-menu>
+          <div class="small floatLeft">
+            <template is="dom-if" if="{{isEqual('documents', service)}}">
+              <paper-input label="Collection:" value="{{collection}}"></paper-input>
+            </template>
+            <template is="dom-if" if="{{isEqual('location', service)}}">
+              <paper-dropdown-menu label="Collection:">
+                <iron-selector class="dropdown-content" attr-for-selected="name" selected={{collection}}>
+                  <div name="regions">Regions</div>
+                  <div name="poi">POI</div>
+                  <div name="locations">Locations</div>
+                </iron-selector>
+              </paper-dropdown-menu>
+            </template>
+          </div>
+          <div style="clear:both;"></div>
+        </div>
+        <div class="currentquery">[[query]]</div>
+        <bridgeit-query-editor id="queries" service="{{service}}" collection="{{collection}}" currentquery="{{currentquery}}"></bridgeit-query-editor>
+        <bridgeit-query-results for="queries"></bridgeit-query-results>
       </div>
-      <div class="currentquery">[[query]]</div>
-      <bridgeit-query-editor id="queries" service="{{service}}" collection="{{collection}}" currentquery="{{currentquery}}"></bridgeit-query-editor>
-      <bridgeit-query-results for="queries"></bridgeit-query-results>
+
+      <div class="tab-content">
+        <h2 class="page-title">Query Chain Editor</h2>
+        <bridgeit-query-chain-editor id="queryChain"></bridgeit-query-chain-editor>
+      </div>
+    </iron-pages>
   </template>
   <script>
     (function() {
@@ -157,6 +181,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           currentquery: {
             type: Object,
             observer: 'currentqueryChanged'
+          },
+          selectedTab: {
+            type: Number,
+            value: 0
           }
         },
 

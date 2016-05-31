@@ -130,6 +130,11 @@ function waitForApp(){
       setFocus(app.route);
     });
 
+    page('/queries', function () {
+      app.route = 'queries';
+      setFocus(app.route);
+    });
+
     page('/actions', function () {
       app.route = 'actions';
       setFocus(app.route);

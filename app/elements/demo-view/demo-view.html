@@ -377,13 +377,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>Events</span>
             </a>
 
-            <a data-route="data" href="{{baseUrl}}data">
+            <a data-route="queries" href="{{baseUrl}}queries">
               <span class="demo-step-badge">8</span>
+              <span>Queries</span>
+            </a>
+
+            <a data-route="data" href="{{baseUrl}}data">
+              <span class="demo-step-badge">9</span>
               <span>Data</span>
             </a>
 
             <a data-route="logs" href="{{baseUrl}}logs">
-              <span class="demo-step-badge">9</span>
+              <span class="demo-step-badge">10</span>
               <span>Logs</span>
             </a>
 
@@ -472,6 +477,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <section data-route="triggers">
                 <triggers-view visible="{{isEqual('triggers', route)}}">></triggers-view>
+              </section>
+
+              <section data-route="queries">
+                <queries-view visible="{{isEqual('queries', route)}}">></queries-view>
               </section>
 
               <section data-route="actions">

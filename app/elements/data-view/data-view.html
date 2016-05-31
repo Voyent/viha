@@ -391,7 +391,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         //var node = element.getOption();
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
         if(status){
-          tempQuery.query['data.status'] = status;
+          tempQuery.query['data.status'] = { $regex: status + '.*' };
           poly.set('searchQuery',tempQuery);
         }
         else{
