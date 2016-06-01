@@ -104,7 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-button disabled="[[!hasNext]]" on-click="goForward" raised>Next Notification</paper-button>
       </div>
     </div>
-    <!--template is="dom-if" if="{{hasCurrentNotification}}">
+    <!--template is="dom-if" if="{{notificationSelected}}">
       <div class="wrapperDiv">
         <!--paper-header-panel>
           <div class="paper-header" data-metadata-desc></div>
@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-header-panel>
       </div>
     </template>
-    <!--template is="dom-if" if="{{!hasCurrentNotification}}">
+    <!--template is="dom-if" if="{{!notificationSelected}}">
       No notification to display.
     </template>
 
@@ -139,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify: true,
             observer:"loadNotification"
           },
-          hasCurrentNotification: {
+          notificationSelected: {
             type: Boolean,
             value: false
           },
@@ -198,8 +198,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         loadNotification: function() {
           if (bridgeit.notify.payload && bridgeit.notify.metadata) {
-            this.hasCurrentNotification = true;
+            this.notificationSelected = true;
             bridgeit.notify.clearInjectedNotificationData();
+            this.notificationSelected = true;
             bridgeit.notify.injectNotificationData();
             this.message = bridgeit.notify.metadata.desc;
             this.time = bridgeit.notify.metadata.time;
@@ -209,7 +210,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //console.log(bridgeit.notify);
           }
           else {
-            this.hasCurrentNotification = false;
+            this.notificationSelected = false;
           }
         },
 
@@ -259,10 +260,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           bridgeit.io.metrics.createCustomEvent({"event":event}).then(function() {
             //remove notification from queue
             _this.message = '';
-            var notification = bridgeit.notify.getCurrentNotification();
+            var notification = bridgeit.notify.getSelectedNotification();
             notification.response = e.target.getAttribute('data-response');
             _this.push('messages',notification);
-            bridgeit.notify.removeCurrentNotification();
+            bridgeit.notify.removeSelectedNotification();
           }).catch(function(error) {
             console.log('Error in createCustomEvent:',error);
           });*/
