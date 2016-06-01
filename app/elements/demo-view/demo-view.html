@@ -429,7 +429,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span class="hidden-phone">Cloud Push</span>
             </paper-button>
           </template>
-          <paper-button tabindex="0" href="{{baseUrl}}notifications">
+          <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}notifications">
             <iron-icon icon="mail"></iron-icon>
             <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
           </paper-button>
@@ -763,6 +763,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else{
           return '256px';
         }
+      },
+
+      _goToNotifications: function(){
+        page.redirect('/notifications');
       }
     });
   })();

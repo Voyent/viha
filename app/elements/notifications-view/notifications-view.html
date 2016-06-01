@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-if" if="{{sliceHasNotifications}}">
         <paper-material>
           <paper-menu class="notifications">
-            <template is="dom-repeat" items="[[queueSlice]]" sort="sortNotifications">
+            <template is="dom-repeat" items="{{queueSlice}}" sort="sortNotifications" observe="queueSlice">
               <paper-icon-item>
                 <iron-icon icon="communication:message" item-icon></iron-icon>
                 <paper-item-body on-click="injectData" three-line>
@@ -175,6 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       sliced:function(notifications,queueStart){
+        console.log('SLICING');
         var start = (this.notificationCount-queueStart-this.listLength);
         start = start < 0 ? 0 : start;
         var end = (this.notificationCount-queueStart);
@@ -242,7 +243,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       injectData:function(e){
         var notification = e.model.item ? e.model.item : e.model.msg;
-        bridgeit.notify.setCurrentNotification(notification);
+        bridgeit.notify.selectNotification(notification);
 
       }
     });
