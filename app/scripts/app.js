@@ -59,10 +59,12 @@
       //don't redirect link for admins since notifications
       //are only acted on by regular users
       if (app.$.demoView.isAdmin) {
+        e.preventDefault();
+        bridgeit.notify.hideNotification(e.detail.toast ? e.detail.toast : e.detail.native,0);
         return;
       }
       //set the current notification
-      bridgeit.notify.setCurrentNotification(notification);
+      bridgeit.notify.selectNotification(notification);
       if (app.route === app.notificationsRoute) {
         var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
         routeRef.loadNotification();
@@ -71,8 +73,7 @@
         page.redirect('/'+app.notificationsRoute);
       }
     });
-
-    document.addEventListener('currentNotificationSet',function() {
+    document.addEventListener('notificationSelected',function() {
       //when the current notification is set we want to
       //load the notification if we are on the page
       if (app.route === app.notificationsRoute) {
