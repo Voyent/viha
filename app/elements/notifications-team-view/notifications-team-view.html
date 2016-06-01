@@ -71,12 +71,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         top: 5px;
         width: 40px;
       }
+      .navDiv{
+        height:auto;
+        display:inline-flex;
+        flex-direction:column;
+        justify-content:center;
+      }
     </style>
 
-    <h2>Current Message:</h2>
-    <template is="dom-if" if="{{hasCurrentNotification}}">
+    <!--h2>Current Message:</h2-->
+    <div style="display:flex; justify-content:center;"><h2>Notification Info:</h2></div>
+    <div style="display:flex; justify-content:space-between; width:100%">
+      <div class="navDiv">
+        <paper-button disabled="[[!hasLast]]" on-click="goBack" raised>Previous Notification</paper-button>
+      </div>
+      <div style="flex-grow:4;">
+
+        <br/>
+        <div>
+        Description: <span data-metadata-desc></span><br/><br/>
+        Group: <span data-metadata-group></span><br/><br/>
+        Sent At: <span data-metadata-time></span><br/><br/>
+        </div>
+        <h4>Responses:</h4>
+        <div>
+          <paper-button raised>Acknowledge</paper-button>
+          <paper-button raised on-click="deleteNotification">Delete</paper-button>
+          <paper-button raised on-click="getData">Check Machine</paper-button>
+        </div>
+      </div>
+      <div class="navDiv">
+        <paper-button disabled="[[!hasNext]]" on-click="goForward" raised>Next Notification</paper-button>
+      </div>
+    </div>
+    <!--template is="dom-if" if="{{hasCurrentNotification}}">
       <div class="wrapperDiv">
-        <paper-header-panel>
+        <!--paper-header-panel>
           <div class="paper-header" data-metadata-desc></div>
           <div class="content">
             <paper-button raised on-click="fireEvent" data-response="Acknowledge" data-result="ack">Acknowledge</paper-button>
@@ -84,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-header-panel>
       </div>
     </template>
-    <template is="dom-if" if="{{!hasCurrentNotification}}">
+    <!--template is="dom-if" if="{{!hasCurrentNotification}}">
       No notification to display.
     </template>
 
@@ -93,7 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-button on-click="getData" raised>Historic Data</paper-button>
 
     </div>
-    </div>
+    </div-->
   </template>
 
   <script>
@@ -155,20 +185,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type:String,
             notify:true,
             reflectToAttribute:true
+          },
+          hasNext:{
+            type:Boolean,
+            notify:true
+          },
+          hasLast:{
+            type:Boolean,
+            notify:true
           }
         },
 
         loadNotification: function() {
           if (bridgeit.notify.payload && bridgeit.notify.metadata) {
             this.hasCurrentNotification = true;
+            bridgeit.notify.clearInjectedNotificationData();
             bridgeit.notify.injectNotificationData();
-
             this.message = bridgeit.notify.metadata.desc;
             this.time = bridgeit.notify.metadata.time;
+            this.hasNext = bridgeit.notify.getNextNotification() !== null;
+            this.hasLast = bridgeit.notify.getPreviousNotification() !== null;
+            //this.queue = bridgeit.notify._queue;
+            //console.log(bridgeit.notify);
           }
           else {
             this.hasCurrentNotification = false;
           }
+        },
+
+        deleteNotification:function(){
+          console.log('In the right place');
+
+          if(this.hasNext){
+            var next = bridgeit.notify.getNextNotification();
+            bridgeit.notify.removeSelectedNotification();
+            bridgeit.notify.selectNotification(next);
+            this.loadNotification();
+          }
+          else if(this.hasLast){
+            var back = bridgeit.notify.getPreviousNotification();
+            bridgeit.notify.removeSelectedNotification();
+            bridgeit.notify.selectNotification(back);
+            this.loadNotification();
+          }
+          else{
+            bridgeit.notify.removeSelectedNotification();
+            page.redirect('/notifications');
+          }
+        },
+
+        goBack:function(){
+          bridgeit.notify.selectNotification(bridgeit.notify.getPreviousNotification());
+          this.loadNotification();
+        },
+
+        goForward:function(){
+          bridgeit.notify.selectNotification(bridgeit.notify.getNextNotification());
+          this.loadNotification();
         },
 
         fireEvent: function(e) {

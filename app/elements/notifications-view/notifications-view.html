@@ -171,11 +171,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notificationCount: { type: Number, notify: true },
         hasNotifications: { type: Boolean, notify: true },
         hideNav: {type: Boolean, value: false},
-        listLength:{type:Number,value:3}
+        listLength:{type:Number,value:5}
       },
 
-      sliced:function(notifications,start){
-        return notifications.slice(start,start+this.listLength);
+      sliced:function(notifications,queueStart){
+        var start = (this.notificationCount-queueStart-this.listLength);
+        start = start < 0 ? 0 : start;
+        var end = (this.notificationCount-queueStart);
+        end = end < 0 ? 0 : end;
+        return notifications.slice(start,end);
       },
 
       getSliceNotifications:function(slice){
@@ -217,6 +221,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _notificationsUpdated: function() {
         this.hasNotifications = !!bridgeit.notify.getNotificationCount();
+        this.notificationCount = bridgeit.notify.getNotificationCount();
         //don't show redirect link for admins since notifications are only meant for regular users
         this.hideNav = app.$.demoView.isAdmin;
       },
