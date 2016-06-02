@@ -83,7 +83,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div style="display:flex; justify-content:center;"><h2>Notification Info:</h2></div>
     <div style="display:flex; justify-content:space-between; width:100%">
       <div class="navDiv">
-        <paper-button disabled="[[!hasLast]]" on-click="goBack" raised>Previous Notification</paper-button>
+        <template is="dom-if" if="[[hasLast]]">
+          <paper-icon-button on-click="goBack" src="../../images/back.png"></paper-icon-button>
+        </template>
       </div>
       <div style="flex-grow:4;">
 
@@ -95,13 +97,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         <h4>Responses:</h4>
         <div>
-          <paper-button raised>Acknowledge</paper-button>
+          <!--paper-button raised>Acknowledge</paper-button-->
           <paper-button raised on-click="deleteNotification">Delete</paper-button>
           <paper-button raised on-click="getData">Check Machine</paper-button>
         </div>
       </div>
       <div class="navDiv">
-        <paper-button disabled="[[!hasNext]]" on-click="goForward" raised>Next Notification</paper-button>
+        <template is="dom-if" if="[[hasNext]]">
+          <paper-icon-button on-click="goForward" src="../../images/forward.png"></paper-icon-button>
+        </template>
       </div>
     </div>
     <!--template is="dom-if" if="{{notificationSelected}}">
