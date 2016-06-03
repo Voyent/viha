@@ -91,7 +91,6 @@
         var demoData = app.$.demoView.$$('demo-data');
         if (demoData) {
           //sync the notification queue
-          console.log('NEW NOTIFICATION');
           demoData.set('notifications', e.detail.queue);
           //sync the notification count
           demoData.set('notificationCount', bridgeit.notify.getNotificationCount());

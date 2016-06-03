@@ -175,7 +175,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       sliced:function(notifications,queueStart){
-        console.log('SLICING');
         var start = (this.notificationCount-queueStart-this.listLength);
         start = start < 0 ? 0 : start;
         var end = (this.notificationCount-queueStart);
