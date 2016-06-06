@@ -76,12 +76,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display:inline-flex;
         flex-direction:column;
         justify-content:center;
+        padding:0;
+      }
+      @media (max-width: 900px) {
+
+        #parentDiv{
+          font-size: 14px;
+          line-height: 14px;
+        }
+
       }
     </style>
 
     <!--h2>Current Message:</h2-->
     <div style="display:flex; justify-content:center;"><h2>Notification Info:</h2></div>
-    <div style="display:flex; justify-content:space-between; width:100%">
+    <div id="parentDiv" style="display:flex; justify-content:space-between; width:100%; padding:0; overflow:visible !important;">
       <div class="navDiv">
         <template is="dom-if" if="[[hasLast]]">
           <paper-icon-button on-click="goBack" src="../../images/back.png"></paper-icon-button>

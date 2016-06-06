@@ -11,6 +11,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../styles/shared-styles.html">
 
+<style>
+  #mainContainer .paper-scroll-header-panel {
+    overflow-x:visible !important;
+  }
+</style>
+
 <dom-module id="data-view">
   <template>
 
@@ -76,6 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width:100%;
       }
     </style>
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
     <h2 class="page-title">Events</h2>
     <template is="dom-if" if="[[trimEvents]]">
       <paper-button raised on-click="returnNormal">Show all entries</paper-button>
