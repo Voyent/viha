@@ -175,10 +175,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       sliced:function(notifications,queueStart){
-        var start = (this.notificationCount-queueStart-this.listLength);
+        var start = (this.notifications.length-queueStart-this.listLength);
         start = start < 0 ? 0 : start;
-        var end = (this.notificationCount-queueStart);
+        var end = (this.notifications.length-queueStart);
         end = end < 0 ? 0 : end;
+        console.log(notifications.slice(start,end));
         return notifications.slice(start,end);
       },
 
