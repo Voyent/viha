@@ -20,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         properties: {
           users: {type: Array, notify: true},
-          notificationsByUser: {type: Object, notify: true, value: function(){ return {}; }},
+          notificationsByGroup: {type: Object, notify: true, value: function(){ return {}; }},
           notifications: {type: Array, value: [], notify: true},
           notificationCount: { type: Number, notify: true, reflectToAttribute: true, value:0}
         }

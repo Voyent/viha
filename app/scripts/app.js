@@ -50,10 +50,6 @@
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
 
-    document.addEventListener('voyentNotifyInitialized',function(e) {
-      e.detail.config.icon = 'http://www.viha.ca/www//images/common/logo-viha.gif';
-    });
-
     document.addEventListener('notificationClicked',function(e) {
       var notification = e.detail.notification;
       //don't redirect link for admins since notifications
@@ -74,12 +70,19 @@
       }
     });
     document.addEventListener('notificationSelected',function() {
-      //when the current notification is set we want to
-      //load the notification if we are on the page
-      if (app.route === app.notificationsRoute) {
-        var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
-        routeRef.loadNotification();
+      function waitForApp() {
+        if (!window.app || !app.$ || !app.$.demoView || !app.notificationsRoute) {
+          setTimeout(waitForApp, 100);
+          return;
+        }
+        //when the current notification is set we want to
+        //load the notification if we are on the page
+        if (app.route === app.notificationsRoute) {
+          var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
+          routeRef.loadNotification();
+        }
       }
+      waitForApp();
     });
 
     document.addEventListener('afterQueueUpdated',function(e) {
@@ -95,12 +98,11 @@
           //sync the notification count
           demoData.set('notificationCount', bridgeit.notify.getNotificationCount());
           //convert the queue array to an user map object so we can group by users on the notification page
-          demoData.set('notificationsByUser', e.detail.queue.reduce(function (map, obj) {
-            var usernameFromGroup = obj.metadata.group.split('/').pop();
-            if (!map[usernameFromGroup]) {
-              map[usernameFromGroup] = [];
+          demoData.set('notificationsByGroup', e.detail.queue.reduce(function (map, obj) {
+            if (!map[obj.group]) {
+              map[obj.group] = [];
             }
-            map[usernameFromGroup].push(obj);
+            map[obj.group].push(obj);
             return map;
           }, {}));
         }

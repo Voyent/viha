@@ -108,9 +108,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <br/>
         <div>
-        Description: <span data-metadata-desc></span><br/><br/>
-        Group: <span data-metadata-group></span><br/><br/>
-        Sent At: <span data-metadata-time></span><br/><br/>
+        Description: <span data-selected-details></span><br/><br/>
+        Group: <span data-selected-group></span><br/><br/>
+        Sent At: <span data-selected-time></span><br/><br/>
         </div>
         <h4>Responses:</h4>
         <div>
@@ -128,7 +128,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!--template is="dom-if" if="{{notificationSelected}}">
       <div class="wrapperDiv">
         <!--paper-header-panel>
-          <div class="paper-header" data-metadata-desc></div>
+          <div class="paper-header" data-selected-details></div>
           <div class="content">
             <paper-button raised on-click="fireEvent" data-response="Acknowledge" data-result="ack">Acknowledge</paper-button>
           </div>
@@ -218,19 +218,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         loadNotification: function() {
-          if (bridgeit.notify.payload && bridgeit.notify.metadata) {
-            //console.log("HERE!!!!!");
-            //console.log(new Date(bridgeit.notify.metadata.time).toISOString());
+          if (bridgeit.notify.selected) {
             this.notificationSelected = true;
             bridgeit.notify.clearInjectedNotificationData();
             this.notificationSelected = true;
             bridgeit.notify.injectNotificationData();
-            this.message = bridgeit.notify.metadata.desc;
-            this.time = bridgeit.notify.metadata.time;
+            this.message = bridgeit.notify.selected.details;
+            this.time = bridgeit.notify.selected.time;
             this.hasNext = bridgeit.notify.getNextNotification() !== null;
             this.hasLast = bridgeit.notify.getPreviousNotification() !== null;
-            //this.queue = bridgeit.notify._queue;
-            //console.log(bridgeit.notify);
           }
           else {
             this.notificationSelected = false;
@@ -283,7 +279,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           bridgeit.io.metrics.createCustomEvent({"event":event}).then(function() {
             //remove notification from queue
             _this.message = '';
-            var notification = bridgeit.notify.getSelectedNotification();
+            var notification = bridgeit.notify.selected;
             notification.response = e.target.getAttribute('data-response');
             _this.push('messages',notification);
             bridgeit.notify.removeSelectedNotification();
@@ -297,8 +293,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         sortNotifications: function(a,b) {
-          if (a.metadata.time > b.metadata.time) { return -1; }
-          else if (a.metadata.time < b.metadata.time) { return 1; }
+          if (a.time > b.time) { return -1; }
+          else if (a.time < b.time) { return 1; }
           return 0;
         },
 
