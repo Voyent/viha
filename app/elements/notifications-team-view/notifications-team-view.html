@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width:100%;
       }
       .paper-header {
-        background-color:#2A415E;
+        background-color:#0066A4;
         color:white;
         text-align:center;
         transition:height 0.2s ease 0s;
@@ -81,8 +81,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @media (max-width: 900px) {
 
         #parentDiv{
-          font-size: 14px;
-          line-height: 14px;
+          font-size: 12px;
+          line-height: 12px;
+        }
+
+      }
+      @media (max-width: 600px) {
+
+        #parentDiv{
+          font-size: 10px;
+          line-height: 10px;
         }
 
       }
@@ -211,6 +219,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         loadNotification: function() {
           if (bridgeit.notify.payload && bridgeit.notify.metadata) {
+            //console.log("HERE!!!!!");
+            //console.log(new Date(bridgeit.notify.metadata.time).toISOString());
             this.notificationSelected = true;
             bridgeit.notify.clearInjectedNotificationData();
             this.notificationSelected = true;

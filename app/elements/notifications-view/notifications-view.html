@@ -94,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-item-body on-click="injectData" three-line>
                   <div><span>{{_getUsername(item.metadata.group)}}</span> <span>{{item.metadata.desc}}</span></div>
                   <div secondary>
-                    <span>{{item.metadata.time}}</span>
+                    <span>{{_getTime(item.metadata.time)}}</span>
                   </div>
                   <div>
                     <paper-icon-button hidden$="{{hideNav}}" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
@@ -217,6 +217,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _getUsername: function(group) {
         return group.split('/').pop();
+      },
+
+      _getTime: function(time){
+        var date = new Date(time);
+        return date.toTimeString();
       },
 
       _notificationsUpdated: function() {

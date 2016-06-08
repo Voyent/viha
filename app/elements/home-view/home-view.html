@@ -25,17 +25,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-shadow: 3px 1px 4px #000;
       }
       :host ::content .header.paper-card{
-        max-height: 200px;
-        border-bottom: 10px solid #2A415E;
+        max-height: 250px;
+        border-bottom: 10px solid #0066A4;
       }
-      @media (max-height: 600px) {
+      paper-card{
+        --paper-card-header-image:{
+          height: auto;
+          width: auto;
+          max-height: 250px;
+        };
+        --paper-card-header-text:{
+          text-shadow: 1px 1px 0 black !important;
+          font-weight: 700;
+          font-size:xx-large;
+        };
+      }
+
+      /*@media (max-height: 600px) {
         :host ::content .header.paper-card{
           max-height: 80px;
         }
-      }
+        paper-card{
+          --paper-card-header-image:{
+            height: auto;
+            width: auto;
+            max-width: 200px;
+            max-height: 80px;
+          }
+        }
+      }*/
+
     </style>
 
-    <paper-card heading="Introduction" image="images/hospitalHome.jpg">
+    <paper-card heading="Introduction" image="images/hospitalHall.jpg">
       <div class="card-content">
     <p class="paper-font-body2">To be written</p>
       </div>

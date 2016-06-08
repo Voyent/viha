@@ -75,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     bridgeit-login-paper-card {
 
       --bridgeit-login-button: {
-        background-color: #2A415E;
+        background-color: #0066A4;
       };
 
       --bridgeit-login-button-hover: {
@@ -83,8 +83,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       };
 
       --bridgeit-login-header: {
-        border-bottom:10px solid #2A415E;
+        border-bottom:10px solid #0066A4;
       }
+
+      --bridgeit-header-text:{
+        color:#0066A4 !important;
+        text-shadow:1px 1px 1px #8DAED4;
+        font-weight:500;
+      };
 
 
     }
@@ -116,9 +122,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120"
       scope-to-path="/demos/staging/viha/">-->
     </bridgeit-auth-provider>
-    <bridgeit-login-paper-card  heading="Viha Demo Client Sign In" username="{{username}}" password="{{password}}" error="{{loginError}}"
+    <bridgeit-login-paper-card  heading="Client Sign In" username="{{username}}" password="{{password}}" error="{{loginError}}"
       auth-provider="authProvider" submit-label="Login" cancel-label="Cancel" hidden="{{isLoggedIn}}"
-      header-image="images/hospitalEdit.jpg" showrealminput realm="viha">
+      header-image="images/vihaLogo.jpg" showrealminput realm="viha">
       <paper-input id="host" required label="Host" placeholder="Enter the Host" value="{{host}}">
       <paper-icon-button suffix icon="clear"
         onclick="document.querySelector('#host').value = '';" tabindex="-1" style="height: 35px; width: 35px;">
