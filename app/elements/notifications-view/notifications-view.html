@@ -92,9 +92,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-icon-item>
                 <iron-icon icon="communication:message" item-icon></iron-icon>
                 <paper-item-body on-click="injectData" three-line>
-                  <div><span>{{_getUsername(item.metadata.group)}}</span> <span>{{item.metadata.desc}}</span></div>
+                  <div><span>{{_getUsername(item.group)}}</span> <span>{{item.details}}</span></div>
                   <div secondary>
-                    <span>{{item.metadata.time}}</span>
+                    <span>{{item.time}}</span>
                   </div>
                   <div>
                     <paper-icon-button hidden$="{{hideNav}}" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
@@ -121,9 +121,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <template is="dom-repeat" items="{{item.notifications}}" as="msg">
                 <paper-item>
                   <paper-item-body three-line>
-                    <div>{{msg.metadata.desc}}</div>
+                    <div>{{msg.details}}</div>
                     <div secondary>
-                      <span>{{msg.metadata.time}}</span>
+                      <span>{{msg.time}}</span>
                     </div>
                     <div>
                       <paper-icon-button hidden$="{{hideNav}}" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
@@ -160,13 +160,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           notify: true
         },
-        notificationsByUser: {
+        notificationsByGroup: {
           type: Object,
           notify: true
         },
         _decoratedUserNotifications: {
           type: Array,
-          computed: '_computeDecoratedUserNotifications(users, notificationsByUser)'
+          computed: '_computeDecoratedUserNotifications(users, notificationsByGroup)'
         },
         notificationCount: { type: Number, notify: true },
         hasNotifications: { type: Boolean, notify: true },
@@ -199,17 +199,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       sortNotifications: function(a,b) {
-        if (a.metadata.time > b.metadata.time) { return -1; }
-        else if (a.metadata.time < b.metadata.time) { return 1; }
+        if (a.time > b.time) { return -1; }
+        else if (a.time < b.time) { return 1; }
         return 0;
       },
 
-      _computeDecoratedUserNotifications: function(users, notificationsByUser){
+      _computeDecoratedUserNotifications: function(users, notificationsByGroup){
         var list = [];
         var usernames = users.map(function(user){return user.username;});
         usernames.sort();
         usernames.forEach(function(username){
-          var userNotifications = notificationsByUser[username] || [];
+          var userNotifications = notificationsByGroup[username] || [];
           list.push({username: username, notifications: userNotifications});
         });
         return list;
