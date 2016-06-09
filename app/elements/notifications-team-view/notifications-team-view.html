@@ -117,6 +117,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!--paper-button raised>Acknowledge</paper-button-->
           <paper-button raised on-click="deleteNotification">Delete</paper-button>
           <paper-button raised on-click="getData">Check Machine</paper-button>
+          <template is="dom-if" if="[[hasNewNotifications]]">
+            <paper-button raised on-click="toNewest">[[notificationString]]</paper-button>
+          </template>
         </div>
       </div>
       <div class="navDiv">
@@ -214,10 +217,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           hasLast:{
             type:Boolean,
             notify:true
+          },
+          notificationscount:{
+            type:Number,
+            notify:true
+          },
+          notificationsOnLoad:{
+            type:Number,
+            notify:true
+          },
+          notificationsSinceLoad:{
+            type:Number,
+            notify:true,
+            computed:'checkNotificationsSinceLoad(notificationscount,notificationsOnLoad)'
+          },
+          notificationString:{
+            type:String,
+            notify:true,
+            computed:'makeNotificationString(notificationsSinceLoad)'
+          },
+          hasNewNotifications:{
+            type:Number,
+            notify:true,
+            computed:'checkNewNotifications(notificationsSinceLoad)'
           }
         },
 
         loadNotification: function() {
+          this.notificationsOnLoad = this.notificationscount;
           if (bridgeit.notify.selected) {
             this.notificationSelected = true;
             bridgeit.notify.clearInjectedNotificationData();
@@ -229,13 +256,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.hasLast = bridgeit.notify.getPreviousNotification() !== null;
           }
           else {
-            this.notificationSelected = false;
+            bridgeit.notify.selectNotificationAt(bridgeit.notify.getNotificationCount()-1);
           }
         },
 
-        deleteNotification:function(){
-          console.log('In the right place');
+        checkNotificationsSinceLoad:function(current,sinceLoad){
+          return current - sinceLoad;
+        },
 
+        makeNotificationString:function(notifications){
+          return notifications + " new messages."
+        },
+
+        checkNewNotifications:function(notifications){
+          return notifications !== 0;
+        },
+
+        deleteNotification:function(){
           if(this.hasNext){
             var next = bridgeit.notify.getNextNotification();
             bridgeit.notify.removeSelectedNotification();
@@ -261,6 +298,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         goForward:function(){
           bridgeit.notify.selectNotification(bridgeit.notify.getNextNotification());
+          this.loadNotification();
+        },
+
+        toNewest:function(){
+          bridgeit.notify.selectNotificationAt(bridgeit.notify.getNotificationCount() - 1);
           this.loadNotification();
         },
 
@@ -306,13 +348,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('selectednode',"");
           this.set('selecteddetail',"");
           this.set('selectedgroup',"");
-          var postColon = this.message.split(':')[1];
-          var node = postColon.split('/')[1].trim();
-          this.set('selectednode',node);
-          var detail = postColon.split('/')[2].trim();
-          this.set('selecteddetail',detail);
-          var group = postColon.split('/')[0].trim();
-          this.set('selectedgroup',group);
+          var postColon;
+          var node, detail, group;
+          if(this.message.indexOf('-') !== -1){
+            postColon = this.message.split('-')[1];
+          }
+          else{
+            postColon = this.message.split(':')[1];
+          }
+          node = postColon.split('/')[1].trim();
+          detail = postColon.split('/')[2].trim();
+          group = postColon.split('/')[0].trim();
+          this.set('selectednode', node);
+          this.set('selecteddetail', detail);
+          this.set('selectedgroup', group);
           var data = document.querySelector("data-view");
           data.historyCheck();
           this.set('route','data');

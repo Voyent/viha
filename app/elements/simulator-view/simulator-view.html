@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </div>
       <div style="height:100%;display:inline-block; margin-top:30px; flex-shrink:2; align-self:center;text-align:center;">
-        <paper-button raised on-click="buttonPress">Run  <span>[[inputSource]]</span></paper-button>
+        <paper-button raised on-click="buttonPress">[[runString]]</paper-button>
         <br/>
         <div style="text-align:center;">Currently running:</div>
         <div style="text-align:center;"><span>[[currentEvent]]</span>/<span>[[totalEvents]]</span></div>
@@ -162,7 +162,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         running: {'type':Boolean,value:false},
         canRun:{'type':Boolean,value:false},
         offHours: {'type':Boolean,value:false,notify:true},
-        offHoursString: {'type':String,value:'Business Hours',notify:true}
+        offHoursString: {'type':String,value:'Business Hours',computed:'getHoursString(offHours)'},
+        runString:{'type':String,value:'Run Simulation', computed:'getRunString(inputSource)'}
       },
 
       created: function(){
@@ -173,15 +174,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poly = this;
 
         bridgeit.io.documents.getDocument({id:'vihaHours'}).then(function(document){
-          setTimeout(function(){
             poly.offHours = document.offHours;
-            if(this.offHours){
-              this.offHoursString = 'Off Hours';
-            }
-            else {
-              this.offHoursString = 'Business Hours';
-            }},200);
-
         });
 
         $(poly.$$("#the-file-input")).change(function() {
@@ -229,6 +222,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poly.$$('#simRadio').checked = false;
         poly.$$('#fileRadio').checked = true;
         poly.inputSource = 'File';
+      },
+
+      getHoursString: function(hours){
+        if(hours){
+          return 'Off Hours';
+        }
+        else {
+          return 'Business Hours';
+        }
+      },
+
+      getRunString:function(run){
+        return "Run " + run;
       },
 
       buttonPress : function(){

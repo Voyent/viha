@@ -403,12 +403,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </a>
             <a data-route="notifications" href="{{baseUrl}}notifications">
               <span class="demo-step-badge">1</span>
+              <span>Notifications Queue</span>
+            </a>
+            <a data-route="notifications-team" href="{{baseUrl}}notifications-team">
+              <span class="demo-step-badge">2</span>
               <span>Notifications</span>
             </a>
             <a data-route="data" href="{{baseUrl}}data">
-              <span class="demo-step-badge">2</span>
+              <span class="demo-step-badge">3</span>
               <span>Data</span>
             </a>
+
 
           </template>
 
@@ -529,11 +534,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" if="{{isUser}}">
 
               <section data-route="notifications">
-                <notifications-view notifications="[[notifications]]"></notifications-view>
+                <notifications-view notifications="[[notifications]]" notification-count="[[notificationCount]]" notifications-by-group="[[notificationsByGroup]]"></notifications-view>
               </section>
 
               <section data-route="notifications-team">
-                <notifications-team-view route="{{route}}" selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedtime="{{selectedtime}}" selectedgroup="{{selectedgroup}}" time="{{notificationTime}}" visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
+                <notifications-team-view route="{{route}}" selectednode="{{selectednode}}" selecteddetail="{{selecteddetail}}" selectedtime="{{selectedtime}}" selectedgroup="{{selectedgroup}}" time="{{notificationTime}}" notificationscount="[[notificationCount]]" visible="{{isEqual('notifications-team', route)}}"></notifications-team-view>
               </section>
 
               <section data-route="data">

@@ -7,7 +7,6 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../styles/shared-styles.html">
 
@@ -155,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
       <template is="dom-if" if="[[hasEvents]]">
         <template is="dom-repeat" items="{{events}}">
-          <div class="tableRow polyRow" value$=[[item.data.status]] id$="[[item._id]]">
+          <div class="tableRow polyRow" value$=[[item.data.status]] id$="a[[item._id]]">
             <div class="tableCell">[[item.data.node]]</div>
             <div class="tableCell">[[item.data.status]]</div>
             <div class="tableCell">[[item.data.linkDescription]]</div>
@@ -318,29 +317,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //this.set('searchQuery',tempQuery);
           }*/
           var eventTime = new Date (this.time);
-          //var keyEvent;
+          var keyEvent;
           for(var i = 0; i<poly.events.length;i++){
-            //console.log('Current event time:')
-            //console.log(poly.events[i].time);
+            //console.log('Current event time:');
+            //console.log(new Date(poly.events[i].time));
             //console.log("Aiming for:");
             //console.log(eventTime.toISOString());
             //console.log(eventTime.toLocaleTimeString());
             //console.log(eventTime);
             //console.log(eventTime.toUTCString());
             var currentTime = new Date(poly.events[i].time);
-            console.log(currentTime);
-            console.log(eventTime);
-            if(currentTime >= eventTime){
-              console.log("Current > event");
-              //keyEvent = poly.events[i]._id;
+            //console.log('Aiming for: ');
+            //console.log(eventTime);
+            //console.log('Current Time: ');
+            //console.log(currentTime);
+            if(currentTime <= eventTime){
+              //console.log("Current < event");
+              //console.log("REGISTERING EVENT");
+              keyEvent = poly.events[i]._id;
               //console.log(keyEvent);
+              poly.$$('#a'+keyEvent).className += ' keyEvent';
+              break;
             }
             else{
-              console.log("Current < event");
+              //console.log("Current > event");
             }
           }
         }
-
+        else{
+          if(poly.$$(".keyEvent")) {
+            poly.$$(".keyEvent").className = poly.$$(".keyEvent").className.replace(/(?:^|\s)keyEvent(?!\S)/g, '');
+          }
+        }
         var tempGroup = JSON.parse(JSON.stringify(poly.groupArray));
         var tempDetail = JSON.parse(JSON.stringify(poly.detailArray));
         var tempNode = JSON.parse(JSON.stringify(poly.nodeArray));
@@ -564,7 +572,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //console.log(startTime.toISOString());
           //console.log("END TIME");
           //console.log(endTime.toISOString());
-          tempQuery.query['time'] = { $lte:endTime.toISOString(), $gte:startTime.toISOString() };
+          //console.log(poly.events);
+          endTime = new Date(endTime.toISOString());
+          startTime = new Date(startTime.toISOString());
+          tempQuery.query['time'] = { $lte:endTime, $gte:startTime };
           this.trimEvents = true;
           this.set('searchQuery',tempQuery);
           this._queryChanged();
@@ -573,6 +584,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       returnNormal:function(){
         poly.set('trimEvents',false);
+        var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
+        tempQuery.query['time'] = {  $exists: true};
+        this.set('searchQuery',tempQuery);
         poly._queryChanged();
       },
 
