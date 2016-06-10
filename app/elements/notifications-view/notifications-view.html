@@ -78,17 +78,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <h2 class="page-title"><span>{{notificationCount}}</span>&nbsp;Notifications</h2>
-    <paper-toggle-button checked="{{groupByUser}}">Group by User</paper-toggle-button>
+    <paper-toggle-button checked="{{groupbyuser}}">Group by User</paper-toggle-button>
     <paper-button style="font-size: small;" on-click='resetNotifications'>Clear All</paper-button>
     <div style="position:relative">
-    <template is="dom-if" if="{{!groupByUser}}">
-      <template is="dom-if" if="{{!sliceHasNotifications}}">
+    <template is="dom-if" if="{{!groupbyuser}}">
+      <template is="dom-if" if="{{!hasNotifications}}">
         <paper-material>No notifications to display</paper-material>
       </template>
-      <template is="dom-if" if="{{sliceHasNotifications}}">
+      <template is="dom-if" if="{{hasNotifications}}">
         <paper-material>
           <paper-menu class="notifications">
-            <template is="dom-repeat" items="{{queueSlice}}" sort="sortNotifications" observe="queueSlice">
+            <template is="dom-repeat" items="{{notifications}}" sort="sortNotifications">
               <paper-icon-item>
                 <iron-icon icon="communication:message" item-icon></iron-icon>
                 <paper-item-body on-click="injectData" three-line>
@@ -107,8 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-material>
       </template>
     </template>
-      <!--TODO: Fix group by user with smaller pages if Steve likes.-->
-    <template is="dom-if" if="{{groupByUser}}">
+    <template is="dom-if" if="{{groupbyuser}}">
       <template is="dom-repeat" items="{{_decoratedUserNotifications}}">
         <paper-card>
           <div class="card-content user-card-header">
@@ -137,9 +136,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-card>
       </template>
     </template>
-      <br/>
-      <paper-button raised disabled="{{blockPast}}" on-click="lastQueue">Last</paper-button>
-      <paper-button raised disabled="{{!sliceHasNotifications}}" on-click="nextQueue">Next</paper-button>
     </div>
   </template>
   <script>
@@ -155,7 +151,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         sliceHasNotifications: {type:Boolean, computed:'getSliceNotifications(queueSlice)'},
         blockPast:{type:Boolean,computed:'checkIfFirst(queueStart)'},
         notifications: { type: Array, notify: true, observer: '_notificationsUpdated' },
-        groupByUser: { type: Boolean, notify: true, value: false },
+        groupbyuser: { type: Boolean, notify: true, value: false },
         users: {
           type: Array,
           notify: true
