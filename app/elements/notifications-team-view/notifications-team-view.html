@@ -118,7 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-button raised on-click="deleteNotification">Delete</paper-button>
           <paper-button raised on-click="getData">Check History</paper-button>
           <template is="dom-if" if="[[hasNewNotifications]]">
-            <paper-button raised on-click="toNewest">[[notificationString]]</paper-button>
+            <paper-button raised on-click="toNextNew">[[notificationString]]</paper-button>
           </template>
         </div>
       </div>
@@ -161,7 +161,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           visible: {
             type: Boolean,
             notify: true,
-            observer:"loadNotification"
+            observer:"_visibleChanged"
           },
           notificationSelected: {
             type: Boolean,
@@ -210,8 +210,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify:true,
             reflectToAttribute:true
           },
-          hasNext:{
-            type:Boolean,
+          currentPosition:{
+            type:Number,
+            value:0,
             notify:true
           },
           hasLast:{
@@ -222,14 +223,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type:Number,
             notify:true
           },
-          notificationsOnLoad:{
-            type:Number,
-            notify:true
+          hasNext:{
+            type:Boolean,
+            notify:true,
+            computed:'checkHasNext(currentPosition,notificationscount)'
           },
           notificationsSinceLoad:{
             type:Number,
             notify:true,
-            computed:'checkNotificationsSinceLoad(notificationscount,notificationsOnLoad)'
+            computed:'checkNotificationsSinceLoad(notificationscount,lastNotificationIndex)'
           },
           notificationString:{
             type:String,
@@ -240,11 +242,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type:Number,
             notify:true,
             computed:'checkNewNotifications(notificationsSinceLoad)'
+          },
+          lastNotificationIndex:{
+            type:Number,
+            notify:true
           }
         },
 
+        _visibleChanged:function(){
+          this.lastNotificationIndex = bridgeit.notify.getNotificationCount();
+          this.loadNotification()
+        },
+
         loadNotification: function() {
-          this.notificationsOnLoad = this.notificationscount;
           if (bridgeit.notify.selected) {
             this.notificationSelected = true;
             bridgeit.notify.clearInjectedNotificationData();
@@ -252,16 +262,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             bridgeit.notify.injectNotificationData();
             this.message = bridgeit.notify.selected.details;
             this.time = bridgeit.notify.selected.time;
-            this.hasNext = bridgeit.notify.getNextNotification() !== null;
             this.hasLast = bridgeit.notify.getPreviousNotification() !== null;
+            this.currentPosition = bridgeit.notify.queuePosition;
+            if(this.currentPosition >= this.lastNotificationIndex){
+              this.lastNotificationIndex = bridgeit.notify.queuePosition + 1;
+            }
           }
           else {
             bridgeit.notify.selectNotificationAt(bridgeit.notify.getNotificationCount()-1);
           }
+
         },
 
         checkNotificationsSinceLoad:function(current,sinceLoad){
           return current - sinceLoad;
+        },
+
+        checkHasNext:function(currentPosition,notificationsCount){
+          if (currentPosition+1 >= notificationsCount){
+            return false;
+          }
+          else{
+            return true;
+          }
         },
 
         makeNotificationString:function(notifications){
@@ -298,7 +321,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         goBack:function(){
           bridgeit.notify.selectNotification(bridgeit.notify.getPreviousNotification());
-          this.loadNotification();
+          //this.loadNotification();
         },
 
         goForward:function(){
@@ -306,9 +329,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.loadNotification();
         },
 
-        toNewest:function(){
-          bridgeit.notify.selectNotificationAt(bridgeit.notify.getNotificationCount() - 1);
-          this.loadNotification();
+        toNextNew:function(){
+          bridgeit.notify.selectNotificationAt(this.lastNotificationIndex);
         },
 
         fireEvent: function(e) {
