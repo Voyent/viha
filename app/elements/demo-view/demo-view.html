@@ -584,19 +584,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.route = 'home';
 
         //error handling
-        this.addEventListener('bridgeit-error',  function(e){
-          console.log('handling bridgeit-error: ' + e.detail.error);
-          var errorMessage;
-          if( e.detail.error ){
-            if( e.detail.error.message ){
-              errorMessage = e.detail.error.message;
-            }
-            if( e.detail.error.responseText ){
-              errorMessage = e.detail.error.responseText;
-            }
-          }
-
-          _this.error = 'Error: ' + errorMessage;
+        this.addEventListener('message-error',  function(e){
+          _this.set('error', 'Error: ' + e.detail);
           _this.querySelector('#errorToast').show();
         });
 
@@ -707,7 +696,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       handleLogout: function(){
-        bridgeit.xio.push.removeListener();
         document.getElementById('authProvider').logout();
         location.reload();
       },
