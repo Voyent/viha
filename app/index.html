@@ -172,8 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }, 5000);
 
       }).catch( function(error){
-        console.log('error loading users for users-view: ' + error);
-        document.querySelector('#app').fire('bridgeit-error', {error: Error('Could not fetch users list: ' + error.responseText)});
+        console.error('Error loading users for users-view: ' + error.toSource());
       });
     };
   </script>
