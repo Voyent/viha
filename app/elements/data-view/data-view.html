@@ -87,11 +87,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: bold;
       }
 
-      @media (max-width: 600px) {
+      .awesomplete{
+        font-size:10px;
+      }
+
+      
+      @media (max-width: 1200px) {
         .awesomplete{
           font-size:7px;
+          width:100%;
+          height:100%
+        }
+        #eventTable{
+          width:500px;
         }
       }
+
     </style>
     <h2 class="page-title">Events</h2>
     <template is="dom-if" if="[[trimEvents]]">
