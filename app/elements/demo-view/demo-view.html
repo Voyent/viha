@@ -401,15 +401,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-icon icon="home"></iron-icon>
               <span>Home</span>
             </a>
-            <a data-route="notifications" href="{{baseUrl}}notifications">
+            <a data-route="notifications" href="{{baseUrl}}/notifications">
               <span class="demo-step-badge">1</span>
               <span>History</span>
             </a>
-            <a data-route="notifications-team" href="{{baseUrl}}notifications-team">
+            <a data-route="notifications-team" href="{{baseUrl}}/notifications-team">
               <span class="demo-step-badge">2</span>
               <span>Notifications</span>
             </a>
-            <a data-route="data" href="{{baseUrl}}data">
+            <a data-route="data" href="{{baseUrl}}/data">
               <span class="demo-step-badge">3</span>
               <span>Data</span>
             </a>
@@ -443,10 +443,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="communication:mail-outline"></iron-icon>
             <span class="hidden-phone">E-mail</span>
           </paper-button>
-          <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}notifications">
-            <iron-icon icon="mail"></iron-icon>
-            <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
-          </paper-button>
+          <template is="dom-if" if="{{isUser}}">
+            <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}/notifications">
+              <iron-icon icon="mail"></iron-icon>
+              <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
+            </paper-button>
+          </template>
+          <template is="dom-if" if="{{isAdmin}}">
+            <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}notifications">
+              <iron-icon icon="mail"></iron-icon>
+              <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
+            </paper-button>
+          </template>
           <a class="logout" on-click="handleLogout">
             <iron-icon icon="lock-open"></iron-icon>
             <span class="hidden-phone">Logout</span>
