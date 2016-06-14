@@ -98,6 +98,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!--h2>Current Message:</h2-->
     <div style="display:flex; justify-content:center;"><h2>Notification Info:</h2></div>
+    <template is="dom-if" if="[[notificationSelected]]">
     <div id="parentDiv" style="display:flex; justify-content:space-between; width:100%; padding:0; overflow:visible !important;">
       <div class="navDiv">
         <template is="dom-if" if="[[hasLast]]">
@@ -128,6 +129,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
       </div>
     </div>
+    </template>
+    <template is="dom-if" if="[[!notificationSelected]]">
+      No notification to display.
+      </template>
     <!--template is="dom-if" if="{{notificationSelected}}">
       <div class="wrapperDiv">
         <!--paper-header-panel>
@@ -162,10 +167,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             notify: true,
             observer:"_visibleChanged"
-          },
-          notificationSelected: {
-            type: Boolean,
-            value: false
           },
           messages: {
             type: Array,
@@ -223,6 +224,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type:Number,
             notify:true
           },
+          notificationSelected: {
+            type: Boolean,
+            value: false,
+            computed:'checkHasNotifications(notificationscount)'
+          },
           hasNext:{
             type:Boolean,
             notify:true,
@@ -251,27 +257,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _visibleChanged:function(){
           this.lastNotificationIndex = bridgeit.notify.getNotificationCount();
-          this.loadNotification()
+          if(this.lastNotificationIndex >= 0){
+            this.loadNotification()
+          }
         },
 
         loadNotification: function() {
+          //console.log('FOR CRUZ');
+          //console.log(bridgeit.notify.selected);
+          //console.log(!!bridgeit.notify.selected);
+          var poly = this;
           if (bridgeit.notify.selected) {
-            this.notificationSelected = true;
             bridgeit.notify.clearInjectedNotificationData();
-            this.notificationSelected = true;
-            bridgeit.notify.injectNotificationData();
-            this.message = bridgeit.notify.selected.details;
-            this.time = bridgeit.notify.selected.time;
-            this.hasLast = bridgeit.notify.getPreviousNotification() !== null;
-            this.currentPosition = bridgeit.notify.queuePosition;
-            if(this.currentPosition >= this.lastNotificationIndex){
-              this.lastNotificationIndex = bridgeit.notify.queuePosition + 1;
-            }
+            setTimeout(function(){
+              bridgeit.notify.injectNotificationData();
+              poly.message = bridgeit.notify.selected.details;
+              poly.time = bridgeit.notify.selected.time;
+              poly.hasLast = bridgeit.notify.getPreviousNotification() !== null;
+              poly.currentPosition = bridgeit.notify.queuePosition;
+              if(poly.currentPosition >= poly.lastNotificationIndex){
+                poly.lastNotificationIndex = bridgeit.notify.queuePosition + 1;
+              }
+            },100);
           }
           else {
-            bridgeit.notify.selectNotificationAt(bridgeit.notify.getNotificationCount()-1);
+              bridgeit.notify.selectNotificationAt(bridgeit.notify.getNotificationCount()-1);
           }
 
+        },
+
+        checkHasNotifications:function(notificationNumber){
+          return notificationNumber > 0;
         },
 
         checkNotificationsSinceLoad:function(current,sinceLoad){
@@ -297,7 +313,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         checkNewNotifications:function(notifications){
-          return notifications !== 0;
+          return notifications > 0;
         },
 
         deleteNotification:function(){
@@ -315,7 +331,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           else{
             bridgeit.notify.removeSelectedNotification();
-            page.redirect('/notifications');
+            //page.redirect('/notifications');
           }
         },
 
@@ -326,7 +342,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         goForward:function(){
           bridgeit.notify.selectNotification(bridgeit.notify.getNextNotification());
-          this.loadNotification();
+          //this.loadNotification();
         },
 
         toNextNew:function(){

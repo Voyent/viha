@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size:10px;
       }
 
-      
+
       @media (max-width: 1200px) {
         .awesomplete{
           font-size:7px;
@@ -108,7 +108,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="[[trimEvents]]">
       <paper-button raised on-click="returnNormal">Show all entries</paper-button>
     </template>
-    <paper-button raised on-click="returnQuery">Return to Default</paper-button>
+    <paper-button raised on-click="returnQuery">Clear Filters</paper-button>
     <div class="eventTable" id="eventTable">
       <div class="tableRow">
         <div class="tableCell headerCell" style="">Node</div>
@@ -337,21 +337,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var eventTime = new Date (this.time);
           var keyEvent;
           for(var i = 0; i<poly.events.length;i++){
-            //console.log('Current event time:');
-            //console.log(new Date(poly.events[i].time));
-            //console.log("Aiming for:");
-            //console.log(eventTime.toISOString());
-            //console.log(eventTime.toLocaleTimeString());
-            //console.log(eventTime);
-            //console.log(eventTime.toUTCString());
             var currentTime = new Date(poly.events[i].time);
-            //console.log('Aiming for: ');
-            //console.log(eventTime);
-            //console.log('Current Time: ');
-            //console.log(currentTime);
             if(currentTime <= eventTime){
-              //console.log("Current < event");
-              //console.log("REGISTERING EVENT");
               keyEvent = poly.events[i]._id;
               //console.log(keyEvent);
               poly.$$('#a'+keyEvent).className += ' keyEvent';
