@@ -429,12 +429,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
-          <template is="dom-if" if="{{cloudPushCompatible}}">
+          <template is="dom-if" if="{{isMobile}}">
             <paper-button tabindex="0" toggles active="{{cloudPushSelected}}">
               <iron-icon icon="cloud-download"></iron-icon>
               <span class="hidden-phone">Cloud Push</span>
             </paper-button>
           </template>
+          <paper-button tabindex="1" toggles active="{{smsSelected}}" on-click="_toggleSMS">
+            <iron-icon icon="communication:textsms"></iron-icon>
+            <span class="hidden-phone">SMS</span>
+          </paper-button>
+          <paper-button tabindex="2" toggles active="{{emailSelected}}" on-click="_toggleEmail">
+            <iron-icon icon="communication:mail-outline"></iron-icon>
+            <span class="hidden-phone">E-mail</span>
+          </paper-button>
           <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}notifications">
             <iron-icon icon="mail"></iron-icon>
             <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
@@ -592,8 +600,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         //check cloud push status
         this.cloudPushRegistered = this.cloudPushSelected = bridgeit.xio.push.cloudPushRegistered();
 
+        //check sms registration status
+        this.smsRegistered = this.smsSelected = bridgeit.xio.push.smsRegistered();
+
+        //check email registration status
+        this.emailRegistered = this.emailSelected = bridgeit.xio.push.emailRegistered();
+
         //mobile
-        this.cloudPushCompatible = bridgeit.isIOS() || bridgeit.isAndroid();
+        this.isMobile = bridgeit.isIOS() || bridgeit.isAndroid();
       },
 
       properties: {
@@ -634,13 +648,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String
         },
 
-        cloudPushRegistered: {
+        isMobile: {
           notify: true,
           type: Boolean,
           reflectToAttribute: true
         },
 
-        cloudPushCompatible: {
+        cloudPushRegistered: {
           notify: true,
           type: Boolean,
           reflectToAttribute: true
@@ -650,6 +664,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           type: Boolean,
           observer: '_cloudPushSelectedChanged'
+        },
+
+        smsRegistered: {
+          notify: true,
+          type: Boolean,
+          reflectToAttribute: true
+        },
+
+        smsSelected: {
+          notify: true,
+          type: Boolean
+        },
+
+        emailRegistered: {
+          notify: true,
+          type: Boolean,
+          reflectToAttribute: true
+        },
+
+        emailSelected: {
+          notify: true,
+          type: Boolean
         },
 
         username: {
@@ -720,9 +756,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       },
 
-      computeShowCloudPushLink: function(cloudPushCompatible, cloudPushRegistered){
-        var showCloudPushLink = cloudPushCompatible && !cloudPushRegistered;
-        console.log('showCloudPushLink(' + cloudPushCompatible + ', ' + cloudPushRegistered + ') =' + showCloudPushLink);
+      handleRegisterSms: function(){
+        var _this = this;
+        var phonenumber = prompt("Please enter the phone number to register for SMS notifications", "");
+        if (!phonenumber) {
+          _this.smsSelected = false;
+          return;
+        }
+        bridgeit.xio.push.registerSms(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), phonenumber).then(function(){
+          console.log('registered for sms promise returned');
+          _this.smsRegistered = _this.smsSelected = true;
+          _this.message = 'Registered for SMS notifications';
+          if (_this.querySelector('#toast')) {
+            _this.querySelector('#toast').show();
+          }
+        });
+      },
+
+      handleRegisterEmail: function(){
+        var _this = this;
+        var email = prompt("Please enter the email to register for mail notifications", "");
+        if (!email) {
+          _this.emailSelected = false;
+          return;
+        }
+        bridgeit.xio.push.registerEmail(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), email).then(function(){
+          console.log('registered for email promise returned');
+          _this.emailRegistered = _this.emailSelected = true;
+          _this.message = 'Registered for email notifications';
+          if (_this.querySelector('#toast')) {
+            _this.querySelector('#toast').show();
+          }
+        });
+      },
+
+      computeShowCloudPushLink: function(isMobile, cloudPushRegistered){
+        var showCloudPushLink = isMobile && !cloudPushRegistered;
+        console.log('showCloudPushLink(' + isMobile + ', ' + cloudPushRegistered + ') =' + showCloudPushLink);
         return showCloudPushLink;
       },
 
@@ -731,7 +801,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _cloudPushSelectedChanged: function(){
-        if( this.cloudPushCompatible ){
+        if( this.isMobile ){
           if( this.cloudPushSelected ){
             this.handleRegisterCloudPush();
           }
@@ -747,6 +817,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },200);
 
           }
+        }
+      },
+
+      _toggleSMS: function() {
+        if (this.smsSelected) {
+          this.handleRegisterSms();
+        }
+        else {
+          bridgeit.xio.push.unregisterSms(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm());
+          this.smsRegistered = this.smsSelected = false;
+          var _this = this;
+          setTimeout(function(){
+            _this.message = 'Unregistered from SMS notifications';
+            if (_this.querySelector('#toast')) {
+              _this.querySelector('#toast').show();
+            }
+          },200);
+        }
+      },
+
+      _toggleEmail: function() {
+        if (this.emailSelected) {
+          this.handleRegisterEmail();
+        }
+        else {
+          bridgeit.xio.push.unregisterEmail(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm());
+          this.emailRegistered = this.emailSelected = false;
+          var _this = this;
+          setTimeout(function(){
+            _this.message = 'Unregistered from Email notifications';
+            if (_this.querySelector('#toast')) {
+              _this.querySelector('#toast').show();
+            }
+          },200);
         }
       },
 
