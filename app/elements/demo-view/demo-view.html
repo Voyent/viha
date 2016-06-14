@@ -758,11 +758,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       handleRegisterSms: function(){
         var _this = this;
-        var phonenumber = prompt("Please enter the phone number to register for SMS notifications", "");
+        var phonenumber = prompt("Please enter the phone number to register for SMS notifications", this.previouslyRegisteredPhoneNumber || "");
         if (!phonenumber) {
           _this.smsSelected = false;
           return;
         }
+        this.previouslyRegisteredPhoneNumber = phonenumber;
         bridgeit.xio.push.registerSms(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), phonenumber).then(function(){
           console.log('registered for sms promise returned');
           _this.smsRegistered = _this.smsSelected = true;
@@ -775,11 +776,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       handleRegisterEmail: function(){
         var _this = this;
-        var email = prompt("Please enter the email to register for mail notifications", "");
+        var email = prompt("Please enter the email to register for mail notifications", this.previouslyRegisteredEmail || "");
         if (!email) {
           _this.emailSelected = false;
           return;
         }
+        this.previouslyRegisteredEmail = email;
         bridgeit.xio.push.registerEmail(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), email).then(function(){
           console.log('registered for email promise returned');
           _this.emailRegistered = _this.emailSelected = true;
