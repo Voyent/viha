@@ -329,7 +329,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       runCycle: function(){
         var cycleTime = 5000;
         if(poly.liveRunning) {
-          var date = new Date(poly.liveTime);
+          var tempDate = new Date(poly.liveTime);
+          var date = new Date( Date.UTC(tempDate.getYear(),tempDate.getMonth(),tempDate.getDate(),tempDate.getHours(),tempDate.getMinutes(),tempDate.getSeconds()));
           for(var i = 0; i < poly.machineList.length; i++){
             var machine = poly.machineList[i];
             var status = $(poly.$$("#"+machine)).val();
@@ -337,7 +338,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               "data" : { "rowId" : "33203", "linkDescription" : "PROD_EXCELLERIS",
                 "webSection" : "CRITICAL", "node" : machine, "detailDesc" : "test_machine",
                 "status" : status,
-                "detail" : "Detail stuff", "time" : date.toLocaleTimeString("en-GB") + '.000' }};
+                "detail" : "Detail stuff", "time" : date.getUTCHours() + ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds() + '.000' }};
             bridgeit.io.event.createCustomEvent({"event":event})
           }
           setTimeout(function () {
