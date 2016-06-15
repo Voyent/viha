@@ -78,7 +78,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <h2 class="page-title"><span>{{notificationCount}}</span>&nbsp;Notifications</h2>
-    <paper-toggle-button checked="{{groupbyuser}}">Group by User</paper-toggle-button>
+    <template is="dom-if" if="{{isAdmin}}">
+      <paper-toggle-button checked="{{groupbyuser}}">Group by User</paper-toggle-button>
+    </template>
     <paper-button style="font-size: small;" on-click='resetNotifications'>Clear All</paper-button>
     <div style="position:relative">
     <template is="dom-if" if="{{!groupbyuser}}">
