@@ -77,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding-bottom: 0;
       }
     </style>
-    <h2 class="page-title"><span>{{notificationCount}}</span>&nbsp;Notifications</h2>
+    <h2 class="page-title">Queue - <span>{{notificationCount}}</span>&nbsp;Notifications</h2>
     <template is="dom-if" if="{{isAdmin}}">
       <paper-toggle-button checked="{{groupbyuser}}">Group by User</paper-toggle-button>
     </template>
@@ -99,8 +99,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>{{_getTime(item.time)}}</span>
                   </div>
                   <div>
-                    <paper-icon-button hidden$="{{hideNav}}" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
-                    <paper-icon-button icon="delete" on-click='removeNotification'></paper-icon-button>
+                    <paper-icon-button hidden$="{{hideNav}}" title="View the details of this notification" icon="open-in-browser" on-click='redirectToNotification'></paper-icon-button>
+                    <paper-icon-button icon="delete" title="Delete this notification" on-click='removeNotification'></paper-icon-button>
                   </div>
                 </paper-item-body>
               </paper-icon-item>

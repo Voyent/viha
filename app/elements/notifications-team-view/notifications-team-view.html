@@ -96,28 +96,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <!--h2>Current Message:</h2-->
-    <div style="display:flex; justify-content:center;"><h2>Notification Info:</h2></div>
+    <h2 class="page-title">Details</h2>
     <template is="dom-if" if="[[notificationSelected]]">
     <div id="parentDiv" style="display:flex; justify-content:space-between; width:100%; padding:0; overflow:visible !important;">
-      <div class="navDiv">
+      <div class="navDiv" style="width: 40px;">
         <template is="dom-if" if="[[hasLast]]">
-          <paper-icon-button on-click="goBack" src="../../images/back.png"></paper-icon-button>
+          <paper-icon-button on-click="goBack" src="../../images/back.png" title="Previous notification"></paper-icon-button>
         </template>
       </div>
       <div style="flex-grow:4;">
-
         <br/>
-        <div>
-        Description: <span data-selected-details></span><br/><br/>
-        Group: <span data-selected-group></span><br/><br/>
-        Sent At: <span data-selected-time></span><br/><br/>
-        </div>
+        <table cellpadding="5">
+        <tr>
+            <td>Description:</td>
+            <td><span data-selected-details></span></td>
+        </tr>
+        <tr>
+            <td>Group:</td>
+            <td><span data-selected-group></span></td>
+        </tr>
+        <tr>
+            <td>Sent At:</td>
+            <td><span data-selected-time></span></td>
+        </tr>
+        </table>
         <h4>Responses:</h4>
         <div>
-          <!--paper-button raised>Acknowledge</paper-button-->
           <paper-button raised on-click="deleteNotification">Delete</paper-button>
-          <paper-button raised on-click="getData">Check History</paper-button>
+          <paper-button raised title="View the event history data for this notification" on-click="getData">Go to Data</paper-button>
           <template is="dom-if" if="[[hasNewNotifications]]">
             <paper-button raised on-click="toNextNew">[[notificationString]]</paper-button>
           </template>
@@ -125,14 +131,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
       <div class="navDiv">
         <template is="dom-if" if="[[hasNext]]">
-          <paper-icon-button on-click="goForward" src="../../images/forward.png"></paper-icon-button>
+          <paper-icon-button on-click="goForward" src="../../images/forward.png" title="Next notification"></paper-icon-button>
         </template>
       </div>
     </div>
     </template>
     <template is="dom-if" if="[[!notificationSelected]]">
-      No notification to display.
-      </template>
+      <paper-material>No notifications to display</paper-material>
+    </template>
     <!--template is="dom-if" if="{{notificationSelected}}">
       <div class="wrapperDiv">
         <!--paper-header-panel>

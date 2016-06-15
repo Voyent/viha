@@ -54,6 +54,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .sidebar {
           background: #444444;
       }
+      .sideHeader {
+          margin-top: 10px;
+          width: 100%;
+          border-bottom: 1px solid black;
+          font-size: 14px;
+          font-weight: 500;
+          color: black;
+      }
       paper-toolbar#mainToolbar{
         background-color: #0066A3;
       }
@@ -401,17 +409,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-icon icon="home"></iron-icon>
               <span>Home</span>
             </a>
+            <paper-item disabled>
+                <div class="sideHeader">
+                Notifications&nbsp;<iron-icon icon="communication:message"></iron-icon>
+                </div>
+            </paper-item>
             <a data-route="notifications" href="{{baseUrl}}/notifications">
               <span class="demo-step-badge">1</span>
-              <span>History</span>
+              <span title="Overview and management of the current notification queue">Queue</span>
             </a>
             <a data-route="notifications-team" href="{{baseUrl}}/notifications-team">
               <span class="demo-step-badge">2</span>
-              <span>Notifications</span>
+              <span title="Details of each notification, including their fields">Details</span>
             </a>
             <a data-route="data" href="{{baseUrl}}/data">
               <span class="demo-step-badge">3</span>
-              <span>Data</span>
+              <span title="Data view of event history surrounding each notification">Data</span>
             </a>
 
 
