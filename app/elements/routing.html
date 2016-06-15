@@ -37,9 +37,14 @@ function waitForApp(){
   function initializeRouting(){
     console.log('demo initializeRouting()');
      // Removes end / from app.baseUrl which page.base requires for production
-    //if (window.location.port === '') {  // if production
+    if (window.location.port === '') {  // if production
       page.base(app.baseUrl.replace(/\/$/, ''));
-    //}
+    }
+    else{
+      if(window.location.pathname.indexOf('client.html')!== -1){
+        page.base(app.baseUrl.replace(/\/$/, ''));
+      }
+    }
 
     // Close drawer after menu item is selected if drawerPanel is narrow
     app.onDataRouteClick = function() {
