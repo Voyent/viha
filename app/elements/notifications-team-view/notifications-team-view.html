@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-button raised on-click="deleteNotification">Delete</paper-button>
           <paper-button raised title="View the event history data for this notification" on-click="getData">Go to Data</paper-button>
           <template is="dom-if" if="[[hasNewNotifications]]">
-            <paper-button raised on-click="toNextNew">[[notificationString]]</paper-button>
+            <paper-button on-click="toNextNew" title="Click to see your new notification message">[[notificationString]]</paper-button>
           </template>
         </div>
       </div>
@@ -311,10 +311,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         makeNotificationString:function(notifications){
           if (notifications === 1){
-            return "1 new message."
+            return "1 new message"
           }
           else{
-            return notifications + " new messages."
+            return notifications + " new messages"
           }
         },
 
