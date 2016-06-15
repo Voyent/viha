@@ -105,8 +105,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
     <h2 class="page-title">Data - Event History</h2>
-    <template is="dom-if" if="[[trimEvents]]">
-      <paper-button raised on-click="returnNormal">Show All Entries</paper-button>
+    <template is="dom-if" if="[[shortTime]]">
+      <paper-button raised on-click="returnNormal">Remove Time Restrictions</paper-button>
     </template>
     <paper-button raised on-click="returnQuery">Clear Filters</paper-button>
     <div class="eventTable" id="eventTable">
@@ -177,7 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="tableCell">[[item.data.node]]</div>
             <div class="tableCell">[[item.data.status]]</div>
             <div class="tableCell">[[item.data.linkDescription]]</div>
-            <div class="tableCell">[[item.data.time]]</div>
+            <div class="tableCell">[[toLocalTime(item.time)]]</div>
             <div class="tableCell">[[item.data.detailDesc]]</div>
           </div>
         </template>
@@ -232,12 +232,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         searchQuery:{
           type:Object,
           notify:true,
-          value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true }},options:{"sort":{"time":-1}}}
+          value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true },'time': {$exists:true}},options:{"sort":{"time":-1},"limit":50}}
         },
         startQuery:{
           type:Object,
           notify:true,
-          value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true }},options:{"sort":{"time":-1}}},
+          value:{query:{ 'data.content': { $exists: false }, 'data.node': { $exists: true },'time': {$exists:true}},options:{"sort":{"time":-1},"limit":50}},
           reflectToAttribute:true
         },
         selectedtime:{
@@ -280,6 +280,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type:Array,
           notify:true,
           value:[{'name':'OK','value':'OK'},{'name':'Error','value':'ER'},{'name':'Catch Up','value':'CU'},{'name':'Stale','value':'SL'},{'name':'OLD','value':'OLD'}]
+        },
+        shortTime:{
+          type:Boolean,
+          notify:true,
+          value:false,
+          computed:'isShortTime(searchQuery)'
         }
       },
 
@@ -300,12 +306,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _eventsChanged: function(){
-        if(poly.trimEvents) {
-          //trim discontinuous time
-          /**var lastTime;
-          var initialTime;
-          var currentTime;
-          for (var j = 0; j < poly.events.length; j++) {
+        var event = this;
+        setTimeout(function(){
+          if(poly.trimEvents) {
+            //trim discontinuous time
+            /**var lastTime;
+             var initialTime;
+             var currentTime;
+             for (var j = 0; j < poly.events.length; j++) {
             if (j === 0) {
               lastTime = poly.events[j].data.time;
               initialTime = new Date();
@@ -334,26 +342,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             //tempQuery.query['time'] = {  $exists: true};
             //this.set('searchQuery',tempQuery);
           }*/
-          var eventTime = new Date (this.time);
-          var keyEvent;
-          for(var i = 0; i<poly.events.length;i++){
-            var currentTime = new Date(poly.events[i].time);
-            if(currentTime <= eventTime){
-              keyEvent = poly.events[i]._id;
-              //console.log(keyEvent);
-              poly.$$('#a'+keyEvent).className += ' keyEvent';
-              break;
-            }
-            else{
-              //console.log("Current > event");
+            var eventTime = new Date (event.time);
+            var keyEvent;
+            for(var i = 0; i< poly.events.length;i++){
+              var currentTime = new Date(poly.events[i].time);
+              if(currentTime <= eventTime){
+                keyEvent = poly.events[i]._id;
+                if(poly.$$('#a'+keyEvent)){
+                  poly.$$('#a'+keyEvent).className += ' keyEvent';
+                }
+                break;
+              }
+              else{
+                //console.log("Current > event");
+              }
             }
           }
-        }
-        else{
-          if(poly.$$(".keyEvent")) {
-            poly.$$(".keyEvent").className = poly.$$(".keyEvent").className.replace(/(?:^|\s)keyEvent(?!\S)/g, '');
+          else{
+            if(poly.$$(".keyEvent")) {
+              poly.$$(".keyEvent").className = poly.$$(".keyEvent").className.replace(/(?:^|\s)keyEvent(?!\S)/g, '');
+            }
           }
-        }
+        },100);
         var tempGroup = JSON.parse(JSON.stringify(poly.groupArray));
         var tempDetail = JSON.parse(JSON.stringify(poly.detailArray));
         var tempNode = JSON.parse(JSON.stringify(poly.nodeArray));
@@ -573,11 +583,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var eventTime = new Date (this.time);
           var endTime = new Date(eventTime.getTime() + 10*60*1000);
           var startTime = new Date(eventTime.getTime() - 10*60*1000);
-          //console.log("START TIME");
-          //console.log(startTime.toISOString());
-          //console.log("END TIME");
-          //console.log(endTime.toISOString());
-          //console.log(poly.events);
           endTime = new Date(endTime.toISOString());
           startTime = new Date(startTime.toISOString());
           tempQuery.query['time'] = { $lte:endTime, $gte:startTime };
@@ -590,19 +595,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       returnNormal:function(){
         poly.set('trimEvents',false);
         var tempQuery = JSON.parse(JSON.stringify(poly.searchQuery));
-        tempQuery.query['time'] = {  $exists: true};
+        tempQuery.query['time'] = {$exists:true};
         this.set('searchQuery',tempQuery);
         poly._queryChanged();
       },
 
       returnQuery:function(){
         var tempQuery = JSON.parse(JSON.stringify(poly.startQuery));
+        tempQuery.query['time'] = poly.searchQuery.query.time ? poly.searchQuery.query.time : {$exists:true};
         poly.$$('#nodeSelect').value = '';
         poly.$$('#statusSelect').value = '';
         poly.$$('#groupSelect').value = '';
         poly.$$('#detailSelect').value = '';
+        poly.set('trimEvents',false);
         poly.set('searchQuery',tempQuery);
         poly._queryChanged();
+      },
+
+      isShortTime:function(query){
+        return JSON.stringify(query.query.time) != JSON.stringify({$exists:true});
+      },
+
+      toLocalTime:function(itemTime){
+        var date = new Date(itemTime);
+        return date.toLocaleTimeString("en-GB");
       }
     });
   })();

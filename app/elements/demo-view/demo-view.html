@@ -456,18 +456,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="communication:mail-outline"></iron-icon>
             <span class="hidden-phone">E-mail</span>
           </paper-button>
-          <template is="dom-if" if="{{isUser}}">
-            <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}/notifications">
-              <iron-icon icon="mail"></iron-icon>
-              <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
-            </paper-button>
-          </template>
-          <template is="dom-if" if="{{isAdmin}}">
+          <!--template is="dom-if" if="{{!isUser}}">
             <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}notifications">
               <iron-icon icon="mail"></iron-icon>
               <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
             </paper-button>
           </template>
+          <template is="dom-if" if="{{isUser}}">
+            <paper-button on-click="_goToNotifications" tabindex="0" href="{{baseUrl}}/notifications">
+              <iron-icon icon="mail"></iron-icon>
+              <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
+            </paper-button>
+          </template-->
+          <paper-button on-click="_goToNotifications" tabindex="0" href="{{notificationsUrl}}">
+            <iron-icon icon="mail"></iron-icon>
+            <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
+          </paper-button>
           <a class="logout" on-click="handleLogout">
             <iron-icon icon="lock-open"></iron-icon>
             <span class="hidden-phone">Logout</span>
@@ -638,6 +642,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         },
 
+        notificationsUrl:{
+          type:String,
+          notify:true,
+          computed:'getNotificationsURL(isAdmin)'
+        },
+
         route: {
           type: String,
           notify: true
@@ -759,6 +769,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       isEqual: function(arg1, arg2){
         return arg1 === arg2;
+      },
+
+      getNotificationsURL:function(isAdmin){
+        if(isAdmin){
+          return this.baseUrl + 'notications';
+        }
+        else{
+         return this.baseUrl + '/notifications';
+        }
       },
 
       handleRegisterCloudPush: function(){
