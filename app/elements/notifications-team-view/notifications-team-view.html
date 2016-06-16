@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-button raised on-click="deleteNotification">Delete</paper-button>
           <paper-button raised title="View the event history data for this notification" on-click="getData">Go to Data</paper-button>
           <template is="dom-if" if="[[hasNewNotifications]]">
-            <paper-button on-click="toNextNew" title="Click to see your new notification message">[[notificationString]]</paper-button>
+            <paper-button raised on-click="toNextNew" title="Click to see your new notification message">[[notificationString]]</paper-button>
           </template>
         </div>
       </div>
@@ -233,7 +233,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notificationSelected: {
             type: Boolean,
             value: false,
-            computed:'checkHasNotifications(notificationscount)'
+            computed:'checkHasNotifications(notificationscount)',
+            observer:'_selectedChanged'
           },
           hasNext:{
             type:Boolean,
@@ -269,9 +270,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         loadNotification: function() {
-          //console.log('FOR CRUZ');
-          //console.log(bridgeit.notify.selected);
-          //console.log(!!bridgeit.notify.selected);
           var poly = this;
           if (bridgeit.notify.selected) {
             bridgeit.notify.clearInjectedNotificationData();
@@ -280,7 +278,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               poly.message = bridgeit.notify.selected.details;
               poly.time = bridgeit.notify.selected.time;
               poly.hasLast = bridgeit.notify.getPreviousNotification() !== null;
-              poly.currentPosition = bridgeit.notify.queuePosition;
+              poly.currentPosition = bridgeit.notify.queuePosition == -1? 0:bridgeit.notify.queuePosition;
               if(poly.currentPosition >= poly.lastNotificationIndex){
                 poly.lastNotificationIndex = bridgeit.notify.queuePosition + 1;
               }
@@ -292,6 +290,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         },
 
+        _selectedChanged:function(){
+          if(this.visible && this.notificationSelected){
+            bridgeit.notify.selectNotificationAt(0);
+          }
+        },
+
         checkHasNotifications:function(notificationNumber){
           return notificationNumber > 0;
         },
@@ -301,6 +305,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         checkHasNext:function(currentPosition,notificationsCount){
+          //console.log("Has next?")
+          //console.log(currentPosition+1 < notificationsCount);
+          //console.log(currentPosition);
+          //console.log(notificationsCount);
           if (currentPosition+1 >= notificationsCount){
             return false;
           }
@@ -323,17 +331,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         deleteNotification:function(){
+          if(this.currentPosition >= this.lastNotificationIndex){
+            this.lastNotificationIndex -= 1;
+          }
           if(this.hasNext){
             var next = bridgeit.notify.getNextNotification();
             bridgeit.notify.removeSelectedNotification();
             bridgeit.notify.selectNotification(next);
-            this.loadNotification();
           }
           else if(this.hasLast){
             var back = bridgeit.notify.getPreviousNotification();
             bridgeit.notify.removeSelectedNotification();
             bridgeit.notify.selectNotification(back);
-            this.loadNotification();
           }
           else{
             bridgeit.notify.removeSelectedNotification();
