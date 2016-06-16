@@ -262,7 +262,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
-        _visibleChanged:function(){
+        _visibleChanged:function(newVal){
+          if (!newVal) {
+            return;
+          }
           this.lastNotificationIndex = bridgeit.notify.getNotificationCount();
           if(this.lastNotificationIndex >= 0){
             this.loadNotification()

@@ -66,11 +66,7 @@
       }
       //set the current notification
       bridgeit.notify.selectNotification(notification);
-      if (app.route === app.notificationsRoute) {
-        var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
-        routeRef.loadNotification();
-      }
-      else {
+      if (app.route !== app.notificationsRoute) {
         page.redirect('/'+app.notificationsRoute);
       }
     });

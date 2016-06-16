@@ -590,9 +590,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">{{message}}</span>
       </paper-toast>
 
-       <paper-toast id="errorToast" duration="20000">
+       <paper-toast id="errorToast" duration="5000">
         <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.errorToast.hide()">{{error}}</span>
       </paper-toast>
+
+      <paper-dialog id="modalDialog" modal>
+        <div>
+          <p>{{dialogMessage}}</p>
+          <paper-input value="{{dialogInput}}"></paper-input>
+          <paper-button title="Cancel" on-click="cancelDialog">
+            <span>Cancel</span>
+          </paper-button>
+          <paper-button title="Confirm" on-click="confirmDialog">
+            <span>OK</span>
+          </paper-button>
+        </div>
+      </paper-dialog>
 
       <demo-data id="demoData"
                  notifications="{{notifications}}"
@@ -759,7 +772,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value:null,
           notify:true,
           reflectToAttribute:true
+        },
+        dialogMessage: {
+          type: String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        dialogInput: {
+          type: String,
+          notify:true,
+          reflectToAttribute:true
+        },
+        dialogFunc: {
+          type: String,
+          notify:true,
+          reflectToAttribute:true
         }
+      },
+
+      confirmDialog: function() {
+        this[this.dialogFunc](false);
+        this.querySelector('#modalDialog').close();
+      },
+
+      cancelDialog: function() {
+        this.dialogMessage = '';
+        this.dialogInput = '';
+        this[this.dialogFunc](true);
+        this.dialogFunc = '';
+        this.querySelector('#modalDialog').close();
       },
 
       handleLogout: function(){
@@ -796,10 +837,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       },
 
-      handleRegisterSms: function(){
+      handleRegisterSms: function(cancelled){
         var _this = this;
-        var phonenumber = prompt("Please enter the phone number to register for SMS notifications", this.previouslyRegisteredPhoneNumber || "");
-        if (!phonenumber) {
+        var phonenumber = this.dialogInput;
+        if (cancelled || !phonenumber || phonenumber.trim().length === 0) {
           _this.smsSelected = false;
           return;
         }
@@ -814,10 +855,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       },
 
-      handleRegisterEmail: function(){
+      handleRegisterEmail: function(cancelled){
         var _this = this;
-        var email = prompt("Please enter the email to register for mail notifications", this.previouslyRegisteredEmail || "");
-        if (!email) {
+        var email = this.dialogInput;
+        if (cancelled || !email || email.trim().length === 0) {
           _this.emailSelected = false;
           return;
         }
@@ -861,10 +902,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-
       _toggleSMS: function() {
         if (this.smsSelected) {
-          this.handleRegisterSms();
+          this.openConfirmDialog("Please enter the phone number to register for SMS notifications",this.previouslyRegisteredPhoneNumber || '','handleRegisterSms');
         }
         else {
           bridgeit.xio.push.unregisterSms(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm());
@@ -881,7 +921,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _toggleEmail: function() {
         if (this.emailSelected) {
-          this.handleRegisterEmail();
+          this.openConfirmDialog('Please enter the email to register for mail notifications',this.previouslyRegisteredEmail || '','handleRegisterEmail');
         }
         else {
           bridgeit.xio.push.unregisterEmail(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm());
@@ -894,6 +934,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           },200);
         }
+      },
+
+      openConfirmDialog: function(message,input,func) {
+        this.dialogMessage = message;
+        this.dialogInput = input;
+        this.dialogFunc = func;
+        this.querySelector('#modalDialog').open();
       },
 
       _computeDrawerWidth: function(vgaWidth){

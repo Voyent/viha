@@ -111,13 +111,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-pages selected="{{selectedTab}}">
       <div class="tab-content">
         <h2 class="page-title">Queries</h2>
-        <bridgeit-query-list for="queries"></bridgeit-query-list>
         <div class="buttons">
+          Query Editor Controls:
           <button onclick="document.getElementById('queries').resetEditor();">New/Reset</button>
           <button onclick="document.getElementById('queries').runQuery();">Run</button>
           <button onclick="document.getElementById('queries').saveQueryWithPrompt();">Save</button>
           <button onclick="document.getElementById('queries').cloneQueryWithPrompt();">Clone</button>
-          <button onclick="document.getElementById('queries').deleteQuery();">Delete</button>
+          <bridgeit-query-list id="queryList" for="queries"></bridgeit-query-list>
+          <bridgeit-message></bridgeit-message>
         </div>
         <div class="query-options">
           <paper-dropdown-menu label="Service:" class$="{{getClass(service)}}" style="padding-right:5px;">
@@ -135,7 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>
             <template is="dom-if" if="{{isEqual('location', service)}}">
               <paper-dropdown-menu label="Collection:">
-                <iron-selector class="dropdown-content" attr-for-selected="name" selected={{collection}}>
+                <iron-selector class="dropdown-content" attr-for-selected="name" selected="{{collection}}">
                   <div name="regions">Regions</div>
                   <div name="poi">POI</div>
                   <div name="locations">Locations</div>

@@ -102,13 +102,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           width:500px;
         }
       }
-
+      
+        /* Loading animation from http://jsfiddle.net/VXdhG/1/ */
+        @-webkit-keyframes opacity {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        @-moz-keyframes opacity {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        #loading {
+            padding-top: 10px;
+        }
+        
+        #loading span {
+            -webkit-animation-name: opacity;
+            -webkit-animation-duration: 1s;
+            -webkit-animation-iteration-count: infinite;
+            
+            -moz-animation-name: opacity;
+            -moz-animation-duration: 1s;
+            -moz-animation-iteration-count: infinite;
+        }
+        
+        #loading span:nth-child(1) {
+            -webkit-animation-delay: 100ms;
+            -moz-animation-delay: 100ms;
+        }
+        
+        #loading span:nth-child(2) {
+            -webkit-animation-delay: 300ms;
+            -moz-animation-delay: 300ms;
+        }
+        
+        #loading span:nth-child(3) {
+            -webkit-animation-delay: 500ms;
+            -moz-animation-delay: 500ms;
+        }
     </style>
     <h2 class="page-title">Data - Event History</h2>
     <template is="dom-if" if="[[shortTime]]">
       <paper-button raised on-click="returnNormal">Remove Time Restrictions</paper-button>
     </template>
     <paper-button raised on-click="returnQuery">Clear Filters</paper-button>
+    
+    <div id="loading">
+        &nbsp;
+        <template is="dom-if" if="[[loading]]">
+            Processing
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+        </template>
+    </div>
+    
     <div class="eventTable" id="eventTable">
       <div class="tableRow">
         <div class="tableCell headerCell" style="">Node</div>
@@ -508,9 +557,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _queryChanged:function(){
         if(this.searchQuery !== {}) {
+          poly.set('loading', true);
           bridgeit.io.event.findEvents(this.searchQuery).then(function (events) {
             poly.events = events;
             poly._eventsChanged();
+            poly.set('loading', false);
+          }).catch (function() {
+            poly.set('loading', false);
           });
         }
       },
