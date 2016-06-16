@@ -33,7 +33,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                background-color: #EFEFEF;
           };
       }
-      button {
+      .buttons {
+        background-color: transparent;
+        padding:10px 0 10px 0;
+      }
+      .buttons button {
         font: inherit;
         background-color:#F9F9F9;
         border-color: transparent;
@@ -43,37 +47,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-transform: uppercase;
         cursor:pointer;
       }
+      bridgeit-query-list {
+        --query-list-wrapper: {
+          padding:10px 0 10px 0;
+          background-color: transparent;
+        };
+        --query-list-button: {
+          font: inherit;
+          background-color:#F9F9F9;
+          border-color: transparent;
+          color:black;
+          outline: none;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          text-transform: uppercase;
+          cursor:pointer;
+        };
+      }
     </style>
     <h2 class="page-title">Events</h2>
 
-  <bridgeit-query-editor id="queryEditor"
-                         queryurltarget="queryURL"
-                         options='{"limit":100,"sort":{"time":-1}}'
-                         service="metrics" collection="events">
-  </bridgeit-query-editor>
-
   <div class="buttons">
+      Query Editor Controls:
       <button id="resetEditor" onclick="document.getElementById('queryEditor').resetEditor();">New/Reset</button>
       <button id="runQuery" onclick="document.getElementById('queryEditor').runQuery();">Run</button>
       <button id="saveQuery" onclick="document.getElementById('queryEditor').saveQueryWithPrompt();">Save</button>
       <button id="cloneQuery" onclick="document.getElementById('queryEditor').cloneQueryWithPrompt();">Clone</button>
-      <button id="deleteQuery" onclick="document.getElementById('queryEditor').deleteQuery();">Delete</button>
-      <br/>
+      <bridgeit-query-list id="queryList" for="queryEditor"></bridgeit-query-list>
       <label for="limitIn">Results Limit:</label>
       <input id="limitIn" type="text" value="100"></input>
       <paper-button raised on-click="updateLimit">Update Limit</paper-button>
       <br/>
       <label for="multiIn">Multiple Event Monitors:</label>
       <input id="multiIn" type="checkbox" checked="checked"></input>
-
       <bridgeit-message></bridgeit-message>
   </div>
-  <br/>
-  <div>
-      <label>Saved Queries:</label>
-      <bridgeit-query-list id="queryList" for="queryEditor">
-      </bridgeit-query-list>
-  </div>
+  <bridgeit-query-editor id="queryEditor"
+                         queryurltarget="queryURL"
+                         options='{"limit":100,"sort":{"time":-1}}'
+                         service="metrics" collection="events">
+  </bridgeit-query-editor>
+
   <br/>
 
     <div id="eventMonitorMulti">
