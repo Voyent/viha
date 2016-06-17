@@ -294,39 +294,254 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
        */
 
-      /* mobile-small */
-      @media all and (min-width: 0) and (max-width: 360px) and (orientation: portrait) { }
-      /* mobile-large */
-      @media all and (min-width: 361px) and (orientation: portrait) { }
-      /* mobile-small-landscape */
-      @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
-      /* mobile-large-landscape */
-      @media all and (min-width: 481px) and (orientation: landscape) { }
-      /* tablet-small-landscape */
-      @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) { }
-      /* tablet-large-landscape */
-      @media all and (min-width: 961px) and (orientation: landscape) { }
-      /* tablet-small */
-      @media all and (min-width: 600px) and (orientation: portrait) { }
-      /* tablet-large */
-      @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) { }
-      /* desktop-x-small-landscape */
-      @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) { }
-      /* desktop-x-small */
-      @media all and (min-width: 0) and (max-width: 480px) and (max-aspect-ratio: 4/3) { }
-      /* desktop-small-landscape */
-      @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) { }
-      /* desktop-small */
-      @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) { }
-      /* desktop-medium-landscape */
-      @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) { }
-      /* desktop-medium */
-      @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) { }
-      /* desktop-large */
-      @media all and (min-width: 1281px) and (max-width: 1600px) { }
-      /* desktop-xlarge */
-      @media all and (min-width: 1601px) and (max-width: 1920px) { }
 
+      /* tablet-small-landscape */
+      @media all and (min-width: 600px) and (max-width: 960px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:inline-block;
+        }
+        .bigHeader{
+          display:none;
+        }
+      }
+      /* tablet-large-landscape */
+      @media all and (min-width: 961px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+      }
+      /* tablet-small */
+      @media all and (min-width: 600px) and (orientation: portrait) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:inline-block;
+        }
+        .bigHeader{
+          display:none;
+        }
+      }
+      /* tablet-large */
+      @media all and (min-width: 601px) and (max-width: 840px) and (orientation : portrait) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+      }
+      /* desktop-x-small-landscape */
+      @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:inline-block;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+      }
+      /* desktop-x-small */
+      @media all and (min-width: 0) and (max-width: 480px) and (max-aspect-ratio: 4/3) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+      }
+      /* desktop-small-landscape */
+      @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+      }
+      /* desktop-small */
+      @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+      }
+      /* desktop-medium-landscape */
+      @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+      }
+      /* desktop-medium */
+      @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+      }
+      /* desktop-large */
+      @media all and (min-width: 1281px) and (max-width: 1600px) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+      }
+      /* desktop-xlarge */
+      @media all and (min-width: 1601px) and (max-width: 1920px) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:inline-block;
+        }
+      }
+      /* mobile-small */
+      @media all and (min-width: 0) and (max-width: 320px) and (orientation: portrait) {
+        .verySmallHeader{
+          display:inline-block;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
+        }
+      }
+
+      /* mobile-small */
+      @media all and (min-width: 321px) and (max-width: 360px) and (orientation: portrait) {
+        .verySmallHeader{
+          display:inline-block;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
+        }
+      }
+      /* mobile-large */
+      @media all and (min-width: 361px) and (orientation: portrait) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:inline-block;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
+        }
+      }
+      /* mobile-small-landscape */
+      @media all and (min-width: 0) and (max-width: 480px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:inline-block;
+        }
+        .smallHeader{
+          display:none;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
+        }
+      }
+      /* mobile-large-landscape */
+      @media all and (min-width: 481px) and (orientation: landscape) {
+        .verySmallHeader{
+          display:none;
+        }
+        .smallHeader{
+          display:inline-block;
+        }
+        .bigHeader{
+          display:none;
+        }
+        .hidden-phone {
+          display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
+        }
+      }
 
     </style>
     <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
@@ -366,9 +581,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>History</span>
             </a>
 
-            <a data-route="triggers" href="{{baseUrl}}triggers">
+            <a data-route="data" href="{{baseUrl}}data">
               <span class="demo-step-badge">4</span>
-              <span>Triggers</span>
+              <span>Data</span>
             </a>
 
             <a data-route="actions" href="{{baseUrl}}actions">
@@ -386,14 +601,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span>Events</span>
             </a>
 
-            <a data-route="queries" href="{{baseUrl}}queries">
+
+            <a data-route="triggers" href="{{baseUrl}}triggers">
               <span class="demo-step-badge">8</span>
-              <span>Queries</span>
+              <span>Triggers</span>
             </a>
 
-            <a data-route="data" href="{{baseUrl}}data">
+            <a data-route="queries" href="{{baseUrl}}queries">
               <span class="demo-step-badge">9</span>
-              <span>Data</span>
+              <span>Queries</span>
             </a>
 
             <a data-route="logs" href="{{baseUrl}}logs">
@@ -434,25 +650,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
 
       <!-- Main Area -->
-      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
+      <paper-scroll-header-panel main id="headerPanelMain" header-state="{{headerSize}}" condenses keep-condensed-header>
 
         <!-- Main Toolbar -->
         <paper-toolbar id="mainToolbar" class="tall">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
           <template is="dom-if" if="{{isMobile}}">
-            <paper-button tabindex="0" toggles active="{{cloudPushSelected}}" title="Register to receive notifications via Cloud Push">
+            <paper-button class="toolbarButton" tabindex="0" toggles active="{{cloudPushSelected}}" title="Register to receive notifications via Cloud Push">
               <iron-icon icon="cloud-download"></iron-icon>
               <span class="hidden-phone">Cloud Push</span>
             </paper-button>
           </template>
-          <paper-button tabindex="1" toggles active="{{smsSelected}}" on-click="_toggleSMS" title="Register to receive notifications via SMS">
+          <paper-button class="toolbarButton" tabindex="1" toggles active="{{smsSelected}}" on-click="_toggleSMS" title="Register to receive notifications via SMS">
             <iron-icon icon="communication:textsms"></iron-icon>
             <span class="hidden-phone">SMS</span>
           </paper-button>
-          <paper-button tabindex="2" toggles active="{{emailSelected}}" on-click="_toggleEmail" title="Register to receive notifications via E-Mail">
+          <paper-button class="toolbarButton" tabindex="2" toggles active="{{emailSelected}}" on-click="_toggleEmail" title="Register to receive notifications via E-Mail">
             <iron-icon icon="communication:mail-outline"></iron-icon>
             <span class="hidden-phone">E-mail</span>
           </paper-button>
@@ -468,7 +685,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
             </paper-button>
           </template-->
-          <paper-button on-click="_goToNotifications" tabindex="0" href="{{notificationsUrl}}">
+          <paper-button class="toolbarButton" on-click="_goToNotifications" tabindex="0" href="{{notificationsUrl}}">
             <iron-icon icon="mail"></iron-icon>
             <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
           </paper-button>
@@ -481,7 +698,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
             <div class="app-name">
-              Viha Demo <small>(<span>[[username]]</span>)</small>
+              <template is="dom-if" if="{{headerSmall}}">
+                <div class="verySmallHeader">
+                  <small><span>[[username]]</span></small>
+                </div>
+                <div class="smallHeader">
+                  Viha Demo
+                  <br/>
+                  <small><span>[[username]]</span></small>
+                </div>
+                <div class="bigHeader">
+                  Viha Demo<small>(<span>[[username]]</span>)</small>
+                </div>
+              </template>
+              <template is="dom-if" if="{{!headerSmall}}">
+                Viha Demo<small> (<span>[[username]]</span>)</small>
+              </template>
             </div>
           </div>
 
@@ -787,7 +1019,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           notify:true,
           reflectToAttribute:true
+        },
+        headerSize:{
+          type:Number,
+          notify:true
+        },
+        headerSmall:{
+          type:Boolean,
+          notify:true,
+          value:false,
+          computed:'_isHeaderSmall(headerSize)'
         }
+      },
+
+
+      _isHeaderSmall:function(headerState){
+        return (headerState === 2);
       },
 
       confirmDialog: function() {
@@ -878,7 +1125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log('showCloudPushLink(' + isMobile + ', ' + cloudPushRegistered + ') =' + showCloudPushLink);
         return showCloudPushLink;
       },
-      
+
       computeIsUser: function(isAdmin){
         return !isAdmin;
       },
