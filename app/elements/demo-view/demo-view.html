@@ -465,6 +465,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         .hidden-phone {
           display: none !important;
         }
+        .toolbarButton {
+          margin:0;
+        }
       }
 
       /* mobile-small */
@@ -481,6 +484,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         .hidden-phone {
           display: none !important;
         }
+        .toolbarButton {
+          margin:0;
+        }
       }
       /* mobile-large */
       @media all and (min-width: 361px) and (orientation: portrait) {
@@ -495,6 +501,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         .hidden-phone {
           display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
         }
       }
       /* mobile-small-landscape */
@@ -511,6 +520,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         .hidden-phone {
           display: none !important;
         }
+        .toolbarButton {
+          margin:0;
+        }
       }
       /* mobile-large-landscape */
       @media all and (min-width: 481px) and (orientation: landscape) {
@@ -525,6 +537,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         .hidden-phone {
           display: none !important;
+        }
+        .toolbarButton {
+          margin:0;
         }
       }
 
@@ -645,16 +660,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Toolbar icons -->
           <template is="dom-if" if="{{isMobile}}">
-            <paper-button tabindex="0" toggles active="{{cloudPushSelected}}" title="Register to receive notifications via Cloud Push">
+            <paper-button class="toolbarButton" tabindex="0" toggles active="{{cloudPushSelected}}" title="Register to receive notifications via Cloud Push">
               <iron-icon icon="cloud-download"></iron-icon>
               <span class="hidden-phone">Cloud Push</span>
             </paper-button>
           </template>
-          <paper-button tabindex="1" toggles active="{{smsSelected}}" on-click="_toggleSMS" title="Register to receive notifications via SMS">
+          <paper-button class="toolbarButton" tabindex="1" toggles active="{{smsSelected}}" on-click="_toggleSMS" title="Register to receive notifications via SMS">
             <iron-icon icon="communication:textsms"></iron-icon>
             <span class="hidden-phone">SMS</span>
           </paper-button>
-          <paper-button tabindex="2" toggles active="{{emailSelected}}" on-click="_toggleEmail" title="Register to receive notifications via E-Mail">
+          <paper-button class="toolbarButton" tabindex="2" toggles active="{{emailSelected}}" on-click="_toggleEmail" title="Register to receive notifications via E-Mail">
             <iron-icon icon="communication:mail-outline"></iron-icon>
             <span class="hidden-phone">E-mail</span>
           </paper-button>
@@ -670,7 +685,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
             </paper-button>
           </template-->
-          <paper-button on-click="_goToNotifications" tabindex="0" href="{{notificationsUrl}}">
+          <paper-button class="toolbarButton" on-click="_goToNotifications" tabindex="0" href="{{notificationsUrl}}">
             <iron-icon icon="mail"></iron-icon>
             <paper-badge label="{{notificationCount}}" class="green-badge"></paper-badge>
           </paper-button>
