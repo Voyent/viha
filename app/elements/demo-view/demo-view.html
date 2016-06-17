@@ -597,7 +597,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-dialog id="modalDialog" modal>
         <div>
           <p>{{dialogMessage}}</p>
-          <paper-input value="{{dialogInput}}"></paper-input>
+          <paper-input value="{{dialogInput}}" on-keyup="_dialogEnterCheck"></paper-input>
           <paper-button title="Cancel" on-click="cancelDialog">
             <span>Cancel</span>
           </paper-button>
@@ -878,7 +878,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log('showCloudPushLink(' + isMobile + ', ' + cloudPushRegistered + ') =' + showCloudPushLink);
         return showCloudPushLink;
       },
-
+      
       computeIsUser: function(isAdmin){
         return !isAdmin;
       },
@@ -941,6 +941,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.dialogInput = input;
         this.dialogFunc = func;
         this.querySelector('#modalDialog').open();
+      },
+      
+      _dialogEnterCheck: function(e) {
+        // Check of 'enter' key pressed and submit
+        if (e.keyCode === 13) {
+            this.confirmDialog();
+        }
       },
 
       _computeDrawerWidth: function(vgaWidth){
