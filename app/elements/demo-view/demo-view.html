@@ -434,7 +434,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
 
       <!-- Main Area -->
-      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
+      <paper-scroll-header-panel main id="headerPanelMain" header-state="{{headerSize}}" condenses keep-condensed-header>
 
         <!-- Main Toolbar -->
         <paper-toolbar id="mainToolbar" class="tall">
@@ -481,7 +481,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
             <div class="app-name">
-              Viha Demo <small>(<span>[[username]]</span>)</small>
+              <template is="dom-if" if="{{headerSmall}}">
+                <small><span>[[username]]</span></small>
+              </template>
+              <template is="dom-if" if="{{!headerSmall}}">
+                Viha Demo<small>(<span>[[username]]</span>)</small>
+              </template>
             </div>
           </div>
 
@@ -787,7 +792,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           notify:true,
           reflectToAttribute:true
+        },
+        headerSize:{
+          type:Number,
+          notify:true
+        },
+        headerSmall:{
+          type:Boolean,
+          notify:true,
+          value:false,
+          computed:'_isHeaderSmall(headerSize)'
         }
+      },
+
+
+      _isHeaderSmall:function(headerState){
+        return (headerState === 2);
       },
 
       confirmDialog: function() {
