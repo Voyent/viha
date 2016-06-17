@@ -597,7 +597,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-dialog id="modalDialog" modal>
         <div>
           <p>{{dialogMessage}}</p>
-          <paper-input value="{{dialogInput}}" on-keyup="_dialogEnterCheck"></paper-input>
+          <paper-input value="{{dialogInput}}" on-keyup="_dialogKeyUp" autofocus></paper-input>
           <paper-button title="Cancel" on-click="cancelDialog">
             <span>Cancel</span>
           </paper-button>
@@ -943,10 +943,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.querySelector('#modalDialog').open();
       },
       
-      _dialogEnterCheck: function(e) {
-        // Check of 'enter' key pressed and submit
-        if (e.keyCode === 13) {
+      _dialogKeyUp: function(e) {
+        if (e.keyCode === 13) { // Enter
             this.confirmDialog();
+        }
+        else if (e.keyCode === 27) { // Escape
+            this.cancelDialog();
         }
       },
 
