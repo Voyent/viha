@@ -55,6 +55,10 @@
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
 
+    document.addEventListener('voyentNotifyInitialized',function(e) {
+      e.detail.config.autoSelectNotification = 'newest';
+    });
+
     document.addEventListener('notificationClicked',function(e) {
       var notification = e.detail.notification;
       //don't redirect link for admins since notifications
@@ -70,14 +74,14 @@
         page.redirect('/'+app.notificationsRoute);
       }
     });
-    document.addEventListener('notificationSelected',function() {
+    document.addEventListener('notificationChanged',function() {
       function waitForApp() {
         if (!window.app || !app.$ || !app.$.demoView || !app.notificationsRoute) {
           setTimeout(waitForApp, 100);
           return;
         }
-        //when the current notification is set we want to
-        //load the notification if we are on the page
+        //when the selected notification is changed we want
+        //to load the notification if we are on the page
         if (app.route === app.notificationsRoute) {
           var routeRef = app.$.demoView.querySelector(app.notificationsRoute+'-view');
           routeRef.loadNotification();
