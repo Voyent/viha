@@ -1056,8 +1056,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       handleLogout: function(){
+        location.replace(window.app.baseUrl);
         document.getElementById('authProvider').logout();
-        location.reload();
       },
 
       isEqual: function(arg1, arg2){

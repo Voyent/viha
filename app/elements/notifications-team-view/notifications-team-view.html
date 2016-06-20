@@ -74,6 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flex-direction:column;
         justify-content:center;
         padding:0;
+        min-width:50px;
       }
       @media (max-width: 900px) {
         #parentDiv{
@@ -120,6 +121,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <template is="dom-if" if="[[hasNewNotifications]]">
             <paper-button raised on-click="toNextNew" title="Click to see your new notification message">[[notificationString]]</paper-button>
           </template>
+        </div>
+        <div style="width:100%; text-align: center; justify-content: center">
+          <span>[[currentPositionPlusOne]]</span>/<span>[[notificationscount]]</span>
         </div>
       </div>
       <div class="navDiv">
@@ -181,6 +185,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type:Number,
             value:0,
             notify:true
+          },
+          currentPositionPlusOne:{
+            type:Number,
+            computed:'addOne(currentPosition)'
           },
           hasNext:{
             type:Boolean,
@@ -310,6 +318,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         toNextNew:function(){
           bridgeit.notify.selectNotificationAt(this.lastNotificationIndex);
+        },
+
+        addOne:function(index){
+          return index+1;
         },
 
         sortNotifications: function(a,b) {
