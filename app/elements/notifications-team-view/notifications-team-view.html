@@ -90,7 +90,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <h2 class="page-title">Notification Details</h2>
+    <h2 class="page-title">
+    Notification Details
+    <template is="dom-if" if="[[hasMultipleNotifications(notificationscount)]]">
+        (<span>[[currentPositionPlusOne]]</span> of <span>[[notificationscount]]</span>)
+    </template>
+    </h2>
     <template is="dom-if" if="[[notificationSelected]]">
     <div id="parentDiv" style="display:flex; justify-content:space-between; width:100%; padding:0; overflow:visible !important;">
       <div class="navDiv" style="width: 40px;">
@@ -121,9 +126,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <template is="dom-if" if="[[hasNewNotifications]]">
             <paper-button raised on-click="toNextNew" title="Click to see your new notification message">[[notificationString]]</paper-button>
           </template>
-        </div>
-        <div style="width:100%; text-align: center; justify-content: center">
-          <span>[[currentPositionPlusOne]]</span>/<span>[[notificationscount]]</span>
         </div>
       </div>
       <div class="navDiv">
@@ -322,6 +324,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         addOne:function(index){
           return index+1;
+        },
+        
+        hasMultipleNotifications: function(count) {
+            return count > 1;
         },
 
         sortNotifications: function(a,b) {
