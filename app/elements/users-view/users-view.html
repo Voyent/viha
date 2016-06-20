@@ -29,6 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         paper-icon-item{
             background-color: #FFF;
             border-bottom: 1px solid #EEE;
+
         }
 
         paper-icon-item ::content > div{
@@ -67,12 +68,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{visible}}">
         <paper-material id="topLevel" style="display:table">
             <template is="dom-repeat" items="{{users}}">
-                <paper-icon-item id="[[item._id]]" class="userParent">
+                <paper-icon-item id="[[item._id]]" class="userParent" style="display:flex;align-content: center">
                     <iron-icon icon="account-circle" item-icon class="avatar cell"></iron-icon>
                     <div class="item-body username cell">
                         <div class="flex">{{item._id}}</div>
                     </div>
-                    <div class="flex cell">
+                    <div class="flex cell" style="margin-top:-15px;">
                         <paper-dropdown-menu>
                             <iron-selector class="dropdown-content roleSelect" attr-for-selected="name"
                                            >

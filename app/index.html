@@ -125,8 +125,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Main Content -->
   <div id="mainContainer">
 
-    <bridgeit-auth-provider id="authProvider" account="demos" realm="viha"
-      host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="240" admin="true"
+    <bridgeit-auth-provider id="authProvider" realm="viha"
+      host="[[host]]" account="[[account]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="240" admin="true"
       scope-to-path="/demos/viha/">
     <!--<bridgeit-auth-provider id="authProvider" account="demos" realm="viha"
       host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="240" admin="true"
@@ -138,6 +138,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-input id="host" required label="Host" placeholder="Enter the Host" value="{{host}}">
         <paper-icon-button suffix icon="clear"
           onclick="document.querySelector('#host').value = '';" tabindex="-1" style="height: 35px; width: 35px;">
+        </paper-icon-button>
+      </paper-input>
+      <paper-input id="account" required label="Account" placeholder="Enter the Account" value="{{account}}">
+        <paper-icon-button suffix icon="clear"
+                           onclick="document.querySelector('#account').value = '';" tabindex="-1" style="height: 35px; width: 35px;">
         </paper-icon-button>
       </paper-input>
     </bridgeit-login-paper-card>

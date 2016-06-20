@@ -798,7 +798,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>
 
             <template is="dom-if" if="{{isUser}}">
-            
+
               <section data-route="dashboard">
                 <dashboard-view></dashboard-view>
               </section>
@@ -975,6 +975,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         host: {
+          type: String,
+          notify: true
+        },
+
+        account:{
           type: String,
           notify: true
         },
