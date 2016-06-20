@@ -1048,8 +1048,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       handleLogout: function(){
+        location.replace(window.app.baseUrl);
         document.getElementById('authProvider').logout();
-        location.reload();
       },
 
       isEqual: function(arg1, arg2){
@@ -1186,7 +1186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.dialogFunc = func;
         this.querySelector('#modalDialog').open();
       },
-      
+
       _dialogKeyUp: function(e) {
         if (e.keyCode === 13) { // Enter
             this.confirmDialog();
