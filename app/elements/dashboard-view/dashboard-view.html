@@ -152,7 +152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <span>.</span>
             </template>
             
-            <div style="float: right;">Updated at {{updatedTime}}</div>
+            <div style="float: right;">{{updatedTime}}</div>
         </div>
     </div>
     <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
@@ -221,11 +221,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   _this.fire('message-error', "No application status was found, please try again");
               }
               
-              _this.updatedTime = new Date().toTimeString();
+              _this.updatedTime = "Updated at " + new Date().toTimeString();
               _this.loading = false;
           }).catch(function() {
               _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
               
+              _this.updatedTime = "Last Update Failed at " + new Date().toTimeString();
               _this.loading = false;
           });
       },
