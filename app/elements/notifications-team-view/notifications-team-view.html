@@ -208,8 +208,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notificationSelected: {
             type: Boolean,
             value: false,
-            computed:'checkHasNotifications(notificationscount)',
-            observer:'_selectedChanged'
+            computed:'checkHasNotifications(notificationscount)'
           },
           notificationsSinceLoad:{
             type:Number,
@@ -258,12 +257,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               _this.lastNotificationIndex = bridgeit.notify.queuePosition + 1;
             }
           },100);
-        },
-
-        _selectedChanged:function(){
-          if(this.visible && this.notificationSelected){
-            bridgeit.notify.selectNotificationAt(0);
-          }
         },
 
         checkHasNotifications:function(notificationNumber){
@@ -325,7 +318,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         addOne:function(index){
           return index+1;
         },
-        
+
         hasMultipleNotifications: function(count) {
             return count > 1;
         },
