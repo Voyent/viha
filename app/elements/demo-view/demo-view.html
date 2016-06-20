@@ -1088,6 +1088,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           _this.smsSelected = false;
           return;
         }
+        phonenumber = phonenumber.trim();
         this.previouslyRegisteredPhoneNumber = phonenumber;
         bridgeit.xio.push.registerSms(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), phonenumber).then(function(){
           console.log('registered for sms promise returned');
@@ -1106,6 +1107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           _this.emailSelected = false;
           return;
         }
+        email = email.trim();
         this.previouslyRegisteredEmail = email;
         bridgeit.xio.push.registerEmail(this.host, 'demos', bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), email).then(function(){
           console.log('registered for email promise returned');
@@ -1186,7 +1188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.dialogFunc = func;
         this.querySelector('#modalDialog').open();
       },
-      
+
       _dialogKeyUp: function(e) {
         if (e.keyCode === 13) { // Enter
             this.confirmDialog();
