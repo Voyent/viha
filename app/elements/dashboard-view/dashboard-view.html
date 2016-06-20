@@ -214,7 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
               
               _this.loading = false;
-          }).catch(function(error) {
+          }).catch(function() {
               _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
               
               _this.loading = false;
@@ -228,13 +228,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       alarmColor: function(level) {
           switch (level) {
               case "1":
-                return "#EEEE00"; break;
+                return "#EEEE00";
               case "2":
-                return "#FF9900"; break;
+                return "#FF9900";
               case "3":
-                return "#770000"; break;
+                return "#770000";
               default:
-                return "#007700"; break;
+                return "#007700";
           }
       },
       
