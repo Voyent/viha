@@ -109,12 +109,17 @@ function waitForApp(){
       app.route = 'users';
       setFocus(app.route);
     });
+    
+    page('/dashboard', function () {
+      app.route = 'dashboard';
+      app.scrollPageToTop();
+    });
 
     page('/notifications', function () {
       app.route = 'notifications';
       app.scrollPageToTop();
     });
-
+    
     page('/notifications-team', function () {
       app.route = 'notifications-team';
       app.scrollPageToTop();

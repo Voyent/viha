@@ -1,0 +1,284 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../styles/shared-styles.html">
+
+<dom-module id="dashboard-view">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+      paper-card{
+        width: 100%;
+      }
+      paper-card .card-content.message-list {
+        padding: 0;
+      }
+      paper-toggle-button{
+        float: right;
+        margin-top: -40px;
+      }
+      @media (max-width: 400px){
+        paper-toggle-button{
+          margin-top: -51px;
+          margin-right: -10px;
+        }
+        paper-toggle-button toggle-label{
+          width: 50px;
+          line-height: 14px;
+        }
+      }
+      paper-material{
+        padding: 20px;
+        background-color: #FFF;
+      }
+      paper-item-body ::content > * {
+        white-space: normal;
+      }
+      paper-icon-item{
+        border-bottom: 1px solid #EEE;
+        padding: 10px 0;
+      }
+      paper-icon-item:first-child{
+        padding-top: 0;
+      }
+      paper-icon-item:last-of-type{
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      
+      .loopWrap, .statusText {
+          height: 50px;
+          line-height: 50px;
+          vertical-align: middle;
+      }
+      
+      .circle {
+          width: 50px;
+          height: 50px;
+          line-height: 50px;
+          text-align: center;
+          font-family: monospace;
+          font-size: 14px;
+          font-weight: bold;
+          box-shadow: 2px 2px 5px #AAAAAA;
+          color: white;
+          border-radius: 25px;
+          -webkit-border-radius: 25px;
+          -moz-border-radius: 25px;
+          display: inline-block;
+          cursor: default;
+      }
+      
+      .statusText {
+          display: inline-block;
+          padding-left: 10px;
+      }
+      
+      .blink0 {
+      }
+      
+      .blink1 {
+          animation: blinker 3s linear infinite;
+      }
+      
+      .blink2 {
+          animation: blinker 2s linear infinite;
+      }
+      
+      .blink3 {
+          animation: blinker 1s linear infinite;
+      }
+    
+      @keyframes blinker {  
+          50% { opacity: 0.2; }
+      }
+      
+        /* Loading animation from http://jsfiddle.net/VXdhG/1/ */
+        @-webkit-keyframes opacity {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        @-moz-keyframes opacity {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        #loading span {
+            -webkit-animation-name: opacity;
+            -webkit-animation-duration: 1s;
+            -webkit-animation-iteration-count: infinite;
+            
+            -moz-animation-name: opacity;
+            -moz-animation-duration: 1s;
+            -moz-animation-iteration-count: infinite;
+        }
+        
+        #loading span:nth-child(1) {
+            -webkit-animation-delay: 100ms;
+            -moz-animation-delay: 100ms;
+        }
+        
+        #loading span:nth-child(2) {
+            -webkit-animation-delay: 300ms;
+            -moz-animation-delay: 300ms;
+        }
+        
+        #loading span:nth-child(3) {
+            -webkit-animation-delay: 500ms;
+            -moz-animation-delay: 500ms;
+        }
+    </style>
+    <h2 class="page-title">Dashboard</h2>
+    
+    <bridgeit-message></bridgeit-message>
+    <div style="font-size: small;">
+        <div id="loading">
+            <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
+            <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
+            <paper-button on-click='loadStatus' title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
+            <template is="dom-if" if="[[loading]]">
+                <span>.</span>
+                <span>.</span>
+                <span>.</span>
+            </template>
+        </div>
+    </div>
+    <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
+        <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 30px;">
+            <div class="loopWrap">
+                <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
+                    {{currentState.alarmLevel}}
+                </div>
+                <div class="statusText">
+                    <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{currentState.eventTime}}
+                </div>
+            </div>
+        </paper-material>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'dashboard-view',
+
+      properties: {
+        state: { type: Array, value: [], notify: true },
+        collection: { type: String, value: 'system' },
+        docid: { type: String, value: 'applicationState' }
+      },
+      
+      ready: function() {
+          // Sort Type true is 'level', false is 'time'
+          this.sortTypeLevel = true;
+          this.sortAscending = true;
+          
+          // Initialize
+          this.loading = false;
+          this.loadStatus();
+      },
+      
+      /**
+       * Retrieve our application status from the documents service and update the UI dashboard accordingly
+       */
+      loadStatus: function() {
+          this.set('state', []);
+          this.loading = true;
+          var _this = this;
+          var params = { 'collection': this.collection, 'id': this.docid };
+          
+          bridgeit.io.documents.getDocument(params).then(function(document) {
+              // Ensure we got a document in the proper format
+              if (document && document.status && document.status instanceof Array && document.status.length > 0) {
+                  // Loop through and store each JSON state in our local list, for display to the UI
+                  var currentLoop = null;
+                  for (var i = 0; i < document.status.length; i++) {
+                      currentLoop = document.status[i];
+                      
+                      _this.push('state', currentLoop);
+                  }
+              }
+              else {
+                  _this.fire('message-error', "No application status was found, please try again");
+              }
+              
+              _this.loading = false;
+          }).catch(function(error) {
+              _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
+              
+              _this.loading = false;
+          });
+      },
+      
+      /**
+       * Computed binding to determine UI coloring based on alarm level
+       * @param level
+       */
+      alarmColor: function(level) {
+          switch (level) {
+              case "1":
+                return "#EEEE00"; break;
+              case "2":
+                return "#FF9900"; break;
+              case "3":
+                return "#770000"; break;
+              default:
+                return "#007700"; break;
+          }
+      },
+      
+      chooseSortLevel: function() {
+        this.set('sortTypeLevel', true);
+        this.set('sortAscending', !this.sortAscending);
+      },
+      
+      chooseSortTime: function() {
+        this.set('sortTypeLevel', false);
+        this.set('sortAscending', !this.sortAscending);
+      },
+      
+      computedSort: function() {
+        if (this.sortTypeLevel) {
+            return this.sortAscending ? this.sortLevelAscending : this.sortLevelDescending;
+        }
+        return this.sortAscending ? this.sortTimeAscending : this.sortTimeDescending;
+      },
+
+      sortLevelAscending: function(a,b) {
+        if (a.alarmLevel > b.alarmLevel) { return -1; }
+        else if (a.alarmLevel < b.alarmLevel) { return 1; }
+        return 0;
+      },
+      
+      sortLevelDescending: function(a,b) {
+        if (a.alarmLevel > b.alarmLevel) { return 1; }
+        else if (a.alarmLevel < b.alarmLevel) { return -1; }
+        return 0;
+      },
+      
+      sortTimeAscending: function(a,b) {
+        if (a.eventTime > b.eventTime) { return -1; }
+        else if (a.eventTime < b.eventTime) { return 1; }
+        return 0;
+      },
+      
+      sortTimeDescending: function(a,b) {
+        if (a.eventTime > b.eventTime) { return 1; }
+        else if (a.eventTime < b.eventTime) { return -1; }
+        return 0;
+      }
+    });
+  })();
+  </script>
+</dom-module>

@@ -627,16 +627,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 Notifications&nbsp;<iron-icon icon="communication:message"></iron-icon>
                 </div>
             </paper-item>
-            <a data-route="notifications" href="{{baseUrl}}/notifications">
+            <a data-route="dashboard" href="{{baseUrl}}/dashboard">
               <span class="demo-step-badge">1</span>
+              <span title="Central status page to check the state of the system">Dashboard</span>
+            </a>
+            <a data-route="notifications" href="{{baseUrl}}/notifications">
+              <span class="demo-step-badge">2</span>
               <span title="Overview and management of the current notification queue">Queue ({{notificationCount}})</span>
             </a>
             <a data-route="notifications-team" href="{{baseUrl}}/notifications-team">
-              <span class="demo-step-badge">2</span>
+              <span class="demo-step-badge">3</span>
               <span title="Details of each notification, including their fields">Details</span>
             </a>
             <a data-route="data" href="{{baseUrl}}/data">
-              <span class="demo-step-badge">3</span>
+              <span class="demo-step-badge">4</span>
               <span title="Data view of event history surrounding each notification">Data</span>
             </a>
 
@@ -794,6 +798,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>
 
             <template is="dom-if" if="{{isUser}}">
+            
+              <section data-route="dashboard">
+                <dashboard-view></dashboard-view>
+              </section>
 
               <section data-route="notifications">
                 <notifications-view notifications="[[notifications]]" notification-count="[[notificationCount]]" notifications-by-group="[[notificationsByGroup]]"></notifications-view>
