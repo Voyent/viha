@@ -162,7 +162,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     {{currentState.alarmLevel}}
                 </div>
                 <div class="statusText">
-                    <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{currentState.eventTime}}
+                    <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
                 </div>
             </div>
         </paper-material>
@@ -176,9 +176,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'dashboard-view',
 
       properties: {
+        /**
+         * List of system states to display
+         */
         state: { type: Array, value: [], notify: true },
+        /**
+         * Document collection to retrieve from
+         */
         collection: { type: String, value: 'system' },
-        docid: { type: String, value: 'applicationStatus' }
+        /**
+         * ID of the document to retrieve the application state from
+         */
+        docid: { type: String, value: 'applicationStatus' },
+        /**
+         * Number of debug/test systems to add (for demo purposes)
+         * Set a non-zero value to have additional systems appear
+         */
+        debugSystems: { type: Number, value: 4 }
       },
       
       ready: function() {
@@ -229,6 +243,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               _this.updatedTime = "Last Update Failed at " + new Date().toTimeString();
               _this.loading = false;
           });
+          
+          // Optionally add some fake systems to debug
+          if (this.debugSystems > 0) {
+              for (var j = 0; j < this.debugSystems; j++) {
+                  this.push('state', { "systemName": "p_debug_pm_in_thread",
+                                       "eventTime": "10:" +  Math.floor((Math.random() * 50) + 10) + ":05.000",
+                                       "notificationTime": new Date(),
+                                       "alarmLevel":  Math.floor((Math.random() * 4)) });
+              }
+          }
       },
       
       /**
@@ -246,6 +270,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               default:
                 return "#007700";
           }
+      },
+      
+      /**
+       * Computed binding to try to wrap a string into a local timezone date
+       * If the conversion fails we will return the original parameter instead
+       * @param toWrap
+       */
+      wrapLocalDate: function(toWrap) {
+          try{
+              var toReturn = new Date(toWrap);
+              
+              if (toReturn != "Invalid Date") {
+                  return toReturn.toTimeString();
+              }
+          }catch (err) {
+              console.warn("Failed to convert date " + toWrap, err);
+          }
+          return toWrap;
       },
       
       chooseSortLevel: function() {
