@@ -71,12 +71,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           font-size: 14px;
           font-weight: bold;
           box-shadow: 2px 2px 5px #AAAAAA;
-          color: white;
           border-radius: 25px;
           -webkit-border-radius: 25px;
           -moz-border-radius: 25px;
           display: inline-block;
           cursor: default;
+      }
+      
+      .circle span {
+          color: #DDDDDD;
+          text-shadow: 1px 1px 2px black;
       }
       
       .statusText {
@@ -159,7 +163,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 30px;">
             <div class="loopWrap">
                 <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
-                    {{currentState.alarmLevel}}
+                    <span>{{currentState.alarmLevel}}</span>
                 </div>
                 <div class="statusText">
                     <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
