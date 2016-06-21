@@ -264,7 +264,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               for (var j = 0; j < this.debugSystems; j++) {
                   this.push('state', { "systemName": "p_debug_pm_in_thread",
                                        "eventTime": "10:" +  Math.floor((Math.random() * 50) + 10) + ":05.000",
-                                       "notificationTime": new Date(),
+                                       "notificationTime": new Date().toUTCString(),
                                        "alarmLevel":  Math.floor((Math.random() * 4)) });
               }
           }
