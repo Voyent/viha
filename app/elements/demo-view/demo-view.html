@@ -800,7 +800,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" if="{{isUser}}">
 
               <section data-route="dashboard">
-                <dashboard-view></dashboard-view>
+                <dashboard-view visible="{{isEqual('dashboard', route)}}"></dashboard-view>
               </section>
 
               <section data-route="notifications">

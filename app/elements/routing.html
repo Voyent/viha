@@ -111,7 +111,6 @@ function waitForApp(){
     });
     
     page('/dashboard', function () {
-      app.$.demoView.querySelector('dashboard-view').refreshButton();
       app.route = 'dashboard';
       app.scrollPageToTop();
     });

@@ -147,36 +147,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
     </style>
     <h2 class="page-title">Dashboard - System Status</h2>
-    
-    <bridgeit-message></bridgeit-message>
-    <div style="font-size: small;">
-        <div id="loading">
-            <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
-            <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
-            <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
-            <paper-button on-click="refreshButton" title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
-            <template is="dom-if" if="[[loading]]">
-                <span>.</span>
-                <span>.</span>
-                <span>.</span>
-            </template>
-        </div>
-    </div>
-    <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
-        <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
-            <div class="loopWrap">
-                <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
-                    <span>{{currentState.alarmLevel}}</span>
-                </div>
-                <div class="statusText">
-                    <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
-                </div>
+    <template is="dom-if" if="{{visible}}">
+        <bridgeit-message></bridgeit-message>
+        <div style="font-size: small;">
+            <div id="loading">
+                <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
+                <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
+                <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
+                <paper-button on-click="refreshButton" title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
+                <template is="dom-if" if="[[loading]]">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </template>
             </div>
-        </paper-material>
-    </template>
-    
-    <template is="dom-if" if="[[!loading]]">
-        <div class="timestamp">{{updatedTime}}</div>
+        </div>
+        <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
+            <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
+                <div class="loopWrap">
+                    <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
+                        <span>{{currentState.alarmLevel}}</span>
+                    </div>
+                    <div class="statusText">
+                        <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
+                    </div>
+                </div>
+            </paper-material>
+        </template>
+        
+        <template is="dom-if" if="[[!loading]]">
+            <div class="timestamp">{{updatedTime}}</div>
+        </template>
     </template>
   </template>
   <script>
@@ -187,6 +188,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'dashboard-view',
 
       properties: {
+        visible: {
+            type: Boolean,
+            notify: true,
+            observer: '_visibleChanged'
+        },
         /**
          * List of system states to display
          */
@@ -221,6 +227,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               // Refresh our application status
               _this.loadStatus();
           });
+      },
+      
+      _visibleChanged: function () {
+        if (this.visible) {
+          this.refreshButton();
+        }
       },
       
       refreshButton: function() {
