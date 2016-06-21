@@ -24,7 +24,7 @@
     app.host = 'dev.bridgeit.io';
 
     //set default account:
-    app.account = 'demos';
+    app.account = 'viha';
 
     // Sets app default base URL
     app.baseUrl = '/';
