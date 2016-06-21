@@ -227,45 +227,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       loadStatus: function(cb) {
           this.set('_lastFetch', []);
           this.set('state', []);
-          this.loading = true;
           var _this = this;
           
-          bridgeit.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
-              // Ensure we got a document in the proper format
-              if (document && document.status && document.status instanceof Array && document.status.length > 0) {
-                  _this.set('_lastFetch', document);
-              
-                  var currentLoop = null;
-                  for (var i = 0; i < document.status.length; i++) {
-                      currentLoop = document.status[i];
-                      
-                      _this.push('state', currentLoop);
-                  }
-              }
-              else {
-                  _this.fire('message-error', "No application status was found, please try again");
-              }
-              
-              _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
-              _this.loading = false;
-              
-              if (typeof cb !== 'undefined') {
-                  cb();
-              }
-          }).catch(function() {
-              _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
-              
-              _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
-              _this.loading = false;
-          });
+          // Check if we're already loading
+          // This can happen if we get quick back-to-back notifications or re-fetch calls
+          // We don't want to double populate the list, so we'll ignore our call if we're already loading
           
-          // Optionally add some fake systems to debug
-          if (this.debugSystems > 0) {
-              for (var j = 0; j < this.debugSystems; j++) {
-                  this.push('state', { "systemName": "p_debug_pm_in_thread",
-                                       "eventTime": "10:" +  Math.floor((Math.random() * 50) + 10) + ":05.000",
-                                       "notificationTime": new Date().toUTCString(),
-                                       "alarmLevel":  Math.floor((Math.random() * 4)) });
+          if (!this.loading) {
+              this.loading = true;
+              bridgeit.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
+                  // Ensure we got a document in the proper format
+                  if (document && document.status && document.status instanceof Array && document.status.length > 0) {
+                      _this.set('_lastFetch', document);
+                  
+                      var currentLoop = null;
+                      for (var i = 0; i < document.status.length; i++) {
+                          currentLoop = document.status[i];
+                          
+                          _this.push('state', currentLoop);
+                      }
+                  }
+                  else {
+                      _this.fire('message-error', "No application status was found, please try again");
+                  }
+                  
+                  if (typeof cb !== 'undefined') {
+                      cb();
+                  }
+                  
+                  _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
+                  _this.loading = false;
+              }).catch(function() {
+                  _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
+                  
+                  _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
+                  _this.loading = false;
+              });
+              
+              // Optionally add some fake systems to debug
+              if (this.debugSystems > 0) {
+                  for (var j = 0; j < this.debugSystems; j++) {
+                      this.push('state', { "systemName": "p_debug_pm_in_thread",
+                                           "eventTime": "10:" +  Math.floor((Math.random() * 50) + 10) + ":05.000",
+                                           "notificationTime": new Date().toUTCString(),
+                                           "alarmLevel":  Math.floor((Math.random() * 4)) });
+                  }
               }
           }
       },
