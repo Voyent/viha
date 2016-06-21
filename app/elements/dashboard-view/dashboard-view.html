@@ -238,12 +238,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   _this.fire('message-error', "No application status was found, please try again");
               }
               
-              _this.updatedTime = "Updated at " + new Date().toTimeString();
+              _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
               _this.loading = false;
           }).catch(function() {
               _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
               
-              _this.updatedTime = "Last Update Failed at " + new Date().toTimeString();
+              _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
               _this.loading = false;
           });
           
@@ -285,7 +285,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var toReturn = new Date(toWrap);
               
               if (toReturn != "Invalid Date") {
-                  return toReturn.toTimeString();
+                  return toReturn.toLocaleTimeString();
               }
           }catch (err) {
               console.warn("Failed to convert date " + toWrap, err);
