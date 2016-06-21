@@ -148,7 +148,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="loading">
             <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
             <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
-            <paper-button on-click='loadStatus' title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
+            <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
+            <paper-button on-click="refreshButton" title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
             <template is="dom-if" if="[[loading]]">
                 <span>.</span>
                 <span>.</span>
@@ -184,6 +185,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          */
         state: { type: Array, value: [], notify: true },
         /**
+         * Document we last fetched from our desired collection
+         */
+        _lastFetch: { type: Array, value: [] },
+        /**
          * Document collection to retrieve from
          */
         collection: { type: String, value: 'system' },
@@ -211,19 +216,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
       },
       
+      refreshButton: function() {
+          this.loadStatus();
+      },
+      
       /**
        * Retrieve our application status from the documents service and update the UI dashboard accordingly
+       * @param cb callback
        */
-      loadStatus: function() {
+      loadStatus: function(cb) {
+          this.set('_lastFetch', []);
           this.set('state', []);
           this.loading = true;
           var _this = this;
-          var params = { 'collection': this.collection, 'id': this.docid };
           
-          bridgeit.io.documents.getDocument(params).then(function(document) {
+          bridgeit.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
               // Ensure we got a document in the proper format
               if (document && document.status && document.status instanceof Array && document.status.length > 0) {
-                  // Loop through and store each JSON state in our local list, for display to the UI
+                  _this.set('_lastFetch', document);
+              
                   var currentLoop = null;
                   for (var i = 0; i < document.status.length; i++) {
                       currentLoop = document.status[i];
@@ -237,7 +248,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               
               _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
               _this.loading = false;
-          }).catch(function() {
+              
+              if (typeof cb !== 'undefined') {
+                  cb();
+              }
+          }).catch(function(error) {
               _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
               
               _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
@@ -253,6 +268,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                        "alarmLevel":  Math.floor((Math.random() * 4)) });
               }
           }
+      },
+      
+      resetAlarmLevels: function() {
+          // First we update the state of our _lastFetch
+          var _this = this;
+          this.loadStatus(function() {
+              // Then we loop through _lastFetch and reset alarm levels and notification time
+              var needSave = false;
+              if (typeof _this._lastFetch !== 'undefined' && _this._lastFetch.status && _this._lastFetch.status instanceof Array) {
+                  for (var i = 0; i < _this._lastFetch.status.length; i++) {
+                      if (_this._lastFetch.status[i].alarmLevel > 0) {
+                          needSave = true;
+                          
+                          _this._lastFetch.status[i].alarmLevel = 0;
+                          _this._lastFetch.status[i].notificationTime = new Date().toUTCString();
+                      }
+                  }
+              }
+              
+              if (needSave) {
+                  bridgeit.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch}).then(function(){
+                      _this.fire('message-info', 'Successfully reset alarm levels');
+                  }).catch(function(error) {
+                      _this.fire('message-error', 'Failed to reset alarm levels: ' + error.toSource());
+                  });
+              }
+          });
       },
       
       /**
