@@ -294,6 +294,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       _this.fire('message-error', 'Failed to reset alarm levels: ' + error.toSource());
                   });
               }
+              else {
+                  _this.fire('message-info', 'No reset needed, alarm levels are already 0');
+              }
           });
       },
       

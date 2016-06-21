@@ -565,53 +565,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <a id="usersLink" data-route="users" href="{{baseUrl}}users">
               <span class="demo-step-badge">1</span>
-              <span>Users</span>
+              <span title="Setup and manage various users of the system">Users</span>
             </a>
 
             <a id="simulator" data-route="simulator" href="{{baseUrl}}simulator">
               <span class="demo-step-badge">2</span>
-              <span>Simulator</span>
+              <span title="Run mock data or upload CSV files to start the process">Simulator</span>
+            </a>
+            
+            <a data-route="dashboard" href="{{baseUrl}}dashboard">
+              <span class="demo-step-badge">3</span>
+              <span title="Central status page to check the state of the system">Dashboard</span>
             </a>
 
             <a data-route="notifications" href="{{baseUrl}}notifications">
-              <span class="demo-step-badge">3</span>
-              <span>History</span>
+              <span class="demo-step-badge">4</span>
+              <span title="Queue of notifications that were sent to various users">History</span>
             </a>
 
             <a data-route="data" href="{{baseUrl}}data">
-              <span class="demo-step-badge">4</span>
-              <span>Data</span>
+              <span class="demo-step-badge">5</span>
+              <span title="View related data in a time window around a notification">Data</span>
             </a>
 
             <a data-route="actions" href="{{baseUrl}}actions">
-              <span class="demo-step-badge">5</span>
-              <span>Actions</span>
+              <span class="demo-step-badge">6</span>
+              <span title="Use the action editor to setup powerful application logic">Actions</span>
             </a>
 
             <a data-route="debug" href="{{baseUrl}}debug">
-              <span class="demo-step-badge">6</span>
-              <span>Debug</span>
+              <span class="demo-step-badge">7</span>
+              <span title="View backpack contents parsed from debug logs">Debug</span>
             </a>
 
             <a data-route="events" href="{{baseUrl}}events">
-              <span class="demo-step-badge">7</span>
-              <span>Events</span>
+              <span class="demo-step-badge">8</span>
+              <span title="Query and monitor system events">Events</span>
             </a>
 
-
             <a data-route="triggers" href="{{baseUrl}}triggers">
-              <span class="demo-step-badge">8</span>
-              <span>Triggers</span>
+              <span class="demo-step-badge">9</span>
+              <span title="Create recognizers to filter and manage incoming data streams">Triggers</span>
             </a>
 
             <a data-route="queries" href="{{baseUrl}}queries">
-              <span class="demo-step-badge">9</span>
-              <span>Queries</span>
+              <span class="demo-step-badge">10</span>
+              <span title="Use the query editor, either single or chained, to manage customizable lookups">Queries</span>
             </a>
 
             <a data-route="logs" href="{{baseUrl}}logs">
-              <span class="demo-step-badge">10</span>
-              <span>Logs</span>
+              <span class="demo-step-badge">11</span>
+              <span title="Detailed view of logging information from the services">Logs</span>
             </a>
 
           </template>
@@ -771,6 +775,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <section data-route="data">
                 <data-view visible="{{isEqual('data', route)}}">
                 </data-view>
+              </section>
+              
+              <section data-route="dashboard">
+                <dashboard-view visible="{{isEqual('dashboard', route)}}"></dashboard-view>
               </section>
 
               <section data-route="accel">
