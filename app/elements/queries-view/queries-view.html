@@ -212,6 +212,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         currentqueryChanged: function(currentquery) {
           this.query = JSON.stringify(currentquery);
+          if (this.query === '{}') {
+            this.query = '';
+          }
         },
 
         getClass: function(service) {
