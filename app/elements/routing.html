@@ -113,6 +113,7 @@ function waitForApp(){
     page('/dashboard', function () {
       app.route = 'dashboard';
       app.scrollPageToTop();
+      app.$.demoView.querySelector('dashboard-view').loadStatus();
     });
 
     page('/notifications', function () {
