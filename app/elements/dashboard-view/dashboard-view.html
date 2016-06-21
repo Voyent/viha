@@ -175,7 +175,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-material>
     </template>
     
-    <div class="timestamp">{{updatedTime}}</div>
+    <template is="dom-if" if="[[!loading]]">
+        <div class="timestamp">{{updatedTime}}</div>
+    </template>
   </template>
   <script>
   (function() {
