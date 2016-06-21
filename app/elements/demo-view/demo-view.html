@@ -572,7 +572,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <span class="demo-step-badge">2</span>
               <span>Simulator</span>
             </a>
-            
+
             <a title="Central status page to check the state of the system" data-route="dashboard" href="{{baseUrl}}dashboard">
               <span class="demo-step-badge">3</span>
               <span>Dashboard</span>
@@ -772,7 +772,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <data-view visible="{{isEqual('data', route)}}">
                 </data-view>
               </section>
-              
+
               <section data-route="dashboard">
                 <dashboard-view visible="{{isEqual('dashboard', route)}}"></dashboard-view>
               </section>
@@ -1086,7 +1086,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return;
         }
         var _this = this;
-        bridgeit.xio.push.registerCloudPush(this.host, this.account, bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername()).then(function(){
+        bridgeit.xio.push.registerCloudPush(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername()).then(function(){
           console.log('registered for cloud push promise returned');
           _this.cloudPushRegistered = true;
           _this.message = 'Registered for Cloud Push notifications';
@@ -1105,7 +1105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         phonenumber = phonenumber.trim();
         this.previouslyRegisteredPhoneNumber = phonenumber;
-        bridgeit.xio.push.registerSms(this.host, this.account, bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), phonenumber).then(function(){
+        bridgeit.xio.push.registerSms(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), phonenumber).then(function(){
           console.log('registered for sms promise returned');
           _this.smsRegistered = _this.smsSelected = true;
           _this.message = 'Registered for SMS notifications';
@@ -1124,7 +1124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         email = email.trim();
         this.previouslyRegisteredEmail = email;
-        bridgeit.xio.push.registerEmail(this.host, this.account, bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), email).then(function(){
+        bridgeit.xio.push.registerEmail(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), email).then(function(){
           console.log('registered for email promise returned');
           _this.emailRegistered = _this.emailSelected = true;
           _this.message = 'Registered for email notifications';
@@ -1150,7 +1150,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.handleRegisterCloudPush();
           }
           else{
-            bridgeit.xio.push.unregisterCloudPush(this.host, this.account, bridgeit.io.auth.getLastKnownRealm());
+            bridgeit.xio.push.unregisterCloudPush(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm());
             this.cloudPushRegistered = false;
             var _this = this;
             setTimeout(function(){
@@ -1168,7 +1168,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.openConfirmDialog("Please enter the phone number to register for SMS notifications",this.previouslyRegisteredPhoneNumber || '','handleRegisterSms');
         }
         else {
-          bridgeit.xio.push.unregisterSms(this.host, this.account, bridgeit.io.auth.getLastKnownRealm());
+          bridgeit.xio.push.unregisterSms(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm());
           this.smsRegistered = this.smsSelected = false;
           var _this = this;
           setTimeout(function(){
@@ -1185,7 +1185,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.openConfirmDialog('Please enter the email to register for mail notifications',this.previouslyRegisteredEmail || '','handleRegisterEmail');
         }
         else {
-          bridgeit.xio.push.unregisterEmail(this.host, this.account, bridgeit.io.auth.getLastKnownRealm());
+          bridgeit.xio.push.unregisterEmail(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm());
           this.emailRegistered = this.emailSelected = false;
           var _this = this;
           setTimeout(function(){
