@@ -57,28 +57,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       
       .loopWrap {
-          white-space: nowrap;
-      }
-      
-      .loopWrap, .statusText {
-          height: 50px;
-          line-height: 50px;
-          vertical-align: middle;
+          word-wrap: break-word;
+          height: 30px;
       }
       
       .circle {
-          width: 50px;
-          height: 50px;
-          line-height: 50px;
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
           text-align: center;
           font-family: monospace;
           font-size: 14px;
           font-weight: bold;
           box-shadow: 2px 2px 5px #AAAAAA;
-          border-radius: 25px;
-          -webkit-border-radius: 25px;
-          -moz-border-radius: 25px;
-          display: inline-block;
+          border-radius: 15px;
+          -webkit-border-radius: 15px;
+          -moz-border-radius: 15px;
+          float: left;
           cursor: default;
       }
       
@@ -88,8 +83,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       
       .statusText {
-          display: inline-block;
-          padding-left: 10px;
+          padding-left: 40px;
+          padding-top: 5px;
       }
       
       .blink0 {
@@ -164,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
     </div>
     <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
-        <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 30px;">
+        <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
             <div class="loopWrap">
                 <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
                     <span>{{currentState.alarmLevel}}</span>
