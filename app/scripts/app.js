@@ -17,7 +17,8 @@
     // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
     var app = document.querySelector('#app');
 
-    //save a reference to the actionable notifications route
+    //save a reference to the actionable notifications routes
+    app.adminNotificationsRoute = 'notifications';
     app.notificationsRoute = 'notifications-team';
 
     //set default host;
@@ -68,6 +69,9 @@
       //don't redirect link for admins since notifications
       //are only acted on by regular users
       if (app.$.demoView.isAdmin) {
+        if (app.route !== app.adminNotificationsRoute) {
+          page.redirect('/'+app.adminNotificationsRoute);
+        }
         return;
       }
       //set the current notification
