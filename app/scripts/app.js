@@ -63,16 +63,15 @@
     });
 
     document.addEventListener('notificationClicked',function(e) {
-      var notification = e.detail.notification;
+      //prevent the default behaviour of redirecting to URL
+      e.preventDefault();
       //don't redirect link for admins since notifications
       //are only acted on by regular users
       if (app.$.demoView.isAdmin) {
-        e.preventDefault();
-        bridgeit.notify.hideNotification(e.detail.toast ? e.detail.toast : e.detail.native,0);
         return;
       }
       //set the current notification
-      bridgeit.notify.selectNotification(notification);
+      bridgeit.notify.selectNotification(e.detail.notification);
       if (app.route !== app.notificationsRoute) {
         page.redirect('/'+app.notificationsRoute);
       }
