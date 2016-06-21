@@ -131,7 +131,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div name="authadmin">AuthAdmin</div>
             </iron-selector>
           </paper-dropdown-menu>
-          <bridgeit-query-list id="queryList" for="queries"></bridgeit-query-list>
           <div class="small floatLeft">
             <template is="dom-if" if="{{isEqual('documents', service)}}">
               <paper-input label="Collection:" value="{{collection}}"></paper-input>
@@ -146,6 +145,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </paper-dropdown-menu>
             </template>
           </div>
+          <bridgeit-query-list id="queryList" for="queries"></bridgeit-query-list>
           <div style="clear:both;"></div>
         </div>
         <div class="currentquery">[[query]]</div>
