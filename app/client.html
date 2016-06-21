@@ -173,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     window.initializePushGroups = function(){
-      bridgeit.xio.push.join("/demos/realms/" + bridgeit.io.auth.getLastKnownRealm() + "/" + bridgeit.io.auth.getLastKnownUsername());
+      bridgeit.xio.push.join("/"+bridgeit.io.auth.getLastKnownRealm()+"/realms/" + bridgeit.io.auth.getLastKnownRealm() + "/" + bridgeit.io.auth.getLastKnownUsername());
     };
 
   </script>

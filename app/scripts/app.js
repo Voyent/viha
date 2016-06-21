@@ -23,6 +23,9 @@
     //set default host;
     app.host = 'dev.bridgeit.io';
 
+    //set default account:
+    app.account = 'demos';
+
     // Sets app default base URL
     app.baseUrl = '/';
     if (window.location.port === '') {  // if production
@@ -51,7 +54,7 @@
     };
 
     function setupNotificationListener(){
-      bridgeit.xio.push.attach('http://'+app.host+'/pushio/demos/realms/' + bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername());
+      bridgeit.xio.push.attach('http://'+app.host+'/pushio/'+ bridgeit.io.auth.getLastKnownAccount() +'/realms/' + bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername());
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
 
