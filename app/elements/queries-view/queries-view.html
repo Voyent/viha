@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --query-list-wrapper: {
           padding:10px 0 10px 0;
           background-color: transparent;
+          text-align:center;
         };
         --query-list-button: {
           font: inherit;
@@ -118,7 +119,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <button onclick="document.getElementById('queries').saveQueryWithPrompt();">Save</button>
           <button onclick="document.getElementById('queries').cloneQueryWithPrompt();">Clone</button>
           <button onclick="document.getElementById('queries').deleteQuery();">Delete</button>
-          <bridgeit-query-list id="queryList" for="queries"></bridgeit-query-list>
           <bridgeit-message></bridgeit-message>
         </div>
         <div class="query-options">
@@ -131,6 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div name="authadmin">AuthAdmin</div>
             </iron-selector>
           </paper-dropdown-menu>
+          <bridgeit-query-list id="queryList" for="queries"></bridgeit-query-list>
           <div class="small floatLeft">
             <template is="dom-if" if="{{isEqual('documents', service)}}">
               <paper-input label="Collection:" value="{{collection}}"></paper-input>
