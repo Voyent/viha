@@ -56,6 +56,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding-bottom: 0;
       }
       
+      .timestamp {
+          float: right;
+          font-size: small;
+      }
+      
       .loopWrap {
           word-wrap: break-word;
           height: 30px;
@@ -155,8 +160,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <span>.</span>
                 <span>.</span>
             </template>
-            
-            <div style="float: right;">{{updatedTime}}</div>
         </div>
     </div>
     <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
@@ -171,6 +174,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
         </paper-material>
     </template>
+    
+    <div class="timestamp">{{updatedTime}}</div>
   </template>
   <script>
   (function() {
