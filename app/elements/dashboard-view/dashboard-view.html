@@ -252,7 +252,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               if (typeof cb !== 'undefined') {
                   cb();
               }
-          }).catch(function(error) {
+          }).catch(function() {
               _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
               
               _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
