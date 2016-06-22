@@ -864,7 +864,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var _this = this;
 
-        this.route = 'home';
+        //set the route dynamically based on the hash, default to 'home'
+        this.route = window.location.hash && window.location.hash.substr(0,3) === '#!/' ? window.location.hash.substr(3) : 'home';
 
         //error handling
         this.addEventListener('message-error',  function(e){
