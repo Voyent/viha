@@ -94,7 +94,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       .systemText {
           font-family: monospace;
-          font-weight: bold;
           font-size: 12px;
       }
       
@@ -185,7 +184,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>{{currentState.alarmLevel}}</span>
                     </div>
                     <div class="statusText">
-                        <span class="systemText">{{currentState.systemName}}:</span> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
+                        <span class="systemText">{{currentState.description}}/{{currentState.node}}/<b>{{currentState.detail}}</b>:</span> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
                     </div>
                 </div>
             </paper-material>
@@ -280,8 +279,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           currentLoop = document.status[i];
                           
                           _this.push('state', currentLoop);
-                          
-                          console.log("Status: " + currentLoop.toSource());
                       }
                   }
                   
