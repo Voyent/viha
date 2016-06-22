@@ -63,7 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
       .loopWrap {
           word-wrap: break-word;
-          height: 30px;
       }
       
       .circle {
@@ -260,13 +259,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @param cb callback
        */
       loadStatus: function(cb) {
-          this.set('state', []);
-          this.set('_lastFetch', []);
-          
           // Check if we're already loading
           // This can happen if we get quick back-to-back notifications or re-fetch calls
           // We don't want to double populate the list, so we'll ignore our call if we're already loading
           if (!this.loading) {
+              this.set('state', []);
+              this.set('_lastFetch', []);
+          
               var _this = this;
               this.loading = true;
               bridgeit.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
