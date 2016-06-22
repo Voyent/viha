@@ -92,6 +92,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           padding-top: 5px;
       }
       
+      .systemText {
+          font-family: monospace;
+          font-weight: bold;
+          font-size: 12px;
+      }
+      
       .blink0 {
       }
       
@@ -151,9 +157,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <bridgeit-message></bridgeit-message>
         <div style="font-size: small;">
             <div id="loading">
-                <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
-                <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
-                <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
+                <template is="dom-if" if="[[hasState]]">
+                    <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
+                    <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
+                    <template is="dom-if" if="{{isAdmin()}}">
+                        <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
+                        <paper-button on-click="clearAll" title="Manually delete all system status">Clear All</paper-button>
+                    </template>
+                </template>
                 <paper-button on-click="refreshButton" title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
                 <template is="dom-if" if="[[loading]]">
                     <span>.</span>
@@ -162,6 +173,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </template>
             </div>
         </div>
+        
+        <template is="dom-if" if="[[!hasState]]">
+            <div style="font-size: larger; font-style: italic;"><p>No application states were found</p></div>
+        </template>
+        
         <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
             <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
                 <div class="loopWrap">
@@ -169,7 +185,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>{{currentState.alarmLevel}}</span>
                     </div>
                     <div class="statusText">
-                        <b>{{currentState.systemName}}:</b> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
+                        <span class="systemText">{{currentState.systemName}}:</span> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
                     </div>
                 </div>
             </paper-material>
@@ -220,6 +236,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // Sort Type true is 'level', false is 'time'
           this.sortTypeLevel = true;
           this.sortAscending = true;
+          this.hasState = false;
           this.loading = false;
           
           var _this = this;
@@ -244,36 +261,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @param cb callback
        */
       loadStatus: function(cb) {
-          this.set('_lastFetch', []);
           this.set('state', []);
-          var _this = this;
+          this.set('_lastFetch', []);
           
           // Check if we're already loading
           // This can happen if we get quick back-to-back notifications or re-fetch calls
           // We don't want to double populate the list, so we'll ignore our call if we're already loading
-          
           if (!this.loading) {
+              var _this = this;
               this.loading = true;
               bridgeit.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
                   // Ensure we got a document in the proper format
                   if (document && document.status && document.status instanceof Array && document.status.length > 0) {
                       _this.set('_lastFetch', document);
-                  
+                      
                       var currentLoop = null;
                       for (var i = 0; i < document.status.length; i++) {
                           currentLoop = document.status[i];
                           
                           _this.push('state', currentLoop);
+                          
+                          console.log("Status: " + currentLoop.toSource());
                       }
-                  }
-                  else {
-                      _this.fire('message-error', "No application status was found, please try again");
                   }
                   
                   if (typeof cb !== 'undefined') {
                       cb();
                   }
                   
+                  _this.hasState = _this.state.length > 0;
                   _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
                   _this.loading = false;
               }).catch(function() {
@@ -281,6 +297,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   
                   _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
                   _this.loading = false;
+                  _this.hasState = false;
               });
               
               // Optionally add some fake systems to debug
@@ -291,6 +308,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                            "notificationTime": new Date().toUTCString(),
                                            "alarmLevel":  Math.floor((Math.random() * 4)) });
                   }
+                  this.hasState = true;
               }
           }
       },
@@ -323,6 +341,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   _this.fire('message-info', 'No reset needed, alarm levels are already 0');
               }
           });
+      },
+      
+      /**
+       * Clear/delete the entire list of application states, which means resetting applicationStatus.status to []
+       * This will confirm with the user first
+       * This function will also bail if we're already loading (this.loading = true) to prevent race conditions
+       */
+      clearAll: function() {
+          var confirm = window.confirm("Are you sure you want to delete " + this.state.length + " application states?");
+          if (!confirm) {
+              return;
+          }
+          
+          if (!this.loading) {
+              var _this = this;
+              if (_this._lastFetch.status) {
+                  _this.set('_lastFetch.status', []);
+              }
+              else {
+                  _this.set('_lastFetch', {"status": []});
+              }
+              
+              // Update the document to a blank array
+              bridgeit.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch }).then(function(){
+                  _this.fire('message-info', 'Successfully cleared all application states');
+                  
+                  _this.set('state', []);
+                  _this.set('hasState', false);
+              }).catch(function(error) {
+                  _this.fire('message-error', 'Failed to clear the application states: ' + error.toSource());
+              });
+          }
       },
       
       /**
@@ -399,7 +449,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (a.notificationTime > b.notificationTime) { return 1; }
         else if (a.notificationTime < b.notificationTime) { return -1; }
         return 0;
-      }
+      },
+      
+      isAdmin: function() {
+          try{
+              return app.$.demoView.isAdmin;
+          }catch(error) {
+              console.warn("Couldn't find demo view when checking for admin state: " + error.toSource());
+          }
+          return false;
+      },
     });
   })();
   </script>
