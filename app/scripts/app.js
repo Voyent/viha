@@ -133,6 +133,7 @@
           setupNotificationListener();
         }, 5000);
       }
+      //Changed this value as well
     });
 
     // Startup the Notification Push Listener after login
