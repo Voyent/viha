@@ -54,6 +54,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- Configure your routes here -->
 <link rel="import" href="routing.html">
 
+<!-- Load query builder dependency outside of the component to fix IE11 input focus issues -->
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/jQuery-QueryBuilder/dist/js/query-builder.standalone.min.js"></script>
+
 <link rel="import" href="../bower_components/bridgeit-web-components/bridgeit-xio-import/bridgeit-xio-import.html">
 <link rel="import" href="../bower_components/voyent.notify.js/voyent.notify.html">
 
@@ -73,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/bridgeit-web-components/bridgeit-recognizer-editor/bridgeit-recognizer-editor.html">
 <link rel="import" href="../bower_components/bridgeit-web-components/bridgeit-recognizer-editor/bridgeit-recognizer-list.html">
 
-<link rel="import" href="../bower_components/ellipticaljs/paper-autocomplete.html">
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete.html">
 <link rel="import" href="../bower_components/awesomplete/awesomplete.js">
 
 <!-- Add your elements here -->
