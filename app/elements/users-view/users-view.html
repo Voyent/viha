@@ -19,7 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         .avatar {
-          display: inline-block;
+          display: inline-block !important;
           box-sizing: border-box;
           width: 40px;
           height: 40px;
@@ -47,21 +47,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             min-width: 100px;
         }
 
-        paper-toggle-button.green {
-            --paper-toggle-button-checked-bar-color: var(--paper-green-500);
-            --paper-toggle-button-checked-button-color: var(--paper-green-500);
-            --paper-toggle-button-checked-ink-color: var(--paper-green-500);
-            --paper-toggle-button-unchecked-bar-color: var(--paper-green-900);
-            --paper-toggle-button-unchecked-button-color: var(--paper-green-900);
-            --paper-toggle-button-unchecked-ink-color: var(--paper-green-900);
-        }
-
         .userParent{
           display:table-row;
         }
 
         .cell{
           display:table-cell;
+        }
+
+        /* CSS specific to IE10+ */
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+          .username{
+            min-width:120px; /* Ensure the usernames line up  */
+          }
         }
     </style>
     <h2 class="page-title">Users</h2>
