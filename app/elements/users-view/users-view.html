@@ -12,194 +12,132 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../styles/shared-styles.html">
 
 <dom-module id="users-view">
-<template>
+  <template>
     <style include="shared-styles">
-        :host {
-            display: block;
-        }
+      :host {
+        display: block;
+      }
 
-        .avatar {
-          display: inline-block !important;
-          box-sizing: border-box;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-        }
+      .avatar {
+        display: inline-block !important;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
 
-        paper-icon-item{
-            background-color: #FFF;
-            border-bottom: 1px solid #EEE;
+      paper-icon-item{
+        background-color: #FFF;
+        border-bottom: 1px solid #EEE;
 
-        }
+      }
 
-        paper-icon-item ::content > div{
-            padding: 20px;
-        }
+      paper-icon-item ::content > div{
+        padding: 20px;
+      }
 
+      .username{
+        width: 100px;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      iron-selector ::content > * {
+        padding: 8px;
+        min-width: 100px;
+      }
+
+      .userParent{
+        display:table-row;
+      }
+
+      .cell{
+        display:table-cell;
+      }
+
+      /* CSS specific to IE10+ */
+      @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
         .username{
-            width: 100px;
-            font-weight: bold;
-            font-size: 18px;
+          min-width:120px; /* Ensure the usernames line up  */
         }
-
-        iron-selector ::content > * {
-            padding: 8px;
-            min-width: 100px;
-        }
-
-        .userParent{
-          display:table-row;
-        }
-
-        .cell{
-          display:table-cell;
-        }
-
-        /* CSS specific to IE10+ */
-        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-          .username{
-            min-width:120px; /* Ensure the usernames line up  */
-          }
-        }
+      }
     </style>
     <h2 class="page-title">Users</h2>
     <template is="dom-if" if="{{visible}}">
-        <paper-material id="topLevel" style="display:table">
-            <template is="dom-repeat" strip-whitespace items="{{users}}">
-                <paper-icon-item id="[[item._id]]" class="userParent" style="display:flex;align-content: center">
-                    <iron-icon icon="account-circle" item-icon class="avatar cell"></iron-icon>
-                    <div class="item-body username cell">
-                        <div class="flex">{{item._id}}</div>
-                    </div>
-                    <div class="flex cell" style="margin-top:-15px;">
-                        <paper-dropdown-menu>
-                            <iron-selector class="dropdown-content roleSelect" attr-for-selected="name"
-                                           >
-                              <div on-click="updateUser" name="manager">Manager</div>
-                              <div on-click="updateUser" name="team">Team</div>
-                            </iron-selector>
-                        </paper-dropdown-menu>
-                    </div>
-                    <div class="flex routesDiv regionSelect cell">
-                      On Call:
-                      <paper-checkbox on-click="onCallSelect" class="onCallButton"></paper-checkbox>
-                    </div>
+      <paper-material id="topLevel" style="display:table">
+        <template is="dom-repeat" strip-whitespace items="{{users}}">
+          <paper-icon-item class="userParent" style="display:flex;align-content: center">
+            <iron-icon icon="account-circle" item-icon class="avatar cell"></iron-icon>
+            <div class="item-body username cell">
+              <div class="flex">{{item._id}}</div>
+            </div>
+            <div class="flex cell" style="margin-top:-15px;">
+              <paper-dropdown-menu>
+                <iron-selector class="dropdown-content" attr-for-selected="name" selected="{{item.info.role}}" on-iron-select="updateUser">
+                  <div name="manager">Manager</div>
+                  <div name="team">Team</div>
+                </iron-selector>
+              </paper-dropdown-menu>
+            </div>
+            <div class="flex routesDiv cell">
+              On Call:
+              <paper-checkbox class="onCallButton" on-click="updateUser" checked="{{item.state.onCall}}"></paper-checkbox>
+            </div>
 
-                </paper-icon-item>
-            </template>
-        </paper-material>
+          </paper-icon-item>
+        </template>
+      </paper-material>
     </template>
-</template>
-<script>
+  </template>
+  <script>
     (function () {
-        'use strict';
-        var poly;
+      'use strict';
+      Polymer({
+        is: 'users-view',
 
-        Polymer({
-            is: 'users-view',
-
-            properties: {
-                visible: {
-                    type: Boolean,
-                    notify: true,
-                    observer: '_visibleChanged'
-                },
-                users: {
-                    type: Array,
-                    notify: true,
-                    value: []
-                },
-                regions: {
-                    type: Array,
-                    notify: true,
-                    value: []
-                }
-            },
-
-            ready: function () {
-                poly = this;
-            },
-
-            _visibleChanged: function () {
-                if (this.visible) {
-                  if (poly.users.length === 0) {
-                    poly.loadUsers();
-                  }
-                  else {
-                    poly.updateToggles();
-                  }
-                }
-            },
-
-            updateUser: function (e,rawElement) {
-                setTimeout(function () {
-                    var username;
-                    if(rawElement === true){
-                      username = e.closest('.userParent').getAttribute('id');
-                    }
-                    else{
-                      var node = e.srcElement? e.srcElement.closest('.userParent'): e.target.closest('.userParent');
-                      username = node.getAttribute('id');
-                    }
-                    var mailbox = {
-                      info: {
-                        role: poly.$$('#' + username.split('.').join('\\.')).querySelector('.roleSelect').querySelector('.iron-selected').getAttribute('name')
-                      },
-                      state: {
-                        onCall: poly.$$('#' + username.split('.').join('\\.')).querySelector('.onCallButton').getAttribute('checked') !== null
-                      }
-                    };
-                    bridgeit.io.mailbox.updateMailbox({'id': username, 'mailbox': mailbox});
-                }, 10);
-            },
-
-            loadUsers: function () {
-              //TODO: Add functionality for different mailbox holding.
-                bridgeit.io.mailbox.findMailboxes().then(function (tempUsers) {
-                    var users = [];
-                    for (var i = 0; i < tempUsers.length; i++){
-                      if(tempUsers[i].info.role !== 'machine'){
-                        users.push(tempUsers[i]);
-                      }
-                    }
-                    poly.set('users',users);
-                    poly.updateToggles();
-                });
-            },
-
-            updateToggles: function () {
-              function doToggleUpdate(user) {
-                setTimeout(function () {
-                  if (user.state.onCall) {
-                    poly.$$('#' + user._id.split('.').join('\\.')).querySelector('.onCallButton').setAttribute('checked', 'checked');
-                  }
-
-                  poly.$$('#' + user._id.split('.').join('\\.')).querySelector('.roleSelect').setAttribute('selected',user.info.role);
-                },10);
-              }
-              for (var i=0; i<poly.users.length; i++) {
-                doToggleUpdate(poly.users[i]);
-              }
-            },
-
-          driverTest: function(item){
-            return item.info.role === 'driver';
+        properties: {
+          visible: {
+            type: Boolean,
+            notify: true,
+            observer: '_visibleChanged'
           },
-
-          onCallSelect:function(e){
-            //console.log(e);
-            //var buttons = Polymer.dom(poly.$$('#topLevel')).querySelectorAll(".onCallButton");
-            /**for (var i = 0; i < buttons.length; i++){
-              if( buttons[i] != e.srcElement.closest('.onCallButton')){
-                if(buttons[i].checked){
-                  buttons[i].checked = false;
-                  poly.updateUser(buttons[i],true);
-                }
-              }
-            }*/
-            poly.updateUser(e,false);
+          users: {
+            type: Array,
+            notify: true,
+            value: []
           }
-        });
+        },
+
+        _visibleChanged: function () {
+          if (this.visible && this.users.length === 0) {
+            this.loadUsers();
+          }
+        },
+
+        updateUser: function (e) {
+          bridgeit.io.mailbox.updateMailbox({'id': e.model.item._id, 'mailbox': {
+            info: {
+              role: e.model.item.info.role
+            },
+            state: {
+              onCall: e.model.item.state.onCall
+            }
+          }});
+        },
+
+        loadUsers: function () {
+          var _this = this;
+          bridgeit.io.mailbox.findMailboxes().then(function (tempUsers) {
+            var users = [];
+            for (var i = 0; i < tempUsers.length; i++) {
+              if (tempUsers[i].info.role !== 'machine') {
+                users.push(tempUsers[i]);
+              }
+            }
+            _this.set('users', users);
+          });
+        }
+      });
     })();
-</script>
+  </script>
 </dom-module>
