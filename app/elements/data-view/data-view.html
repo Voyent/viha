@@ -171,7 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!--paper-autocomplete id="nodeSelect" value="[[selectednode]]" source="{{nodeArray}}" on-autocomplete.selected="nodeUp" label="Node matching:"></paper-autocomplete-->
           <input class="awesomplete" value="[[selectednode]]" id="nodeSelect" list="nodelist" on-input="nodeUp" label="Node matching:"/>
           <datalist id="nodelist">
-            <template is="dom-repeat" items="{{nodeArray}}">
+            <template is="dom-repeat" strip-whitespace items="{{nodeArray}}">
               <option>[[item]]</option>
             </template>
           </datalist>
@@ -191,7 +191,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-dropdown-menu-->
           <input class="awesomplete" id="statusSelect" list="statuslist" on-input="statusUp" label="Status matching:"/>
           <datalist id="statuslist">
-            <template is="dom-repeat" items="{{statusArray}}">
+            <template is="dom-repeat" strip-whitespace items="{{statusArray}}">
               <option value$="[[item.value]]">[[item.name]]</option>
             </template>
           </datalist>
@@ -199,7 +199,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="tableCell">
           <input class="awesomplete" id="groupSelect" value="[[selectedgroup]]" list="grouplist" on-input="groupUp" label="Group matching:"/>
           <datalist id="grouplist">
-            <template is="dom-repeat" items="{{groupArray}}">
+            <template is="dom-repeat" strip-whitespace items="{{groupArray}}">
               <option>[[item]]</option>
             </template>
           </datalist>
@@ -212,7 +212,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="tableCell">
           <input class="awesomplete" id="detailSelect" value='[[selecteddetail]]' list="detaillist" on-input="detailUp" label="Detail matching:"/>
           <datalist id="detaillist">
-            <template is="dom-repeat" items="{{detailArray}}">
+            <template is="dom-repeat" strip-whitespace items="{{detailArray}}">
               <option>[[item]]</option>
             </template>
           </datalist>
@@ -221,7 +221,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </div>
       <template is="dom-if" if="[[hasEvents]]">
-        <template is="dom-repeat" items="{{events}}">
+        <template is="dom-repeat" strip-whitespace items="{{events}}">
           <div class="tableRow polyRow" value$=[[item.data.status]] id$="a[[item._id]]">
             <div class="tableCell">[[item.data.node]]</div>
             <div class="tableCell">[[item.data.status]]</div>

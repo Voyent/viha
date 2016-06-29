@@ -94,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-if" if="{{hasNotifications}}">
         <paper-material>
           <paper-menu class="notifications">
-            <template id="notificationList" is="dom-repeat" items="{{notifications}}" sort="{{computedSort(sortAscending)}}">
+            <template id="notificationList" is="dom-repeat" strip-whitespace items="{{notifications}}" sort="{{computedSort(sortAscending)}}">
               <paper-icon-item>
                 <iron-icon icon="communication:message" item-icon></iron-icon>
                 <paper-item-body on-click="injectData" three-line>
@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </template>
     <template is="dom-if" if="{{groupbyuser}}">
-      <template is="dom-repeat" items="{{_decoratedUserNotifications}}">
+      <template is="dom-repeat" strip-whitespace items="{{_decoratedUserNotifications}}">
         <paper-card>
           <div class="card-content user-card-header">
             <iron-icon icon="social:person" item-icon></iron-icon>
@@ -123,7 +123,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
           <div class="card-content message-list">
             <paper-menu>
-              <template is="dom-repeat" items="{{item.notifications}}" as="msg">
+              <template is="dom-repeat" strip-whitespace items="{{item.notifications}}" as="msg">
                 <paper-item>
                   <paper-item-body three-line>
                     <div>{{msg.details}}</div>

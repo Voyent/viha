@@ -65,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h2 class="page-title">Users</h2>
     <template is="dom-if" if="{{visible}}">
         <paper-material id="topLevel" style="display:table">
-            <template is="dom-repeat" items="{{users}}">
+            <template is="dom-repeat" strip-whitespace items="{{users}}">
                 <paper-icon-item id="[[item._id]]" class="userParent" style="display:flex;align-content: center">
                     <iron-icon icon="account-circle" item-icon class="avatar cell"></iron-icon>
                     <div class="item-body username cell">

@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-radio-button checked on-click="setSim" id="simRadio"></paper-radio-button>
         <paper-dropdown-menu on-click="setSim" id="simulationSelect">
           <paper-listbox selected="0" class="dropdown-content">
-            <template is="dom-repeat" items="{{simulationList}}">
+            <template is="dom-repeat" strip-whitespace items="{{simulationList}}">
               <paper-item>[[item]]</paper-item>
             </template>
           </paper-listbox>
@@ -51,13 +51,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!--h4>Simulated Start Time:</h4>
         <div>
           <select id="hourSelect">
-            <template is="dom-repeat" items="{{hourCounts}}">
+            <template is="dom-repeat" strip-whitespace items="{{hourCounts}}">
               <option value="[[item]]">[[item]]</option>
             </template>
           </select>
            :
           <select id="minuteSelect">
-            <template is="dom-repeat" items="{{minuteCounts}}">
+            <template is="dom-repeat" strip-whitespace items="{{minuteCounts}}">
               <option value="[[item]]">[[item]]</option>
             </template>
           </select>
@@ -92,14 +92,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h2 class="page-title">Live Data:</h2>
     <div style="display:flex; align-items:baseline; justify-content:space-between;">
       <div style="height:100%; flex-basis:40%; display:flex; flex-direction:column;">
-        <template is="dom-repeat" items="{{machineList}}">
+        <template is="dom-repeat" strip-whitespace items="{{machineList}}">
           <div style="display:flex; flex-direction:row; justify-content:space-between;">
             <div style="display:inline-block">
               <span>[[item]]</span>
             </div>
             <div style="display:inline-block">
                 <select id$="[[item]]" on-click="setComputer" class="statusList">
-                  <template is="dom-repeat" items="{{statusList}}">
+                  <template is="dom-repeat" strip-whitespace items="{{statusList}}">
                     <option value="[[item]]">[[item]]</option>
                   </template>
                 </select>

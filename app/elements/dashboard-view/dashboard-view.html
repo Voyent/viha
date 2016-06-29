@@ -175,7 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div style="font-size: larger; font-style: italic;"><p>No application states were found</p></div>
         </template>
         
-        <template id="stateList" is="dom-repeat" items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
+        <template id="stateList" is="dom-repeat" strip-whitespace items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
             <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
                 <div class="loopWrap">
                     <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
