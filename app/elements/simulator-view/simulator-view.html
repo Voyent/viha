@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../styles/shared-styles.html">
-<script src="../../bower_components/papaparse/papaparse.js"></script>
+<script src="../../bower_components/papaparse/papaparse.min.js"></script>
 
 <dom-module id="simulator-view">
 
@@ -36,32 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-radio-button on-click="setFile" id="fileRadio"></paper-radio-button>
         <input id="the-file-input" type="file">
       </div>
-      <!--div style="height:100%;display:inline-block;flex-shrink:2;">
-        <h4>Simulated Runspeed:</h4>
-        <div style="display:flex; align-items:center">
-          <div style="display:inline-block">
-            <paper-slider  min="1" max="5" value="{{sliderValue}}" pin step="0.5"></paper-slider>
-          </div>
-          <div style="display:inline-block; ">
-            <span style="display:inline-block;">[[sliderValue]]</span>X speed
-          </div>
-        </div>
-      </div-->
       <div style="height:100%;display:inline-block;flex-shrink:2;">
-        <!--h4>Simulated Start Time:</h4>
-        <div>
-          <select id="hourSelect">
-            <template is="dom-repeat" strip-whitespace items="{{hourCounts}}">
-              <option value="[[item]]">[[item]]</option>
-            </template>
-          </select>
-           :
-          <select id="minuteSelect">
-            <template is="dom-repeat" strip-whitespace items="{{minuteCounts}}">
-              <option value="[[item]]">[[item]]</option>
-            </template>
-          </select>
-        </div-->
         <h4>Off Hours:</h4>
         <div style="width:230px">
           <paper-toggle-button on-click="toggleHours" checked="{{offHours}}">Currently: {{offHoursString}}</paper-toggle-button>
@@ -74,7 +49,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div style="text-align:center;"><span>[[currentEvent]]</span>/<span>[[totalEvents]]</span></div>
         <br/>
         <div style="text-align:center;">
-          <!--span on-click="resumeArray">Resume</span>      <span on-click="pauseArray">Pause</span-->
           <template is="dom-if" if="{{canRun}}">
             <template is="dom-if" if="{{running}}">
               <paper-icon-button on-click="pauseArray" src="../../images/pause.png"></paper-icon-button>
@@ -85,47 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </template>
         </div>
       </div>
-
     </div>
-    <!--br/><br/>
-    <hr/>
-    <h2 class="page-title">Live Data:</h2>
-    <div style="display:flex; align-items:baseline; justify-content:space-between;">
-      <div style="height:100%; flex-basis:40%; display:flex; flex-direction:column;">
-        <template is="dom-repeat" strip-whitespace items="{{machineList}}">
-          <div style="display:flex; flex-direction:row; justify-content:space-between;">
-            <div style="display:inline-block">
-              <span>[[item]]</span>
-            </div>
-            <div style="display:inline-block">
-                <select id$="[[item]]" on-click="setComputer" class="statusList">
-                  <template is="dom-repeat" strip-whitespace items="{{statusList}}">
-                    <option value="[[item]]">[[item]]</option>
-                  </template>
-                </select>
-            </div>
-          </div>
-          <br/>
-        </template>
-      </div>
-
-      <div style="height:100%;display:inline-block">
-        <h4>Live Runspeed:</h4>
-        <div style="display:flex; align-items:center">
-          <div style="display:inline-block">
-            <paper-slider  min="1" max="15" value="{{liveSliderValue}}" pin step="0.5"></paper-slider>
-          </div>
-          <div style="display:inline-block; ">
-            <span style="display:inline-block;">[[liveSliderValue]]</span>X speed
-          </div>
-        </div>
-      </div>
-
-      <div style="height:100%;display:inline-block; margin-top:30px; align-self:center"><paper-button raised on-click="liveButtonPress">[[liveStatus]]</paper-button></div>
-
-
-    </div-->
-
   </template>
   <script>
   (function() {
@@ -206,7 +140,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               jsonArray.push(event);
             }
             poly.uploadedArray = jsonArray;
-            //bridgeit.io.documents.updateDocument({"collection":"simulations","id":"simulation1","document":{"array":jsonArray}});
           }});
         });
 
@@ -242,7 +175,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           bridgeit.io.event.stopEvents();
           poly.running = true;
           poly.canRun = true;
-          //poly.startTime = poly.$$('#hourSelect').value + ':' + poly.$$('#minuteSelect').value;
           if (poly.inputSource === 'Simulation') {
             bridgeit.io.documents.getDocument({
               "collection": 'simulations',
@@ -269,13 +201,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         poly.currentEvent = bridgeit.io.event.getCurrentEvent();
         poly.totalEvents = bridgeit.io.event.getEventsSize();
         poly.updateInfo();
-        //currentTime.setHours(poly.$$('#hourSelect').value);
-        //currentTime.setMinutes(poly.$$('#minuteSelect').value);
-        /** Below is part of accelerated time. Above is false start time
-        currentTime.setHours(0);
-        currentTime.setMinutes(0);
-        currentTime.setSeconds(0);
-         */
         for(var i = 0; i < activeArray.length; i++){
           if(poly.sliderValue !== 1){
             activeArray[i].delay /= poly.sliderValue;
@@ -380,10 +305,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else {
           bridgeit.io.documents.updateDocument({id:'vihaHours',document:{'offHours':false}});
         }
-
       }
-
-
     });
   })();
   </script>
