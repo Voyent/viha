@@ -30,7 +30,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
           --query-results-th: {
                border-bottom-width: 2px;
-               background-color: #EFEFEF;
           };
       }
       .buttons {
@@ -138,7 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var eventMonitorRepeatDiv = this.$$('#eventMonitorMulti');
         var queryEditor = this.$$('#eventQueryEditor');
         var useMultipleEventMonitors = this.$$('#multiIn').checked;
-        
+
         // Listen for queryExecuted event
         var _this = this;
         queryEditor.addEventListener('queryExecuted', function(e) {
@@ -148,7 +147,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             // Otherwise proceed, but prevent future additions until allowed by user interaction
             _this.canAdd = false;
-            
+
             // Change our divs to display the proper event monitor component
             eventMonitorDiv.style.display = useMultipleEventMonitors ? 'none' : 'inline';
             eventMonitorRepeatDiv.style.display = useMultipleEventMonitors ? 'inline' : 'none';
@@ -197,7 +196,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         });
       },
-      
+
       userInteraction: function() {
           this.canAdd = true;
       },
