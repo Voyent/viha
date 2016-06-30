@@ -68,12 +68,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <div class="buttons">
       Query Editor Controls:
-      <button id="resetEditor" onclick="document.getElementById('queryEditor').resetEditor();">New/Reset</button>
-      <button id="runQuery" onclick="document.getElementById('queryEditor').runQuery();">Run</button>
-      <button id="saveQuery" onclick="document.getElementById('queryEditor').saveQueryWithPrompt();">Save</button>
-      <button id="cloneQuery" onclick="document.getElementById('queryEditor').cloneQueryWithPrompt();">Clone</button>
-      <button id="deleteQuery" onclick="document.getElementById('queryEditor').deleteQuery();">Delete</button>
-      <bridgeit-query-list id="queryList" for="queryEditor"></bridgeit-query-list>
+      <button id="resetEditor" on-click="userInteraction" onclick="document.getElementById('eventQueryEditor').resetEditor();">New/Reset</button>
+      <button id="runQuery" on-click="userInteraction" onclick="document.getElementById('eventQueryEditor').runQuery();">Run</button>
+      <button id="saveQuery" onclick="document.getElementById('eventQueryEditor').saveQueryWithPrompt();">Save</button>
+      <button id="cloneQuery" onclick="document.getElementById('eventQueryEditor').cloneQueryWithPrompt();">Clone</button>
+      <button id="deleteQuery" onclick="document.getElementById('eventQueryEditor').deleteQuery();">Delete</button>
+      <bridgeit-query-list id="queryList" for="eventQueryEditor"></bridgeit-query-list>
       <label for="limitIn">Results Limit:</label>
       <input id="limitIn" type="text" value="100"></input>
       <paper-button raised on-click="updateLimit">Update Limit</paper-button>
@@ -81,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <label for="multiIn">Multiple Event Monitors:</label>
       <input id="multiIn" type="checkbox" checked="checked"></input>
   </div>
-  <bridgeit-query-editor id="queryEditor"
+  <bridgeit-query-editor id="eventQueryEditor"
                          queryurltarget="queryURL"
                          options='{"limit":100,"sort":{"time":-1}}'
                          service="metrics" collection="events">
@@ -103,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div>
         <label>Query Results (Most Recent):
-            <bridgeit-query-results id="queryResults" for="queryEditor" utc="false"></bridgeit-query-results>
+            <bridgeit-query-results id="queryResults" for="eventQueryEditor" utc="false"></bridgeit-query-results>
         </label>
     </div>
 
@@ -119,6 +119,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         visible: {
           type: Boolean,
           notify: true
+        },
+        /**
+         * Determine if we can add an event monitor upon queryExecuted being fired and received
+         * This is necessary because the query editor may fire multiple queryExecuted events during initialization/reset
+         * And we really only care about one initialization, and any user interaction (run or reset)
+         */
+        canAdd: {
+          type: Boolean,
+          value: true
         }
       },
 
@@ -127,11 +136,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var eventMonitorRepeat = this.$$('#eventMonitorRepeat');
         var eventMonitorDiv = this.$$('#eventMonitorSingle');
         var eventMonitorRepeatDiv = this.$$('#eventMonitorMulti');
-        var queryEditor = this.$$('#queryEditor');
+        var queryEditor = this.$$('#eventQueryEditor');
         var useMultipleEventMonitors = this.$$('#multiIn').checked;
-
+        
         // Listen for queryExecuted event
+        var _this = this;
         queryEditor.addEventListener('queryExecuted', function(e) {
+            // If we are in a state where we can't add an event monitor just return
+            if (!_this.canAdd) {
+                return;
+            }
+            // Otherwise proceed, but prevent future additions until allowed by user interaction
+            _this.canAdd = false;
+            
             // Change our divs to display the proper event monitor component
             eventMonitorDiv.style.display = useMultipleEventMonitors ? 'none' : 'inline';
             eventMonitorRepeatDiv.style.display = useMultipleEventMonitors ? 'inline' : 'none';
@@ -179,9 +196,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 eventMonitor.showData(e.detail.results);
             }
         });
-
-        queryEditor.reloadEditor();
-        queryEditor.fetchQueryList();
+      },
+      
+      userInteraction: function() {
+          this.canAdd = true;
       },
 
       updateLimit: function() {
@@ -198,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 limitField.value = newLimit;
             }
 
-            this.$$('#queryEditor').options.limit = parseInt(newLimit);
+            this.$$('#eventQueryEditor').options.limit = parseInt(newLimit);
         }
       }
     });
