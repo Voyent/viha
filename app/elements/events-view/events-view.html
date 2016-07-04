@@ -130,7 +130,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var useMultipleEventMonitors = this.$$('#multiIn').checked;
 
         // Listen for queryExecuted event
-        var _this = this;
         queryEditor.addEventListener('queryExecuted', function(e) {
             // Change our divs to display the proper event monitor component
             eventMonitorDiv.style.display = useMultipleEventMonitors ? 'none' : 'inline';
