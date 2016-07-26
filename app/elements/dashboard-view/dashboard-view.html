@@ -267,7 +267,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           
               var _this = this;
               this.loading = true;
-              bridgeit.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
+              voyent.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
                   // Ensure we got a document in the proper format
                   if (document && document.status && document.status instanceof Array && document.status.length > 0) {
                       _this.set('_lastFetch', document);
@@ -326,7 +326,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
               
               if (needSave) {
-                  bridgeit.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch}).then(function(){
+                  voyent.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch}).then(function(){
                       _this.fire('message-info', 'Successfully reset alarm levels');
                   }).catch(function(error) {
                       _this.fire('message-error', 'Failed to reset alarm levels: ' + error.toSource());
@@ -359,7 +359,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
               
               // Update the document to a blank array
-              bridgeit.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch }).then(function(){
+              voyent.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch }).then(function(){
                   _this.fire('message-info', 'Successfully cleared all application states');
                   
                   _this.set('state', []);

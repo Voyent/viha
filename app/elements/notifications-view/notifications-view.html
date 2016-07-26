@@ -249,29 +249,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _notificationsUpdated: function() {
-        this.hasNotifications = !!bridgeit.notify.getNotificationCount();
-        this.notificationCount = bridgeit.notify.getNotificationCount();
+        this.hasNotifications = !!voyent.notify.getNotificationCount();
+        this.notificationCount = voyent.notify.getNotificationCount();
         //don't show redirect link for admins since notifications are only meant for regular users
         this.hideNav = app.$.demoView.isAdmin;
       },
 
       resetNotifications: function() {
-        bridgeit.notify.clearNotificationQueue();
+        voyent.notify.clearNotificationQueue();
       },
 
       removeNotification: function(e) {
-        bridgeit.notify.removeNotification(e.model.item ? e.model.item : e.model.msg);
+        voyent.notify.removeNotification(e.model.item ? e.model.item : e.model.msg);
       },
 
       redirectToNotification: function(e) {
         var notification = e.model.item ? e.model.item : e.model.msg;
-        bridgeit.notify.selectNotification(notification);
+        voyent.notify.selectNotification(notification);
         page.redirect('/'+app.notificationsRoute);
       },
 
       injectData:function(e){
         var notification = e.model.item ? e.model.item : e.model.msg;
-        bridgeit.notify.selectNotification(notification);
+        voyent.notify.selectNotification(notification);
 
       }
     });

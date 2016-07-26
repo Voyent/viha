@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      bridgeit-query-list {
+      voyent-query-list {
         --query-list-wrapper: {
           padding:10px 0 10px 0;
           background-color: transparent;
@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           cursor:pointer;
         };
       }
-      bridgeit-query-results {
+      voyent-query-results {
         --query-results-table: {
           width: 100%;
           margin-bottom: 50px;
@@ -144,17 +144,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </paper-dropdown-menu>
             </template>
           </div>
-          <bridgeit-query-list id="queryList" for="queries"></bridgeit-query-list>
+          <voyent-query-list id="queryList" for="queries"></voyent-query-list>
           <div style="clear:both;"></div>
         </div>
         <div class="currentquery">[[query]]</div>
-        <bridgeit-query-editor id="queries" service="{{service}}" collection="{{collection}}" currentquery="{{currentquery}}"></bridgeit-query-editor>
-        <bridgeit-query-results for="queries" utc="false"></bridgeit-query-results>
+        <voyent-query-editor id="queries" service="{{service}}" collection="{{collection}}" currentquery="{{currentquery}}"></voyent-query-editor>
+        <voyent-query-results for="queries" utc="false"></voyent-query-results>
       </div>
 
       <div class="tab-content">
         <h2 class="page-title">Query Chain Editor</h2>
-        <bridgeit-query-chain-editor id="queryChain"></bridgeit-query-chain-editor>
+        <voyent-query-chain-editor id="queryChain"></voyent-query-chain-editor>
       </div>
     </iron-pages>
   </template>

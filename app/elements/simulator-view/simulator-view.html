@@ -107,7 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function () {
         poly = this;
 
-        bridgeit.io.documents.getDocument({id:'vihaHours'}).then(function(document){
+        voyent.io.documents.getDocument({id:'vihaHours'}).then(function(document){
             poly.offHours = document.offHours;
         });
 
@@ -172,11 +172,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       buttonPress : function(){
 
-          bridgeit.io.event.stopEvents();
+          voyent.io.event.stopEvents();
           poly.running = true;
           poly.canRun = true;
           if (poly.inputSource === 'Simulation') {
-            bridgeit.io.documents.getDocument({
+            voyent.io.documents.getDocument({
               "collection": 'simulations',
               "id": poly.$$('#simulationSelect').value
             }).then(function (sim) {
@@ -198,8 +198,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       runArray: function(activeArray){
 
         var currentTime = new Date();
-        poly.currentEvent = bridgeit.io.event.getCurrentEvent();
-        poly.totalEvents = bridgeit.io.event.getEventsSize();
+        poly.currentEvent = voyent.io.event.getCurrentEvent();
+        poly.totalEvents = voyent.io.event.getEventsSize();
         poly.updateInfo();
         for(var i = 0; i < activeArray.length; i++){
           if(poly.sliderValue !== 1){
@@ -209,7 +209,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           activeArray[i].data.time = currentTime.toLocaleTimeString("en-GB") + '.000';
         }
         console.log(activeArray);
-        bridgeit.io.event.createCustomEvents({'eventArray':activeArray});
+        voyent.io.event.createCustomEvents({'eventArray':activeArray});
       },
 
       setComputer: function(e){
@@ -224,11 +224,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             'status':status
           }
         };
-        bridgeit.io.mailbox.updateMailbox({'id': machineName, 'mailbox': mailbox});
+        voyent.io.mailbox.updateMailbox({'id': machineName, 'mailbox': mailbox});
       },
 
       _visibleChanged: function(){
-        bridgeit.io.mailbox.findMailboxes().then(function (users) {
+        voyent.io.mailbox.findMailboxes().then(function (users) {
           for (var i = 0; i < users.length; i++){
             if(users[i].info.role === 'machine'){
               $(poly.$$("#"+users[i]._id)).val(users[i].state.status);
@@ -264,7 +264,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 "webSection" : "CRITICAL", "node" : machine, "detailDesc" : "test_machine",
                 "status" : status,
                 "detail" : "Detail stuff", "time" : date.getUTCHours() + ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds() + '.000' }};
-            bridgeit.io.event.createCustomEvent({"event":event})
+            voyent.io.event.createCustomEvent({"event":event})
           }
           setTimeout(function () {
             poly.liveTime += (cycleTime * poly.liveSliderValue);
@@ -275,8 +275,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       updateInfo:function(){
         setTimeout(function(){
-          poly.currentEvent = bridgeit.io.event.getCurrentEvent();
-          poly.totalEvents = bridgeit.io.event.getEventsSize();
+          poly.currentEvent = voyent.io.event.getCurrentEvent();
+          poly.totalEvents = voyent.io.event.getEventsSize();
           if(poly.currentEvent !== poly.totalEvents){
             poly.updateInfo();
           }
@@ -289,21 +289,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       resumeArray:function(){
         console.log('Resume');
         poly.running = true;
-        bridgeit.io.event.restartEvents({});
+        voyent.io.event.restartEvents({});
       },
 
       pauseArray:function(){
         console.log('Pause');
         poly.running = false;
-        bridgeit.io.event.stopEvents();
+        voyent.io.event.stopEvents();
       },
 
       toggleHours:function(){
         if(this.offHours){
-          bridgeit.io.documents.updateDocument({id:'vihaHours',document:{'offHours':true}});
+          voyent.io.documents.updateDocument({id:'vihaHours',document:{'offHours':true}});
         }
         else {
-          bridgeit.io.documents.updateDocument({id:'vihaHours',document:{'offHours':false}});
+          voyent.io.documents.updateDocument({id:'vihaHours',document:{'offHours':false}});
         }
       }
     });

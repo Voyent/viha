@@ -33,12 +33,12 @@
       // Uncomment app.baseURL below and
       // set app.baseURL to '/your-pathname/' if running from folder in production
       if(window.location.pathname.indexOf('client.html')!== -1){
-        app.baseUrl = '/demos/viha/client.html';
-        //app.baseUrl = '/demos/staging/viha/client.html/';
+        //app.baseUrl = '/demos/viha/client.html';
+        app.baseUrl = '/demos/staging/viha/client.html/';
       }
       else{
-        app.baseUrl = '/demos/viha/';
-        //app.baseUrl = '/demos/staging/viha/';
+        //app.baseUrl = '/demos/viha/';
+        app.baseUrl = '/demos/staging/viha/';
       }
     }
     else{
@@ -55,7 +55,7 @@
     };
 
     function setupNotificationListener(){
-      bridgeit.xio.push.attach('http://'+app.host+'/pushio/'+ bridgeit.io.auth.getLastKnownAccount() +'/realms/' + bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername());
+      voyent.xio.push.attach('http://'+app.host+'/pushio/'+ voyent.io.auth.getLastKnownAccount() +'/realms/' + voyent.io.auth.getLastKnownRealm(), voyent.io.auth.getLastKnownUsername());
       window.initializePushGroups(); //delegates to index.html for admins or client.html for regular users
     }
 
@@ -75,7 +75,7 @@
         return;
       }
       //set the current notification
-      bridgeit.notify.selectNotification(e.detail.notification);
+      voyent.notify.selectNotification(e.detail.notification);
       if (app.route !== app.notificationsRoute) {
         page.redirect('/'+app.notificationsRoute);
       }
@@ -107,7 +107,7 @@
           //sync the notification queue
           demoData.set('notifications', e.detail.queue);
           //sync the notification count
-          demoData.set('notificationCount', bridgeit.notify.getNotificationCount());
+          demoData.set('notificationCount', voyent.notify.getNotificationCount());
           //convert the queue array to an user map object so we can group by users on the notification page
           demoData.set('notificationsByGroup', e.detail.queue.reduce(function (map, obj) {
             if (!map[obj.group]) {
@@ -128,7 +128,7 @@
     // have resolved and content has been stamped to the page
     app.addEventListener('dom-change', function() {
       console.log('Initializing demo');
-      if( bridgeit.io.auth.isLoggedIn()){
+      if( voyent.io.auth.isLoggedIn()){
         setTimeout(function(){
           setupNotificationListener();
         }, 5000);
@@ -148,20 +148,20 @@
       console.log('WebComponentsReady!!!');
     });
 
-    window.addEventListener('bridgeit-access-token-refreshed', function(e){
-      console.log('demo app received event bridgeit-access-token-refreshed', e);
-      bridgeit.xio.push.refreshConnection();
+    window.addEventListener('voyent-access-token-refreshed', function(e){
+      console.log('demo app received event voyent-access-token-refreshed', e);
+      voyent.xio.push.refreshConnection();
     });
 
-    window.addEventListener('bridgeit-session-expired', function(e){
-      console.log('demo app received event bridgeit-session-expired', e);
-      bridgeit.xio.push.disconnect();
+    window.addEventListener('voyent-session-expired', function(e){
+      console.log('demo app received event voyent-session-expired', e);
+      voyent.xio.push.disconnect();
 
     });
 
-    window.addEventListener('bridgeit-session-disconnected', function(e){
-      console.log('demo app received event bridgeit-session-disconnected', e);
-      bridgeit.xio.push.disconnect();
+    window.addEventListener('voyent-session-disconnected', function(e){
+      console.log('demo app received event voyent-session-disconnected', e);
+      voyent.xio.push.disconnect();
     });
 
     // Main area's paper-scroll-header-panel custom condensing transformation of

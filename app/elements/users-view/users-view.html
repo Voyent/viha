@@ -115,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         updateUser: function (e) {
-          bridgeit.io.mailbox.updateMailbox({'id': e.model.item._id, 'mailbox': {
+          voyent.io.mailbox.updateMailbox({'id': e.model.item._id, 'mailbox': {
             info: {
               role: e.model.item.info.role
             },
@@ -127,7 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         loadUsers: function () {
           var _this = this;
-          bridgeit.io.mailbox.findMailboxes().then(function (tempUsers) {
+          voyent.io.mailbox.findMailboxes().then(function (tempUsers) {
             var users = [];
             for (var i = 0; i < tempUsers.length; i++) {
               if (tempUsers[i].info.role !== 'machine') {

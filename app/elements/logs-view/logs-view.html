@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      bridgeit-log-viewer {
+      voyent-log-viewer {
         --log-viewer-table: {
           font-size: 11px;
           width: 100%;
@@ -68,8 +68,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </div>
       <template is="dom-if" if="{{visible}}">
-        <bridgeit-log-viewer id="logViewer" header footer paginator local debug="{{debug}}" pagesize="25">
-        </bridgeit-log-viewer>
+        <voyent-log-viewer id="logViewer" header footer paginator local debug="{{debug}}" pagesize="25">
+        </voyent-log-viewer>
       </template>
     </template>
   </template>

@@ -1,4 +1,4 @@
-## BridgeIt VIHA Demo
+## Voyent VIHA Demo
 
 > A demo for doctors
 

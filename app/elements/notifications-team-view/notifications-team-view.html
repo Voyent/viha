@@ -424,26 +424,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (!newVal) {
             return;
           }
-          this.lastNotificationIndex = bridgeit.notify.getNotificationCount();
+          this.lastNotificationIndex = voyent.notify.getNotificationCount();
           if(this.lastNotificationIndex >= 0){
             this.loadNotification()
           }
         },
 
         loadNotification: function() {
-          if (!bridgeit.notify.selected) {
+          if (!voyent.notify.selected) {
             return;
           }
           var _this = this;
-          bridgeit.notify.clearInjectedNotificationData();
+          voyent.notify.clearInjectedNotificationData();
           setTimeout(function(){
-            bridgeit.notify.injectNotificationData();
-            _this.message = bridgeit.notify.selected.details;
-            _this.time = bridgeit.notify.selected.time;
-            _this.hasLast = bridgeit.notify.getPreviousNotification() !== null;
-            _this.currentPosition = bridgeit.notify.queuePosition == -1? 0:bridgeit.notify.queuePosition;
+            voyent.notify.injectNotificationData();
+            _this.message = voyent.notify.selected.details;
+            _this.time = voyent.notify.selected.time;
+            _this.hasLast = voyent.notify.getPreviousNotification() !== null;
+            _this.currentPosition = voyent.notify.queuePosition == -1? 0:voyent.notify.queuePosition;
             if(_this.currentPosition >= _this.lastNotificationIndex){
-              _this.lastNotificationIndex = bridgeit.notify.queuePosition + 1;
+              _this.lastNotificationIndex = voyent.notify.queuePosition + 1;
             }
           },100);
         },
@@ -478,30 +478,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.lastNotificationIndex -= 1;
           }
           if(this.hasNext){
-            var next = bridgeit.notify.getNextNotification();
-            bridgeit.notify.removeSelectedNotification();
-            bridgeit.notify.selectNotification(next);
+            var next = voyent.notify.getNextNotification();
+            voyent.notify.removeSelectedNotification();
+            voyent.notify.selectNotification(next);
           }
           else if(this.hasLast){
-            var back = bridgeit.notify.getPreviousNotification();
-            bridgeit.notify.removeSelectedNotification();
-            bridgeit.notify.selectNotification(back);
+            var back = voyent.notify.getPreviousNotification();
+            voyent.notify.removeSelectedNotification();
+            voyent.notify.selectNotification(back);
           }
           else{
-            bridgeit.notify.removeSelectedNotification();
+            voyent.notify.removeSelectedNotification();
           }
         },
 
         goBack:function(){
-          bridgeit.notify.selectNotification(bridgeit.notify.getPreviousNotification());
+          voyent.notify.selectNotification(voyent.notify.getPreviousNotification());
         },
 
         goForward:function(){
-          bridgeit.notify.selectNotification(bridgeit.notify.getNextNotification());
+          voyent.notify.selectNotification(voyent.notify.getNextNotification());
         },
 
         toNextNew:function(){
-          bridgeit.notify.selectNotificationAt(this.lastNotificationIndex);
+          voyent.notify.selectNotificationAt(this.lastNotificationIndex);
         },
 
         addOne:function(index){

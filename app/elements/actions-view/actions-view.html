@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      bridgeit-action-editor {
+      voyent-action-editor {
         --action-editor: {
           -webkit-touch-callout: none;
           -webkit-user-select: none;
@@ -101,7 +101,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
         };
       }
-      bridgeit-action-list {
+      voyent-action-list {
         --action-list-wrapper: {
           padding:10px 0 10px 0;
           background-color: transparent;
@@ -120,9 +120,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <h2 class="page-title">Actions</h2>
     <template is="dom-if" if="{{visible}}">
-      <bridgeit-action-editor barpad="64">
-        <bridgeit-action-list></bridgeit-action-list>
-      </bridgeit-action-editor>
+      <voyent-action-editor barpad="64">
+        <voyent-action-list></voyent-action-list>
+      </voyent-action-editor>
     </template>
   </template>
   <script>

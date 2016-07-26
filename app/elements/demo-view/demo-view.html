@@ -736,7 +736,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Main Content -->
         <div class="content">
           <div class="iron-pages-top">
-              <bridgeit-message usetimestamp="true"></bridgeit-message>
+              <voyent-message usetimestamp="true"></voyent-message>
           </div>
         
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
@@ -875,16 +875,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         //check cloud push status
-        this.cloudPushRegistered = this.cloudPushSelected = bridgeit.xio.push.cloudPushRegistered();
+        this.cloudPushRegistered = this.cloudPushSelected = voyent.xio.push.cloudPushRegistered();
 
         //check sms registration status
-        this.smsRegistered = this.smsSelected = bridgeit.xio.push.smsRegistered();
+        this.smsRegistered = this.smsSelected = voyent.xio.push.smsRegistered();
 
         //check email registration status
-        this.emailRegistered = this.emailSelected = bridgeit.xio.push.emailRegistered();
+        this.emailRegistered = this.emailSelected = voyent.xio.push.emailRegistered();
 
         //mobile
-        this.isMobile = bridgeit.isIOS() || bridgeit.isAndroid();
+        this.isMobile = voyent.isIOS() || voyent.isAndroid();
       },
 
       properties: {
@@ -1083,12 +1083,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       handleRegisterCloudPush: function(){
-        if( !bridgeit.isIOS() && !bridgeit.isAndroid() ){
+        if( !voyent.isIOS() && !voyent.isAndroid() ){
           window.alert('could not register for cloud push as supported mobile platform not detected');
           return;
         }
         var _this = this;
-        bridgeit.xio.push.registerCloudPush(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername()).then(function(){
+        voyent.xio.push.registerCloudPush(this.host, voyent.io.auth.getLastKnownAccount(), voyent.io.auth.getLastKnownRealm(), voyent.io.auth.getLastKnownUsername()).then(function(){
           console.log('registered for cloud push promise returned');
           _this.cloudPushRegistered = true;
           _this.message = 'Registered for Cloud Push notifications';
@@ -1107,7 +1107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         phonenumber = phonenumber.trim();
         this.previouslyRegisteredPhoneNumber = phonenumber;
-        bridgeit.xio.push.registerSms(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), phonenumber).then(function(){
+        voyent.xio.push.registerSms(this.host, voyent.io.auth.getLastKnownAccount(), voyent.io.auth.getLastKnownRealm(), voyent.io.auth.getLastKnownUsername(), phonenumber).then(function(){
           console.log('registered for sms promise returned');
           _this.smsRegistered = _this.smsSelected = true;
           _this.message = 'Registered for SMS notifications';
@@ -1126,7 +1126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         email = email.trim();
         this.previouslyRegisteredEmail = email;
-        bridgeit.xio.push.registerEmail(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm(), bridgeit.io.auth.getLastKnownUsername(), email).then(function(){
+        voyent.xio.push.registerEmail(this.host, voyent.io.auth.getLastKnownAccount(), voyent.io.auth.getLastKnownRealm(), voyent.io.auth.getLastKnownUsername(), email).then(function(){
           console.log('registered for email promise returned');
           _this.emailRegistered = _this.emailSelected = true;
           _this.message = 'Registered for email notifications';
@@ -1152,7 +1152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.handleRegisterCloudPush();
           }
           else{
-            bridgeit.xio.push.unregisterCloudPush(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm());
+            voyent.xio.push.unregisterCloudPush(this.host, voyent.io.auth.getLastKnownAccount(), voyent.io.auth.getLastKnownRealm());
             this.cloudPushRegistered = false;
             var _this = this;
             setTimeout(function(){
@@ -1170,7 +1170,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.openConfirmDialog("Please enter the phone number to register for SMS notifications",this.previouslyRegisteredPhoneNumber || '','handleRegisterSms');
         }
         else {
-          bridgeit.xio.push.unregisterSms(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm());
+          voyent.xio.push.unregisterSms(this.host, voyent.io.auth.getLastKnownAccount(), voyent.io.auth.getLastKnownRealm());
           this.smsRegistered = this.smsSelected = false;
           var _this = this;
           setTimeout(function(){
@@ -1187,7 +1187,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.openConfirmDialog('Please enter the email to register for mail notifications',this.previouslyRegisteredEmail || '','handleRegisterEmail');
         }
         else {
-          bridgeit.xio.push.unregisterEmail(this.host, bridgeit.io.auth.getLastKnownAccount(), bridgeit.io.auth.getLastKnownRealm());
+          voyent.xio.push.unregisterEmail(this.host, voyent.io.auth.getLastKnownAccount(), voyent.io.auth.getLastKnownRealm());
           this.emailRegistered = this.emailSelected = false;
           var _this = this;
           setTimeout(function(){

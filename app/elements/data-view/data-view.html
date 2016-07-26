@@ -558,7 +558,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _queryChanged:function(){
         if(this.searchQuery !== {}) {
           poly.set('loading', true);
-          bridgeit.io.event.findEvents(this.searchQuery).then(function (events) {
+          voyent.io.event.findEvents(this.searchQuery).then(function (events) {
             poly.events = events;
             poly._eventsChanged();
             poly.set('loading', false);

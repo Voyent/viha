@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      bridgeit-recognizer-editor {
+      voyent-recognizer-editor {
         --recognizer-editor-container: {
           background-color: transparent;
           border: none;
@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           cursor:pointer;
         };
       }
-      bridgeit-recognizer-list {
+      voyent-recognizer-list {
         --recognizer-list-wrapper: {
           padding:10px 0 10px 0;
           background-color: transparent;
@@ -72,9 +72,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <h2 class="page-title">Triggers</h2>
     <template is="dom-if" if="{{visible}}">
-      <bridgeit-recognizer-editor>
-        <bridgeit-recognizer-list></bridgeit-recognizer-list>
-      </bridgeit-recognizer-editor>
+      <voyent-recognizer-editor>
+        <voyent-recognizer-list></voyent-recognizer-list>
+      </voyent-recognizer-editor>
     </template>
   </template>
   <script>

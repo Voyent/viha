@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles">
-    bridgeit-login-paper-card{
+    voyent-login-paper-card{
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
@@ -66,42 +66,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     @media (max-width: 600px) {
-      bridgeit-login-paper-card{
+      voyent-login-paper-card{
         padding-top: 0;
       }
     }
 
-    bridgeit-login-paper-card .header.paper-card{
+    voyent-login-paper-card .header.paper-card{
       border-bottom:10px solid blue; !important
     }
 
-    bridgeit-login-paper-card {
+    voyent-login-paper-card {
 
-      --bridgeit-login-button: {
+      --voyent-login-button: {
         background-color: #0066A4;
       };
 
-      --bridgeit-login-button-hover: {
+      --voyent-login-button-hover: {
         background-color: #203146;
       };
 
-      --bridgeit-login-header: {
+      --voyent-login-header: {
         border-bottom:10px solid #0066A4;
       };
 
-      --bridgeit-header-text:{
+      --voyent-header-text:{
         color:#0066A4 !important;
         text-shadow:1px 1px 1px #8DAED4;
         font-weight:500;
       };
 
-      --bridgeit-login-image:{
+      --voyent-login-image:{
         width:100%;
         max-width: 600px;
         max-height:100%;
       };
 
-      --bridgeit-shadow:{
+      --voyent-shadow:{
         background-color:#0066A4 !important;
       }
 
@@ -127,17 +127,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Main Content -->
   <div id="mainContainer">
 
-    <bridgeit-auth-provider id="authProvider" account="[[account]]" realm="viha"
+    <!--<voyent-auth-provider id="authProvider" account="[[account]]" realm="viha"
       host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120"
-      scope-to-path="/demos/viha/">
-    <!--<bridgeit-auth-provider id="authProvider" account="demos" realm="viha"
+      scope-to-path="/demos/viha/">-->
+    <voyent-auth-provider id="authProvider" account="demos" realm="viha"
       host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120"
-      scope-to-path="/demos/staging/viha/">-->
-    </bridgeit-auth-provider>
-    <bridgeit-login-paper-card  heading="Client Login" username="{{username}}" password="{{password}}" error="{{loginError}}"
+      scope-to-path="/demos/staging/viha/">
+    </voyent-auth-provider>
+    <voyent-login-paper-card  heading="Client Login" username="{{username}}" password="{{password}}" error="{{loginError}}"
       auth-provider="authProvider" submit-label="Login" cancel-label="Cancel" hidden="{{isLoggedIn}}"
       header-image="images/vihaLogo.jpg" showrealminput showaccountinput showhostinput realm="viha" account="{{account}}" host="{{host}}">
-    </bridgeit-login-paper-card>
+    </voyent-login-paper-card>
     <demo-view id="demoView" visible="{{isLoggedIn}}" username="[[username]]" host="[[host]]"
       base-url="[[baseUrl]]" route="{{route}}" account="{{account}}"></demo-view>
   </div>
@@ -166,7 +166,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     window.initializePushGroups = function(){
-      bridgeit.xio.push.join("/"+bridgeit.io.auth.getLastKnownRealm()+"/realms/" + bridgeit.io.auth.getLastKnownRealm() + "/" + bridgeit.io.auth.getLastKnownUsername());
+      voyent.xio.push.join("/"+voyent.io.auth.getLastKnownRealm()+"/realms/" + voyent.io.auth.getLastKnownRealm() + "/" + voyent.io.auth.getLastKnownUsername());
     };
 
   </script>

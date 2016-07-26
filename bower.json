@@ -3,8 +3,8 @@
   "private": true,
   "dependencies": {
     "awesomplete": "^1.0.0",
-    "bridgeit-web-components": "#master",
-    "bridgeit.xio.js": "https://github.com/bridgeit/bridgeit.xio.js.git#gh-pages",
+    "voyent-web-components": "https://github.com/voyent/voyent-web-components.git#master",
+    "voyent.xio.js": "https://github.com/voyent/voyent.xio.js.git#gh-pages",
     "paper-autocomplete": "^1.0.0",
     "es6-promise": "^3.0.0",
     "iron-elements": "^1.0.0",
