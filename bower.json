@@ -3,8 +3,8 @@
   "private": true,
   "dependencies": {
     "awesomplete": "^1.0.0",
-    "voyent-web-components": "https://github.com/voyent/voyent-web-components.git#master",
-    "voyent.xio.js": "https://github.com/voyent/voyent.xio.js.git#gh-pages",
+    "voyent-web-components": "voyent/voyent-web-components.git#master",
+    "voyent.xio.js": "voyent/voyent.xio.js.git#gh-pages",
     "paper-autocomplete": "^1.0.0",
     "es6-promise": "^3.0.0",
     "iron-elements": "^1.0.0",
@@ -15,7 +15,7 @@
     "paper-elements": "^1.0.0",
     "platinum-elements": "^2.0.0",
     "polymer": "^1.0.0",
-    "voyent.notify.js": "https://github.com/voyent/voyent.notify.js.git#master"
+    "voyent.notify.js": "voyent/voyent.notify.js.git#master"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
