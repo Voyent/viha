@@ -22,7 +22,7 @@
     app.notificationsRoute = 'notifications-team';
 
     //set default host;
-    app.host = 'dev.bridgeit.io';
+    app.host = 'dev.voyent.cloud';
 
     //set default account:
     app.account = 'viha';
