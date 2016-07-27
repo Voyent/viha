@@ -128,12 +128,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Main Content -->
   <div id="mainContainer">
 
-    <!--<voyent-auth-provider id="authProvider" realm="viha"
+    <voyent-auth-provider id="authProvider" realm="viha"
       host="[[host]]" account="[[account]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="240" admin="true"
-      scope-to-path="/demos/viha/">-->
-    <voyent-auth-provider id="authProvider" account="demos" realm="viha"
-      host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="240" admin="true"
-      scope-to-path="/demos/staging/viha/">
+      scope-to-path="/demos/viha/">
     </voyent-auth-provider>
     <voyent-login-paper-card heading="Admin Login" username="{{username}}" password="{{password}}" error="{{loginError}}"
       auth-provider="authProvider" submit-label="Login" cancel-label="Cancel" hidden="{{isLoggedIn}}" login-as-admin="true"

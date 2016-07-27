@@ -127,12 +127,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Main Content -->
   <div id="mainContainer">
 
-    <!--<voyent-auth-provider id="authProvider" account="[[account]]" realm="viha"
+    <voyent-auth-provider id="authProvider" account="[[account]]" realm="viha"
       host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120"
-      scope-to-path="/demos/viha/">-->
-    <voyent-auth-provider id="authProvider" account="demos" realm="viha"
-      host="[[host]]" logged-in="{{isLoggedIn}}" error="{{loginError}}" timeout="120"
-      scope-to-path="/demos/staging/viha/">
+      scope-to-path="/demos/viha/">
     </voyent-auth-provider>
     <voyent-login-paper-card  heading="Client Login" username="{{username}}" password="{{password}}" error="{{loginError}}"
       auth-provider="authProvider" submit-label="Login" cancel-label="Cancel" hidden="{{isLoggedIn}}"
@@ -141,9 +138,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <demo-view id="demoView" visible="{{isLoggedIn}}" username="[[username]]" host="[[host]]"
       base-url="[[baseUrl]]" route="{{route}}" account="{{account}}"></demo-view>
   </div>
-
-
-
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
     <!--
