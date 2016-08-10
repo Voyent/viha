@@ -17,6 +17,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
+      .tab-content {
+        border: 1px solid #777;
+        padding: 10px;
+        overflow-y:scroll;
+        color: #333 !important;
+        background-color: transparent !important;
+      }
+      .buttons {
+        text-align: center;
+        background-color: transparent;
+        padding:10px 0 10px 0;
+      }
+      .buttons button {
+        font: inherit;
+        background-color:#F9F9F9;
+        border-color: transparent;
+        color:black;
+        outline: none;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        text-transform: uppercase;
+        cursor:pointer;
+      }
+      .iron-selected {
+        background-color: var(--google-blue-500);
+        color: white;
+      }
+      paper-tabs {
+        color: #333;
+      }
       voyent-action-editor {
         --action-editor: {
           -webkit-touch-callout: none;
@@ -118,11 +147,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         };
       }
     </style>
-    <h2 class="page-title">Actions</h2>
     <template is="dom-if" if="{{visible}}">
-      <voyent-action-editor barpad="64">
-        <voyent-action-list></voyent-action-list>
-      </voyent-action-editor>
+        <paper-tabs selected="{{selectedTab}}" no-bar>
+          <paper-tab>Actions</paper-tab>
+          <paper-tab>Emails</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selectedTab}}">
+            <div class="tab-content">
+                <h2 class="page-title">Actions</h2>
+                <voyent-action-editor barpad="64">
+                    <voyent-action-list></voyent-action-list>
+                </voyent-action-editor>
+            </div>
+            <div class="tab-content">
+                <h2 class="page-title">Emails</h2>
+                <voyent-email-editor id="emailEditor"></voyent-email-editor>
+            </div>
+        </iron-pages>
     </template>
   </template>
   <script>
@@ -136,6 +177,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         visible: {
           type: Boolean,
           notify: true
+        },
+        selectedTab: {
+          type: Number,
+          value: 0
         }
       }
     });
