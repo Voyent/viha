@@ -69,11 +69,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-item class="userParent" style="display:flex;align-content: center">
             <iron-icon icon="account-circle" item-icon class="avatar cell"></iron-icon>
             <div class="item-body username cell">
-              <div class="flex">{{item._id}}</div>
+              <div class="flex">{{item.username}}</div>
             </div>
             <div class="flex cell" style="margin-top:-15px;">
               <paper-dropdown-menu>
-                <iron-selector class="dropdown-content" attr-for-selected="name" selected="{{item.info.role}}" on-iron-select="updateUser">
+                <iron-selector class="dropdown-content" attr-for-selected="name" selected="{{item.role}}" on-iron-select="updateUser">
                   <div name="manager">Manager</div>
                   <div name="team">Team</div>
                 </iron-selector>
@@ -81,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
             <div class="flex routesDiv cell">
               On Call:
-              <paper-checkbox class="onCallButton" on-click="updateUser" checked="{{item.state.onCall}}"></paper-checkbox>
+              <paper-checkbox class="onCallButton" on-click="updateUser" checked="{{item.onCall}}"></paper-checkbox>
             </div>
 
           </paper-icon-item>
@@ -115,27 +115,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         updateUser: function (e) {
-          voyent.io.mailbox.updateMailbox({'id': e.model.item._id, 'mailbox': {
-            info: {
-              role: e.model.item.info.role
-            },
-            state: {
-              onCall: e.model.item.state.onCall
-            }
+          voyent.io.scope.createUserData({'id': e.model.item.username, 'data': {
+              role: e.model.item.role,
+              onCall: e.model.item.onCall
           }});
         },
 
         loadUsers: function () {
           var _this = this;
-          voyent.io.mailbox.findMailboxes().then(function (tempUsers) {
-            var users = [];
-            for (var i = 0; i < tempUsers.length; i++) {
-              if (tempUsers[i].info.role !== 'machine') {
-                users.push(tempUsers[i]);
-              }
+
+          //make sure we only get the realm users once for the entire app
+          var realmUsers = app.$.demoView.$$('demo-data') ? app.$.demoView.$$('demo-data').users : null;
+          if (!realmUsers) {
+            voyent.io.admin.getRealmUsers().then( function(users){
+              app.$.demoView.$$('demo-data').users = users;
+              realmUsers = users;
+              processUsers();
+            }).catch( function(error){
+              console.error('Error loading realm users in users-view:',error);
+            });
+          }
+          else {
+            processUsers();
+          }
+
+          function processUsers() {
+            for (var i=0; i<realmUsers.length; i++) {
+              fetchUserScopeData(realmUsers[i].username);
             }
-            _this.set('users', users);
-          });
+          }
+          function fetchUserScopeData(username) {
+            if (username === 'process.control') {
+              //don't bother fetching data for process.control user
+              return;
+            }
+            voyent.io.scope.getUserData({"id":username}).then(function (data) {
+              data.username = username;
+              _this.push('users',data);
+            });
+          }
         }
       });
     })();

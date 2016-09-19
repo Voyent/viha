@@ -55,406 +55,408 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-bottom: none;
         padding-bottom: 0;
       }
-      
+
       .timestamp {
-          float: right;
-          font-size: small;
+        float: right;
+        font-size: small;
       }
-      
+
       .loopWrap {
-          word-wrap: break-word;
+        word-wrap: break-word;
       }
-      
+
       .circle {
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
-          text-align: center;
-          font-family: monospace;
-          font-size: 14px;
-          font-weight: bold;
-          box-shadow: 2px 2px 5px #AAAAAA;
-          border-radius: 15px;
-          -webkit-border-radius: 15px;
-          -moz-border-radius: 15px;
-          float: left;
-          cursor: default;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px #AAAAAA;
+        border-radius: 15px;
+        -webkit-border-radius: 15px;
+        -moz-border-radius: 15px;
+        float: left;
+        cursor: default;
       }
-      
+
       .circle span {
-          color: #DDDDDD;
-          text-shadow: 1px 1px 2px black;
+        color: #DDDDDD;
+        text-shadow: 1px 1px 2px black;
       }
-      
+
       .statusText {
-          padding-left: 40px;
-          padding-top: 5px;
+        padding-left: 40px;
+        padding-top: 5px;
       }
-      
+
       .systemText {
-          font-family: monospace;
-          font-size: 12px;
+        font-family: monospace;
+        font-size: 12px;
       }
-      
+
       .blink0 {
       }
-      
+
       .blink1 {
-          animation: blinker 3s linear infinite;
+        animation: blinker 3s linear infinite;
       }
-      
+
       .blink2 {
-          animation: blinker 2s linear infinite;
+        animation: blinker 2s linear infinite;
       }
-      
+
       .blink3 {
-          animation: blinker 1s linear infinite;
+        animation: blinker 1s linear infinite;
       }
-    
-      @keyframes blinker {  
-          50% { opacity: 0.2; }
+
+      @keyframes blinker {
+        50% { opacity: 0.2; }
       }
-      
-        /* Loading animation from http://jsfiddle.net/VXdhG/1/ */
-        @-webkit-keyframes opacity {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        @-moz-keyframes opacity {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        
-        #loading span {
-            -webkit-animation-name: opacity;
-            -webkit-animation-duration: 1s;
-            -webkit-animation-iteration-count: infinite;
-            
-            -moz-animation-name: opacity;
-            -moz-animation-duration: 1s;
-            -moz-animation-iteration-count: infinite;
-        }
-        
-        #loading span:nth-child(1) {
-            -webkit-animation-delay: 100ms;
-            -moz-animation-delay: 100ms;
-        }
-        
-        #loading span:nth-child(2) {
-            -webkit-animation-delay: 300ms;
-            -moz-animation-delay: 300ms;
-        }
-        
-        #loading span:nth-child(3) {
-            -webkit-animation-delay: 500ms;
-            -moz-animation-delay: 500ms;
-        }
+
+      /* Loading animation from http://jsfiddle.net/VXdhG/1/ */
+      @-webkit-keyframes opacity {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @-moz-keyframes opacity {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      #loading span {
+        -webkit-animation-name: opacity;
+        -webkit-animation-duration: 1s;
+        -webkit-animation-iteration-count: infinite;
+
+        -moz-animation-name: opacity;
+        -moz-animation-duration: 1s;
+        -moz-animation-iteration-count: infinite;
+      }
+
+      #loading span:nth-child(1) {
+        -webkit-animation-delay: 100ms;
+        -moz-animation-delay: 100ms;
+      }
+
+      #loading span:nth-child(2) {
+        -webkit-animation-delay: 300ms;
+        -moz-animation-delay: 300ms;
+      }
+
+      #loading span:nth-child(3) {
+        -webkit-animation-delay: 500ms;
+        -moz-animation-delay: 500ms;
+      }
     </style>
     <h2 class="page-title">Dashboard - System Status</h2>
     <template is="dom-if" if="{{visible}}">
-        <div style="font-size: small;">
-            <div id="loading">
-                <template is="dom-if" if="[[hasState]]">
-                    <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
-                    <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
-                    <template is="dom-if" if="{{isAdmin()}}">
-                        <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
-                        <paper-button on-click="clearAll" title="Manually delete all system status">Clear All</paper-button>
-                    </template>
-                </template>
-                <paper-button on-click="refreshButton" title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
-                <template is="dom-if" if="[[loading]]">
-                    <span>.</span>
-                    <span>.</span>
-                    <span>.</span>
-                </template>
-            </div>
+      <div style="font-size: small;">
+        <div id="loading">
+          <template is="dom-if" if="[[hasState]]">
+            <paper-button on-click="chooseSortLevel" title="Sort by alarm level, click again to switch ascending/descending">Sort by Level</paper-button>
+            <paper-button on-click="chooseSortTime" title="Sort by time, click again to switch ascending/descending">Sort by Time</paper-button>
+            <template is="dom-if" if="{{isAdmin()}}">
+              <paper-button on-click="resetAlarmLevels" title="Manually reset all the alarm levels to 0">Reset Alarms</paper-button>
+              <paper-button on-click="clearAll" title="Manually delete all system status">Clear All</paper-button>
+            </template>
+          </template>
+          <paper-button on-click="refreshButton" title="Manually refresh the application state. This will be automatically updated when a new notification comes in.">Refresh</paper-button>
+          <template is="dom-if" if="[[loading]]">
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+          </template>
         </div>
-        
-        <template is="dom-if" if="[[!hasState]]">
-            <div style="font-size: larger; font-style: italic;"><p>No application states were found</p></div>
-        </template>
-        
-        <template id="stateList" is="dom-repeat" strip-whitespace items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
-            <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
-                <div class="loopWrap">
-                    <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
-                        <span>{{currentState.alarmLevel}}</span>
-                    </div>
-                    <div class="statusText">
-                        <span class="systemText">{{currentState.description}}/{{currentState.node}}/<b>{{currentState.detail}}</b>:</span> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
-                    </div>
-                </div>
-            </paper-material>
-        </template>
-        
-        <template is="dom-if" if="[[!loading]]">
-            <div class="timestamp">{{updatedTime}}</div>
-        </template>
+      </div>
+
+      <template is="dom-if" if="[[!hasState]]">
+        <div style="font-size: larger; font-style: italic;"><p>No application states were found</p></div>
+      </template>
+
+      <template id="stateList" is="dom-repeat" strip-whitespace items="{{state}}" as="currentState" sort="{{computedSort(sortTypeLevel,sortAscending)}}">
+        <paper-material style$="box-shadow: 3px 3px 4px {{alarmColor(currentState.alarmLevel)}}; margin-bottom: 25px;">
+          <div class="loopWrap">
+            <div class$="circle blink{{currentState.alarmLevel}}" style$="background-color: {{alarmColor(currentState.alarmLevel)}};">
+              <span>{{currentState.alarmLevel}}</span>
+            </div>
+            <div class="statusText">
+              <span class="systemText">{{currentState.description}}/{{currentState.node}}/<b>{{currentState.detail}}</b>:</span> Alarm Level {{currentState.alarmLevel}} at {{wrapLocalDate(currentState.notificationTime)}}
+            </div>
+          </div>
+        </paper-material>
+      </template>
+
+      <template is="dom-if" if="[[!loading]]">
+        <div class="timestamp">{{updatedTime}}</div>
+      </template>
     </template>
   </template>
   <script>
-  (function() {
-    'use strict';
+    (function() {
+      'use strict';
 
-    Polymer({
-      is: 'dashboard-view',
+      Polymer({
+        is: 'dashboard-view',
 
-      properties: {
-        visible: {
+        properties: {
+          visible: {
             type: Boolean,
             notify: true,
             observer: '_visibleChanged'
+          },
+          /**
+           * List of system states to display
+           */
+          state: { type: Array, value: [], notify: true },
+          /**
+           * Document we last fetched from our desired collection
+           */
+          _lastFetch: { type: Array, value: [] },
+          /**
+           * Document collection to retrieve from
+           */
+          collection: { type: String, value: 'system' },
+          /**
+           * ID of the property stored in realm scope to retrieve the application state from
+           */
+          propertyId: { type: String, value: 'applicationStatus' },
+          /**
+           * Number of debug/test systems to add (for demo purposes)
+           * Set a non-zero value to have additional systems appear
+           */
+          debugSystems: { type: Number, value: 0 }
         },
-        /**
-         * List of system states to display
-         */
-        state: { type: Array, value: [], notify: true },
-        /**
-         * Document we last fetched from our desired collection
-         */
-        _lastFetch: { type: Array, value: [] },
-        /**
-         * Document collection to retrieve from
-         */
-        collection: { type: String, value: 'system' },
-        /**
-         * ID of the document to retrieve the application state from
-         */
-        docid: { type: String, value: 'applicationStatus' },
-        /**
-         * Number of debug/test systems to add (for demo purposes)
-         * Set a non-zero value to have additional systems appear
-         */
-        debugSystems: { type: Number, value: 0 }
-      },
-      
-      ready: function() {
+
+        ready: function() {
           // Sort Type true is 'level', false is 'time'
           this.sortTypeLevel = true;
           this.sortAscending = true;
           this.hasState = true;
           this.loading = false;
-          
+
           var _this = this;
           document.addEventListener('notificationReceived',function() {
-              // Refresh our application status
-              _this.loadStatus();
+            // Refresh our application status
+            _this.loadStatus();
           });
-      },
-      
-      _visibleChanged: function () {
-        if (this.visible) {
-          this.refreshButton();
-        }
-      },
-      
-      refreshButton: function() {
+        },
+
+        _visibleChanged: function () {
+          if (this.visible) {
+            this.refreshButton();
+          }
+        },
+
+        refreshButton: function() {
           this.loadStatus();
-      },
-      
-      /**
-       * Retrieve our application status from the documents service and update the UI dashboard accordingly
-       * @param cb callback
-       */
-      loadStatus: function(cb) {
+        },
+
+        /**
+         * Retrieve our application status from realm scope and update the UI dashboard accordingly
+         * @param cb callback
+         */
+        loadStatus: function(cb) {
           // Check if we're already loading
           // This can happen if we get quick back-to-back notifications or re-fetch calls
           // We don't want to double populate the list, so we'll ignore our call if we're already loading
           if (!this.loading) {
-              this.set('state', []);
-              this.set('_lastFetch', []);
-          
-              var _this = this;
-              this.loading = true;
-              voyent.io.documents.getDocument({ 'collection': this.collection, 'id': this.docid }).then(function(document) {
-                  // Ensure we got a document in the proper format
-                  if (document && document.status && document.status instanceof Array && document.status.length > 0) {
-                      _this.set('_lastFetch', document);
-                      
-                      var currentLoop = null;
-                      for (var i = 0; i < document.status.length; i++) {
-                          currentLoop = document.status[i];
-                          
-                          _this.push('state', currentLoop);
-                      }
+            this.set('state', []);
+            this.set('_lastFetch', []);
+
+            var _this = this;
+            this.loading = true;
+            voyent.io.scope.getRealmData({ 'property': this.propertyId }).then(function(data) {
+
+              // Ensure we got a document in the proper format
+              if (data && Object.keys(data).length > 0) {
+                _this.set('_lastFetch', data);
+
+                for (var key in data) {
+                  if (!data.hasOwnProperty(key)) {
+                    continue;
                   }
-                  
-                  if (typeof cb !== 'undefined') {
-                      cb();
-                  }
-                  
-                  _this.hasState = _this.state.length > 0;
-                  _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
-                  _this.loading = false;
-              }).catch(function() {
-                  _this.fire('message-error', "Failed to read application state from document " + _this.collection + "." + _this.docid);
-                  
-                  _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
-                  _this.loading = false;
-                  _this.hasState = false;
-              });
-              
-              // Optionally add some fake systems to debug
-              if (this.debugSystems > 0) {
-                  for (var j = 0; j < this.debugSystems; j++) {
-                      this.push('state', { "systemName": "p_debug" + (j+1) + "_pm_in_thread",
-                                           "eventTime": "10:" +  Math.floor((Math.random() * 50) + 10) + ":05.000",
-                                           "notificationTime": new Date().toUTCString(),
-                                           "alarmLevel":  Math.floor((Math.random() * 4)) });
-                  }
-                  this.hasState = true;
+                  _this.push('state', data[key]);
+                }
               }
+
+              if (typeof cb !== 'undefined') {
+                cb();
+              }
+
+              _this.hasState = _this.state.length > 0;
+              _this.updatedTime = "Updated at " + new Date().toLocaleTimeString();
+              _this.loading = false;
+            }).catch(function() {
+              _this.fire('message-error', "Failed to read application state from realm scope " + _this.collection + "." + _this.propertyId);
+
+              _this.updatedTime = "Last Update Failed at " + new Date().toLocaleTimeString();
+              _this.loading = false;
+              _this.hasState = false;
+            });
+
+            // Optionally add some fake systems to debug
+            if (this.debugSystems > 0) {
+              for (var j = 0; j < this.debugSystems; j++) {
+                this.push('state', { "systemName": "p_debug" + (j+1) + "_pm_in_thread",
+                  "eventTime": "10:" +  Math.floor((Math.random() * 50) + 10) + ":05.000",
+                  "notificationTime": new Date().toUTCString(),
+                  "alarmLevel":  Math.floor((Math.random() * 4)) });
+              }
+              this.hasState = true;
+            }
           }
-      },
-      
-      resetAlarmLevels: function() {
+        },
+
+        resetAlarmLevels: function() {
           // First we update the state of our _lastFetch
           var _this = this;
           this.loadStatus(function() {
-              // Then we loop through _lastFetch and reset alarm levels and notification time
-              var needSave = false;
-              if (typeof _this._lastFetch !== 'undefined' && _this._lastFetch.status && _this._lastFetch.status instanceof Array) {
-                  for (var i = 0; i < _this._lastFetch.status.length; i++) {
-                      if (_this._lastFetch.status[i].alarmLevel > 0) {
-                          needSave = true;
-                          
-                          _this._lastFetch.status[i].alarmLevel = 0;
-                          _this._lastFetch.status[i].notificationTime = new Date().toUTCString();
-                      }
-                  }
+            // Then we loop through _lastFetch and reset alarm levels and notification time
+            var needSave = false;
+            if (typeof _this._lastFetch !== 'undefined' && Object.keys(_this._lastFetch).length > 0) {
+              for (var key in _this._lastFetch) {
+                if (!_this._lastFetch.hasOwnProperty(key)) {
+                  continue;
+                }
+                if (_this._lastFetch[key].alarmLevel > 0) {
+                  needSave = true;
+
+                  _this._lastFetch[key].alarmLevel = 0;
+                  _this._lastFetch[key].notificationTime = new Date().toUTCString();
+                }
               }
-              
-              if (needSave) {
-                  voyent.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch}).then(function(){
-                      _this.fire('message-info', 'Successfully reset alarm levels');
-                  }).catch(function(error) {
-                      _this.fire('message-error', 'Failed to reset alarm levels: ' + error.toSource());
-                  });
-              }
-              else {
-                  _this.fire('message-info', 'No reset needed, alarm levels are already 0');
-              }
+            }
+
+            if (needSave) {
+              var toSave = {};
+              toSave[_this.propertyId] = _this._lastFetch;
+              voyent.io.scope.createRealmData({'data': toSave}).then(function(){
+                _this.fire('message-info', 'Successfully reset alarm levels');
+              }).catch(function(error) {
+                _this.fire('message-error', 'Failed to reset alarm levels: ' + error.toSource());
+              });
+            }
+            else {
+              _this.fire('message-info', 'No reset needed, alarm levels are already 0');
+            }
           });
-      },
-      
-      /**
-       * Clear/delete the entire list of application states, which means resetting applicationStatus.status to []
-       * This will confirm with the user first
-       * This function will also bail if we're already loading (this.loading = true) to prevent race conditions
-       */
-      clearAll: function() {
+        },
+
+        /**
+         * Clear/delete the entire list of application states
+         * This will confirm with the user first
+         * This function will also bail if we're already loading (this.loading = true) to prevent race conditions
+         */
+        clearAll: function() {
           var confirm = window.confirm("Are you sure you want to delete " + this.state.length + " application states?");
           if (!confirm) {
-              return;
+            return;
           }
-          
+
           if (!this.loading) {
-              var _this = this;
-              if (_this._lastFetch.status) {
-                  _this.set('_lastFetch.status', []);
-              }
-              else {
-                  _this.set('_lastFetch', {"status": []});
-              }
-              
-              // Update the document to a blank array
-              voyent.io.documents.updateDocument({'collection': _this.collection, 'id': _this.docid, 'document': _this._lastFetch }).then(function(){
-                  _this.fire('message-info', 'Successfully cleared all application states');
-                  
-                  _this.set('state', []);
-                  _this.set('hasState', false);
-              }).catch(function(error) {
-                  _this.fire('message-error', 'Failed to clear the application states: ' + error.toSource());
-              });
+            var _this = this;
+            _this.set('_lastFetch', {});
+            // Update the document to an empty object
+            var toSave = {};
+            toSave[_this.propertyId] = _this._lastFetch;
+            voyent.io.scope.createRealmData({'data': toSave}).then(function(){
+              _this.fire('message-info', 'Successfully cleared all application states');
+
+              _this.set('state', []);
+              _this.set('hasState', false);
+            }).catch(function(error) {
+              _this.fire('message-error', 'Failed to clear the application states: ' + error.toSource());
+            });
           }
-      },
-      
-      /**
-       * Computed binding to determine UI coloring based on alarm level
-       * @param level
-       */
-      alarmColor: function(level) {
+        },
+
+        /**
+         * Computed binding to determine UI coloring based on alarm level
+         * @param level
+         */
+        alarmColor: function(level) {
           switch (level) {
-              case 1:
-                return "#EEEE00";
-              case 2:
-                return "#FF9900";
-              case 3:
-                return "#770000";
-              default:
-                return "#007700";
+            case 1:
+              return "#EEEE00";
+            case 2:
+              return "#FF9900";
+            case 3:
+              return "#770000";
+            default:
+              return "#007700";
           }
-      },
-      
-      /**
-       * Computed binding to try to wrap a string into a local timezone date
-       * If the conversion fails we will return the original parameter instead
-       * @param toWrap
-       */
-      wrapLocalDate: function(toWrap) {
+        },
+
+        /**
+         * Computed binding to try to wrap a string into a local timezone date
+         * If the conversion fails we will return the original parameter instead
+         * @param toWrap
+         */
+        wrapLocalDate: function(toWrap) {
           try{
-              var toReturn = new Date(toWrap);
-              
-              if (toReturn != "Invalid Date") {
-                  return toReturn.toLocaleTimeString();
-              }
+            var toReturn = new Date(toWrap);
+
+            if (toReturn != "Invalid Date") {
+              return toReturn.toLocaleTimeString();
+            }
           }catch (err) {
-              console.warn("Failed to convert date " + toWrap, err);
+            console.warn("Failed to convert date " + toWrap, err);
           }
           return toWrap;
-      },
-      
-      chooseSortLevel: function() {
-        this.set('sortTypeLevel', true);
-        this.set('sortAscending', !this.sortAscending);
-      },
-      
-      chooseSortTime: function() {
-        this.set('sortTypeLevel', false);
-        this.set('sortAscending', !this.sortAscending);
-      },
-      
-      computedSort: function() {
-        if (this.sortTypeLevel) {
-            return this.sortAscending ? this.sortLevelAscending : this.sortLevelDescending;
-        }
-        return this.sortAscending ? this.sortTimeAscending : this.sortTimeDescending;
-      },
+        },
 
-      sortLevelAscending: function(a,b) {
-        if (a.alarmLevel > b.alarmLevel) { return -1; }
-        else if (a.alarmLevel < b.alarmLevel) { return 1; }
-        return 0;
-      },
-      
-      sortLevelDescending: function(a,b) {
-        if (a.alarmLevel > b.alarmLevel) { return 1; }
-        else if (a.alarmLevel < b.alarmLevel) { return -1; }
-        return 0;
-      },
-      
-      sortTimeAscending: function(a,b) {
-        if (a.notificationTime > b.notificationTime) { return -1; }
-        else if (a.notificationTime < b.notificationTime) { return 1; }
-        return 0;
-      },
-      
-      sortTimeDescending: function(a,b) {
-        if (a.notificationTime > b.notificationTime) { return 1; }
-        else if (a.notificationTime < b.notificationTime) { return -1; }
-        return 0;
-      },
-      
-      isAdmin: function() {
+        chooseSortLevel: function() {
+          this.set('sortTypeLevel', true);
+          this.set('sortAscending', !this.sortAscending);
+        },
+
+        chooseSortTime: function() {
+          this.set('sortTypeLevel', false);
+          this.set('sortAscending', !this.sortAscending);
+        },
+
+        computedSort: function() {
+          if (this.sortTypeLevel) {
+            return this.sortAscending ? this.sortLevelAscending : this.sortLevelDescending;
+          }
+          return this.sortAscending ? this.sortTimeAscending : this.sortTimeDescending;
+        },
+
+        sortLevelAscending: function(a,b) {
+          if (a.alarmLevel > b.alarmLevel) { return -1; }
+          else if (a.alarmLevel < b.alarmLevel) { return 1; }
+          return 0;
+        },
+
+        sortLevelDescending: function(a,b) {
+          if (a.alarmLevel > b.alarmLevel) { return 1; }
+          else if (a.alarmLevel < b.alarmLevel) { return -1; }
+          return 0;
+        },
+
+        sortTimeAscending: function(a,b) {
+          if (a.notificationTime > b.notificationTime) { return -1; }
+          else if (a.notificationTime < b.notificationTime) { return 1; }
+          return 0;
+        },
+
+        sortTimeDescending: function(a,b) {
+          if (a.notificationTime > b.notificationTime) { return 1; }
+          else if (a.notificationTime < b.notificationTime) { return -1; }
+          return 0;
+        },
+
+        isAdmin: function() {
           try{
-              return app.$.demoView.isAdmin;
+            return app.$.demoView.isAdmin;
           }catch(error) {
-              console.warn("Couldn't find demo view when checking for admin state: " + error.toSource());
+            console.warn("Couldn't find demo view when checking for admin state: " + error.toSource());
           }
           return false;
-      }
-    });
-  })();
+        }
+      });
+    })();
   </script>
 </dom-module>

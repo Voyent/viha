@@ -124,7 +124,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-dropdown-menu label="Service:" class$="{{getClass(service)}}" style="padding-right:5px;">
             <iron-selector class="dropdown-content" attr-for-selected="name" selected={{service}}>
               <div name="location">Location</div>
-              <div name="mailbox">Mailbox</div>
               <div name="documents">Document</div>
               <div name="metrics">Events</div>
               <div name="authadmin">AuthAdmin</div>
@@ -172,12 +171,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           service: {
             type: String,
-            value: 'mailbox',
+            value: 'event',
             observer: 'serviceChanged'
           },
           collection: {
             type: String,
-            value: 'mailboxes',
+            value: 'events',
             observer: 'collectionChanged'
           },
           currentquery: {
@@ -196,9 +195,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           else if (service === 'authadmin') {
             this.collection = 'users';
-          }
-          else if (service === 'mailbox') {
-            this.collection = 'mailboxes';
           }
           else if (service === 'documents') {
             this.collection = '';

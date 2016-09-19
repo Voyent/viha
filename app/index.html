@@ -162,16 +162,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     window.initializePushGroups = function(){
-      voyent.io.admin.getRealmUsers().then( function(users){
+      //make sure we only get the realm users once for the entire app
+      var realmUsers = app.$.demoView.$$('demo-data') ? app.$.demoView.$$('demo-data').users : null;
+      if (!realmUsers) {
+        voyent.io.admin.getRealmUsers().then( function(users){
+          demoView.$$('demo-data').users = users;
+          realmUsers = users;
+          joinPushGroups();
+        }).catch( function(error){
+          console.error('Error loading users in index:',error);
+        });
+      }
+      else {
+        joinPushGroups();
+      }
+
+      function joinPushGroups() {
         setTimeout(function(){
-          users.forEach(function(user){
+          realmUsers.forEach(function(user){
             voyent.xio.push.join(user.username);
           });
-          demoView.$$('demo-data').users = users;
         }, 5000);
-      }).catch( function(error){
-        console.error('Error loading users for users-view: ' + error.toSource());
-      });
+      }
     };
   </script>
   <!-- build:js scripts/app.js -->

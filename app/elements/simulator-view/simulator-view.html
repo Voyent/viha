@@ -69,28 +69,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'simulator-view',
 
       properties: {
-        visible: {
-          type: Boolean,
-          notify: true,
-          observer: '_visibleChanged'
-        },
-        startTime: {
-          type: String,
-          notify: true,
-          reflectToAttribute:true
-        },
+        visible: {type:Boolean, notify:true},
         sliderValue: {'type':Number,value:1,notify:true},
         uploadedArray: {'type':Array, value:[]},
         inputSource: {'type':String, value:'Simulation', notify:true},
         simulationList:{'type':Array, value:['scenario1a','scenario1b','scenario1c','scenario1onset','scenario1abate','scenario2onset','scenario2abate']},
-        hourCounts:{'type':Array, value:['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']},
-        minuteCounts:{'type':Array, value:['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59']},
-        machineList:{'type':Array, value:['machine1','machine2','machine3'],notify:true},
-        statusList: {'type':Array,value:['OK','CATCH-UP','BACK-UP','STALE','PENDING','ERROR','OLD']},
-        liveStatus: {'type':String,value:"Start", notify:true},
-        liveRunning: {'type':Boolean,value:false,notify:false},
-        liveTime: {'type':String,notify:true},
-        liveSliderValue: {'type':Number,value:1,notify:true},
         currentEvent:{'type':Number,value:0,notify:true},
         totalEvents:{'type':Number,value:0,notify:true},
         running: {'type':Boolean,value:false},
@@ -98,10 +81,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         offHours: {'type':Boolean,value:false,notify:true},
         offHoursString: {'type':String,value:'Business Hours',computed:'getHoursString(offHours)'},
         runString:{'type':String,value:'Run Simulation', computed:'getRunString(inputSource)'}
-      },
-
-      created: function(){
-        poly = this;
       },
 
       ready: function () {
@@ -210,67 +189,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         console.log(activeArray);
         voyent.io.event.createCustomEvents({'eventArray':activeArray});
-      },
-
-      setComputer: function(e){
-        var element = e.srcElement ? e.srcElement : e.target;
-        var machineName = element.getAttribute('id');
-        var status = $(element).val();
-        var mailbox = {
-          info:{
-            'role':'machine'
-          },
-          state: {
-            'status':status
-          }
-        };
-        voyent.io.mailbox.updateMailbox({'id': machineName, 'mailbox': mailbox});
-      },
-
-      _visibleChanged: function(){
-        voyent.io.mailbox.findMailboxes().then(function (users) {
-          for (var i = 0; i < users.length; i++){
-            if(users[i].info.role === 'machine'){
-              $(poly.$$("#"+users[i]._id)).val(users[i].state.status);
-            }
-          }
-        });
-      },
-
-      liveButtonPress: function(){
-        if(!poly.liveRunning){
-          poly.liveStatus = 'STOP';
-          poly.liveRunning = true;
-          var date = new Date();
-          poly.liveTime = date.getTime();
-          poly.runCycle();
-        }
-        else{
-          poly.liveStatus = 'START';
-          poly.liveRunning = false;
-        }
-      },
-
-      runCycle: function(){
-        var cycleTime = 5000;
-        if(poly.liveRunning) {
-          var tempDate = new Date(poly.liveTime);
-          var date = new Date( Date.UTC(tempDate.getYear(),tempDate.getMonth(),tempDate.getDate(),tempDate.getHours(),tempDate.getMinutes(),tempDate.getSeconds()));
-          for(var i = 0; i < poly.machineList.length; i++){
-            var machine = poly.machineList[i];
-            var status = $(poly.$$("#"+machine)).val();
-            var event = { "event" : "update", "service" : "viha", "type" : "status",
-              "data" : { "rowId" : "33203", "linkDescription" : "PROD_EXCELLERIS",
-                "webSection" : "CRITICAL", "node" : machine, "detailDesc" : "test_machine",
-                "status" : status,
-                "detail" : "Detail stuff", "time" : date.getUTCHours() + ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds() + '.000' }};
-            voyent.io.event.createCustomEvent({"event":event})
-          }
-          setTimeout(function () {
-            poly.liveTime += (cycleTime * poly.liveSliderValue);
-            poly.runCycle();
-          }, cycleTime);
-        }
       },
 
       updateInfo:function(){
