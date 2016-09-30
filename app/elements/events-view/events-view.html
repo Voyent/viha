@@ -167,8 +167,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             newEM.lastpoll.setMilliseconds(newEM.lastpoll.getMilliseconds() - newEM.pollinterval);
                         }
 
-                        // Call our metrics service with our params
-                        voyent.io.metrics.findEvents(params).then(successCallback).catch(function(error){
+                        // Call our event service with our params
+                        voyent.io.event.findEvents(params).then(successCallback).catch(function(error){
                             console.log('findEvents caught an error:', error);
                         });
                     });

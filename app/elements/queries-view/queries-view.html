@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-selector class="dropdown-content" attr-for-selected="name" selected={{service}}>
               <div name="location">Location</div>
               <div name="documents">Document</div>
-              <div name="metrics">Events</div>
+              <div name="event">Events</div>
               <div name="authadmin">AuthAdmin</div>
             </iron-selector>
           </paper-dropdown-menu>
@@ -190,7 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         serviceChanged: function(service) {
-          if (service === 'metrics') {
+          if (service === 'event') {
             this.collection = 'events';
           }
           else if (service === 'authadmin') {
