@@ -86,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function () {
         poly = this;
 
-        voyent.io.documents.getDocument({id:'vihaHours'}).then(function(document){
+        voyent.io.docs.getDocument({id:'vihaHours'}).then(function(document){
             poly.offHours = document.offHours;
         });
 
@@ -155,7 +155,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           poly.running = true;
           poly.canRun = true;
           if (poly.inputSource === 'Simulation') {
-            voyent.io.documents.getDocument({
+            voyent.io.docs.getDocument({
               "collection": 'simulations',
               "id": poly.$$('#simulationSelect').value
             }).then(function (sim) {
@@ -218,10 +218,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       toggleHours:function(){
         if(this.offHours){
-          voyent.io.documents.updateDocument({id:'vihaHours',document:{'offHours':true}});
+          voyent.io.docs.updateDocument({id:'vihaHours',document:{'offHours':true}});
         }
         else {
-          voyent.io.documents.updateDocument({id:'vihaHours',document:{'offHours':false}});
+          voyent.io.docs.updateDocument({id:'vihaHours',document:{'offHours':false}});
         }
       }
     });
